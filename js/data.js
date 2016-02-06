@@ -16,27 +16,3 @@ function loadJSON(url, callback){
 	xobj.send(null);  
 
 }
-
-
-
-/*
-//unsused d3.js code
-d3.json("data/ne_50m_admin_0_sovereignty.json", function(json){
-
-	var paths = svg.selectAll("path")
-	.data(json.features);
-
-	paths.enter()
-	.append("path")
-	.attr("fill", function(d, i){
-
-		return "rgb("+populationTo255(d.properties.pop_est)
-				+", "+populationTo255(d.properties.pop_est)
-				+", "+populationTo255(d.properties.pop_est)
-				+")"}
-	)
-	.attr("d", d3.geo.path().projection(projection) );
-
-	console.log(paths);
-});
-*/
