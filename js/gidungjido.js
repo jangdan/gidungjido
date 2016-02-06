@@ -27,6 +27,9 @@ loadJSON("data/simplified.json", function(JSONObject){
 	for(i = 0; i < data.features.length; ++i){ //each feature (country)
 
 
+		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue;
+
+
 		var countryShapes = []; //will be a THREE.Shape or an Array of THREE.Shape
 
 		if(!data.features[i].geometry) continue;
