@@ -27,7 +27,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty.json", function(JSONObject){
 	for(i = 0; i < data.features.length; ++i){ //each feature (country)
 
 
-		var countryShapes; //will be a THREE.Shape or an Array of THREE.Shape
+		var countryShapes = []; //will be a THREE.Shape or an Array of THREE.Shape
 
 
 		switch(data.features[i].geometry.type){
@@ -35,33 +35,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty.json", function(JSONObject){
 			case "Polygon": //http://geojson.org/geojson-spec.html#id4
 
 
-				var paths = [];
-
-				for(j = 0; j < data.features[i].geometry.coordinates.length; ++j){ //each seperate 'part' of a country (islands, exclaves, etc)
-
-
-					var points = [];
-
-					for(k = 0; k < data.features[i].geometry.coordinates[j].length; ++k){ //the points of that 'part'
-						
-						points.push(new THREE.Vector2( data.features[i].geometry.coordinates[j][k][0], data.features[i].geometry.coordinates[j][k][1] ));
-
-					}
-
-					var path = new THREE.Path(points);
-
-					paths.push(path);
-
-				}
-
-
-				countryShapes = paths[0].toShapes(); //initialize the shape (toShapes() will only return ONE THREE.Shape)
-
-
-				paths.splice(0, 1); //remove the first path (check GeoJSON specs for more information)
-
-				Array.prototype.push.apply(countryShapes[0].holes, paths); //add the holes
-
+				Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates) );
 
 				break;
 
@@ -69,10 +43,10 @@ loadJSON("data/ne_10m_admin_0_sovereignty.json", function(JSONObject){
 			case "MultiPolygon": //
 
 
+				for(l = 0; l < data.features[i].geometry.coordinates.length; ++l)
+					Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates[l]) );
 
 				break;
-
-			default: continue;
 
 		}
 
@@ -87,8 +61,6 @@ loadJSON("data/ne_10m_admin_0_sovereignty.json", function(JSONObject){
 		scene.add(countryMesh);
 
 	}
-
-	console.log(data);
 
 });
 
@@ -112,7 +84,7 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 
 
-camera.position.z = 100;
+camera.position.z = 150;
 
 
 
