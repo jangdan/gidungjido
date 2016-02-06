@@ -8,7 +8,7 @@ var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeig
 
 var renderer = new THREE.WebGLRenderer( { antialias: false, alpha: false } );
 
-renderer.setClearColor(0x111111, 1);
+renderer.setClearColor(0xDDDDDD, 1);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -27,40 +27,58 @@ loadJSON("data/ne_10m_admin_0_sovereignty.json", function(JSONObject){
 	for(i = 0; i < data.features.length; ++i){ //each feature (country)
 
 
-		if(data.features[i].geometry.type != "Polygon") continue;
+		var countryShapes; //will be a THREE.Shape or an Array of THREE.Shape
 
 
-		var countryShapes = [];
+		switch(data.features[i].geometry.type){
 
-		for(j = 0; j < data.features[i].geometry.coordinates.length; ++j){ //each seperate 'part' of a country (islands, exclaves, etc)
+			case "Polygon": //http://geojson.org/geojson-spec.html#id4
 
 
-			var points = [];
+				var paths = [];
 
-			for(k = 0; k < data.features[i].geometry.coordinates[j].length; ++k){ //the points of that 'part'
-				
-				points.push(new THREE.Vector2( data.features[i].geometry.coordinates[j][k][0], data.features[i].geometry.coordinates[j][k][1] ));
+				for(j = 0; j < data.features[i].geometry.coordinates.length; ++j){ //each seperate 'part' of a country (islands, exclaves, etc)
 
-			}
 
-			console.log(data.features[i].properties.SOVEREIGNT, points);
+					var points = [];
 
-			var path = new THREE.Path(points);
+					for(k = 0; k < data.features[i].geometry.coordinates[j].length; ++k){ //the points of that 'part'
+						
+						points.push(new THREE.Vector2( data.features[i].geometry.coordinates[j][k][0], data.features[i].geometry.coordinates[j][k][1] ));
 
-			Array.prototype.push.apply(countryShapes, path.toShapes())
+					}
+
+					var path = new THREE.Path(points);
+
+					paths.push(path);
+
+				}
+
+
+				countryShapes = paths[0].toShapes(); //initialize the shape (toShapes() will only return ONE THREE.Shape)
+
+
+				paths.splice(0, 1); //remove the first path (check GeoJSON specs for more information)
+
+				Array.prototype.push.apply(countryShapes[0].holes, paths); //add the holes
+
+
+				break;
+
+
+			case "MultiPolygon": //
+
+
+
+				break;
+
+			default: continue;
 
 		}
 
-		console.log(data.features[i].properties.SOVEREIGNT, countryShapes);
-
-
-		//var countryGeometry = new THREE.ShapeGeometry(countryShapes);
 	
 		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 2, bevelEnabled: false } );
-
-		//countryGeometry.translate( 0, 0, -1 );
 		
-
 		var countryMaterial = new THREE.MeshLambertMaterial( { color: 0x3F6536 } );
 
 
@@ -105,8 +123,8 @@ function render(){
 	requestAnimationFrame(render);
 
 
-	scene.rotation.x += 0.005;
-	scene.rotation.y += 0.002;
+	//scene.rotation.x += 0.005;
+	//scene.rotation.y += 0.002;
 
 
 	renderer.render(scene, camera);
