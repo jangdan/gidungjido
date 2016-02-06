@@ -19,7 +19,7 @@ document.body.appendChild(renderer.domElement);
 
 
 
-loadJSON("data/ne_10m_admin_0_sovereignty.json", function(JSONObject){
+loadJSON("data/simplified.json", function(JSONObject){
 
 	var data = JSONObject;
 
@@ -29,6 +29,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty.json", function(JSONObject){
 
 		var countryShapes = []; //will be a THREE.Shape or an Array of THREE.Shape
 
+		if(!data.features[i].geometry) continue;
 
 		switch(data.features[i].geometry.type){
 

@@ -52,6 +52,6 @@ function parsePolygon(coordinates){
 
 	Array.prototype.push.apply(countryShapes[0].holes, paths); //add the holes
 
-	return countryShapes; //returns one THREE.Shape
+	return countryShapes; //returns a THREE.Shape Array
 
 }
