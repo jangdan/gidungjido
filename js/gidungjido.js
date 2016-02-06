@@ -27,6 +27,9 @@ loadJSON("data/ne_10m_admin_0_sovereignty.json", function(JSONObject){
 	for(i = 0; i < data.features.length; ++i){ //each feature (country)
 
 
+		if(data.features[i].geometry.type != "Polygon") continue;
+
+
 		var countryShapes = [];
 
 		for(j = 0; j < data.features[i].geometry.coordinates.length; ++j){ //each seperate 'part' of a country (islands, exclaves, etc)
