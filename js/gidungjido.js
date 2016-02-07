@@ -2,6 +2,9 @@ var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
 
+var mouse = new THREE.Vector2();
+
+
 
 var scene = new THREE.Scene();
 
@@ -9,8 +12,8 @@ var scene = new THREE.Scene();
 
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
 
-var cameraactualrotation = camera.rotation;
-var cameraactualzoom = camera.zoom;
+var intendedcamerarotation = camera.rotation;
+var intendedcamerazoom = camera.zoom;
 
 
 
@@ -27,7 +30,7 @@ document.body.appendChild(renderer.domElement);
 
 
 
-loadJSON("data/simplified.json", function(JSONObject){
+loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
 
 	var data = JSONObject;
 
@@ -78,7 +81,7 @@ loadJSON("data/simplified.json", function(JSONObject){
 
 
 
-scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMaterial( { color: 0xFF0000} ))); //debug
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMaterial( { color: 0xFF0000 } ))); //debug
 
 
 
@@ -97,7 +100,8 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 
 camera.position.z = 10;
-camera.rotation.x = Math.PI/2;
+//camera.rotation.order = "YXZ";
+//camera.rotation.x = Math.PI/2;
 
 
 
@@ -107,11 +111,50 @@ function render(){
 	requestAnimationFrame(render);
 
 
+	//zooming
 
-	camera.zoom += (cameraactualzoom - camera.zoom) * 0.1;
+	camera.zoom += (intendedcamerazoom - camera.zoom) * 0.1;
 
-	camera.rotation.x += (cameraactualrotation.x - camera.rotation.x) * 0.01;
-	camera.rotation.y += (cameraactualrotation.y - camera.rotation.y) * 0.01;
+
+	
+	/*
+	//euler angles
+	//pitch and yaw
+
+	intendedcamerarotation.x += (window.innerHeight/2 - mouse.y) * 0.00005;
+	intendedcamerarotation.y += (window.innerWidth/2 - mouse.x) * 0.00005;
+
+	//limit the camera pitch
+
+	if(0 > intendedcamerarotation.x) intendedcamerarotation.x = 0;
+	if(intendedcamerarotation.x > Math.PI) intendedcamerarotation.x = Math.PI;
+	*/
+
+
+	/*
+	camera.rotation.x += (intendedcamerarotation.x - camera.rotation.x) * 0.1;
+	camera.rotation.y += (intendedcamerarotation.y - camera.rotation.y) * 0.1;
+	*/
+	
+	
+	/*
+	camera.rotation.x = intendedcamerarotation.x;
+	camera.rotation.y = intendedcamerarotation.y;
+	*/
+
+
+
+	//quaternions
+	var pitchQuaternion = new THREE.Quaternion();
+	pitchQuaternion.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), Math.PI/3 );
+
+	var yawQuaternion = new THREE.Quaternion();
+	yawQuaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI/3 )
+
+
+	var rotationQuaternion = pitchQuaternion.multiply(yawQuaternion);
+
+	camera.rotation.setFromQuaternion(rotationQuaternion);
 
 
 	camera.updateProjectionMatrix();
@@ -123,6 +166,8 @@ function render(){
 }
 
 render();
+
+
 
 
 
@@ -139,8 +184,8 @@ window.addEventListener("resize", function(e){
 
 window.addEventListener("mousemove", function(e){ //yaw
 
-	cameraactualrotation.y = -((e.clientX)/window.innerWidth - 0.5)*2*Math.PI;
-	cameraactualrotation.x = -((e.clientY)/window.innerHeight - 0.5)*Math.PI;
+	mouse.x = e.clientX;
+	mouse.y = e.clientY;
 
 	return false;
 
@@ -150,10 +195,14 @@ window.addEventListener("mousemove", function(e){ //yaw
 
 window.addEventListener("mousewheel", function(e){ //zooming
 
-	cameraactualzoom += (e.wheelDelta || e.detail) * 0.005;
-	if(cameraactualzoom < CAMERA_MINIMUM_ZOOM) cameraactualzoom = CAMERA_MINIMUM_ZOOM;
-	else if(cameraactualzoom > CAMERA_MAXIMUM_ZOOM) cameraactualzoom = CAMERA_MAXIMUM_ZOOM;
+	intendedcamerazoom += (e.wheelDelta || e.detail) * 0.005;
+	if(intendedcamerazoom < CAMERA_MINIMUM_ZOOM) intendedcamerazoom = CAMERA_MINIMUM_ZOOM;
+	else if(intendedcamerazoom > CAMERA_MAXIMUM_ZOOM) intendedcamerazoom = CAMERA_MAXIMUM_ZOOM;
 
 	return false;
 
 }, false);
+
+
+
+
