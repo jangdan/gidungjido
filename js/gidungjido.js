@@ -9,6 +9,7 @@ var scene = new THREE.Scene();
 
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
 
+var cameraactualrotation = camera.rotation;
 var cameraactualzoom = camera.zoom;
 
 
@@ -95,9 +96,8 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 
 
-camera.position.z = 150;
-
-//camera.position.set()
+camera.position.z = 10;
+camera.rotation.x = Math.PI/2;
 
 
 
@@ -109,6 +109,10 @@ function render(){
 
 
 	camera.zoom += (cameraactualzoom - camera.zoom) * 0.1;
+
+	camera.rotation.x += (cameraactualrotation.x - camera.rotation.x) * 0.01;
+	camera.rotation.y += (cameraactualrotation.y - camera.rotation.y) * 0.01;
+
 
 	camera.updateProjectionMatrix();
 
@@ -133,7 +137,18 @@ window.addEventListener("resize", function(e){
 
 
 
-window.addEventListener("mousewheel", function(e){
+window.addEventListener("mousemove", function(e){ //yaw
+
+	cameraactualrotation.y = -((e.clientX)/window.innerWidth - 0.5)*2*Math.PI;
+	cameraactualrotation.x = -((e.clientY)/window.innerHeight - 0.5)*Math.PI;
+
+	return false;
+
+}, false);
+
+
+
+window.addEventListener("mousewheel", function(e){ //zooming
 
 	cameraactualzoom += (e.wheelDelta || e.detail) * 0.005;
 	if(cameraactualzoom < CAMERA_MINIMUM_ZOOM) cameraactualzoom = CAMERA_MINIMUM_ZOOM;
