@@ -1,8 +1,15 @@
+var CAMERA_MINIMUM_ZOOM = 1;
+var CAMERA_MAXIMUM_ZOOM = 15;
+
+
+
 var scene = new THREE.Scene();
 
 
 
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
+
+var cameraactualzoom = camera.zoom;
 
 
 
@@ -78,7 +85,7 @@ scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMate
 
 var spotlight = new THREE.SpotLight(0xFFFFD0, 1);
 
-spotlight.position.set( 100, 100, 100 );
+spotlight.position.set( -100, 100, 100 );
 
 scene.add(spotlight);
 
@@ -90,6 +97,7 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 camera.position.z = 150;
 
+//camera.position.set()
 
 
 
@@ -99,8 +107,11 @@ function render(){
 	requestAnimationFrame(render);
 
 
-	//scene.rotation.x += 0.005;
-	//scene.rotation.y += 0.002;
+
+	camera.zoom += (cameraactualzoom - camera.zoom) * 0.1;
+
+	camera.updateProjectionMatrix();
+
 
 
 	renderer.render(scene, camera);
@@ -111,7 +122,7 @@ render();
 
 
 
-window.addEventListener("resize", function(){
+window.addEventListener("resize", function(e){
 
 	camera.aspect = window.innerWidth/window.innerHeight;
 	camera.updateProjectionMatrix();
@@ -119,3 +130,15 @@ window.addEventListener("resize", function(){
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
 });
+
+
+
+window.addEventListener("mousewheel", function(e){
+
+	cameraactualzoom += (e.wheelDelta || e.detail) * 0.005;
+	if(cameraactualzoom < CAMERA_MINIMUM_ZOOM) cameraactualzoom = CAMERA_MINIMUM_ZOOM;
+	else if(cameraactualzoom > CAMERA_MAXIMUM_ZOOM) cameraactualzoom = CAMERA_MAXIMUM_ZOOM;
+
+	return false;
+
+}, false);
