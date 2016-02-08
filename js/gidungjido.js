@@ -1,7 +1,7 @@
 var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
-var CAMERA_MOVEMENT_SPEED = 0.1;
+var CAMERA_MOVEMENT_SPEED = 0.5;
 
 
 var MOUSE = new THREE.Vector2();
@@ -31,7 +31,7 @@ var intendedcamerazoom = camera.zoom;
 
 
 
-var renderer = new THREE.WebGLRenderer( { antialias: false, alpha: false } );
+var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 
 renderer.setClearColor(0xDDDDDD, 1);
 
