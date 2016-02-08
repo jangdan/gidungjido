@@ -1,6 +1,8 @@
 var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
+var CAMERA_MOVEMENT_SPEED = 0.1;
+
 
 var MOUSE = new THREE.Vector2();
 
@@ -37,6 +39,11 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 document.body.appendChild(renderer.domElement);
+
+
+
+
+var pressedkeys = [];
 
 
 
@@ -127,6 +134,9 @@ function render(){
 
 	requestAnimationFrame(render);
 
+	
+	//camera 조작
+
 
 	//zooming
 
@@ -165,6 +175,24 @@ function render(){
 	camera.rotation.setFromQuaternion(rotationQuaternion);
 	*/
 
+
+
+	//moving
+	
+	console.log(pressedkeys);
+
+
+	if(keyPressed(87) || keyPressed(38)) //up
+		camera.position.y += CAMERA_MOVEMENT_SPEED;
+
+	if(keyPressed(83) || keyPressed(40)) //down
+		camera.position.y -= CAMERA_MOVEMENT_SPEED;
+
+	if(keyPressed(65) || keyPressed(37)) //left
+		camera.position.x -= CAMERA_MOVEMENT_SPEED;
+
+	if(keyPressed(68) || keyPressed(40)) //right
+		camera.position.x += CAMERA_MOVEMENT_SPEED;
 
 
 	camera.updateProjectionMatrix();
@@ -216,3 +244,26 @@ window.addEventListener("mousewheel", function(e){ //zooming
 
 
 
+
+function keyPressed(key){
+
+	if(pressedkeys.indexOf(key) != -1) return true;
+
+	return false;
+
+}
+window.addEventListener("keydown", function(e){
+
+	if(!keyPressed(e.which))
+		pressedkeys.push(e.which);
+
+}, false);
+
+
+
+window.addEventListener("keyup", function(e){
+
+	if(keyPressed(e.which))
+		pressedkeys.splice( pressedkeys.indexOf(e.which), 1 );
+
+}, false);
