@@ -6,7 +6,10 @@ var MOUSE = new THREE.Vector2();
 
 
 
-var MAX_COUNTRY_HEIGHT = 8;
+var MAXIMUM_COUNTRY_HEIGHT = 8;
+
+
+var COUNTRY_COLOR_DEVIATION = 16;
 
 
 //hardcoded constants extracted from the .json files in /data
@@ -74,10 +77,13 @@ loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
 
 		}
 
+
+		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/3);
+
 	
-		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/3) * MAX_COUNTRY_HEIGHT, bevelEnabled: false } );
-		
-		var countryMaterial = new THREE.MeshLambertMaterial( { color: 0xFFFFFF*Math.random() } );
+		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: heightdata * MAXIMUM_COUNTRY_HEIGHT, bevelEnabled: false } );
+
+		var countryMaterial = new THREE.MeshLambertMaterial( { color: "#"+new THREE.Color(heightdata,heightdata,heightdata).getHexString() } );
 
 
 		var countryMesh = new THREE.Mesh(countryGeometry, countryMaterial);
