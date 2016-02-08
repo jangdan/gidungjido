@@ -88,13 +88,14 @@ loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
 		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/4);
 
 	
-		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: heightdata * MAXIMUM_COUNTRY_HEIGHT, bevelEnabled: false } );
+		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 1, bevelEnabled: false } );
 
 		var countryMaterial = new THREE.MeshLambertMaterial( { color: "#"+new THREE.Color(heightdata,heightdata,heightdata).getHexString() } );
 
 
 		var countryMesh = new THREE.Mesh(countryGeometry, countryMaterial);
-
+		countryMesh.scale.set(1, 1, heightdata * MAXIMUM_COUNTRY_HEIGHT);
+		
 		scene.add(countryMesh);
 
 	}
