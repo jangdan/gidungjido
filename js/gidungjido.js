@@ -138,7 +138,7 @@ function render(){
 
 
 
-	/*
+	
 	//quaternions
 	var pitchQuaternion = new THREE.Quaternion();
 	pitchQuaternion.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), Math.PI/3 );
@@ -149,8 +149,8 @@ function render(){
 
 	var rotationQuaternion = pitchQuaternion.multiply(yawQuaternion);
 
-	//camera.rotation.setFromQuaternion(rotationQuaternion, "YXZ");
-	*/
+	camera.rotation.setFromQuaternion(rotationQuaternion);
+	
 
 
 	camera.updateProjectionMatrix();
