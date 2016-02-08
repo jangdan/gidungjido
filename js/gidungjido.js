@@ -100,7 +100,9 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 
 camera.position.z = 10;
+
 //camera.rotation.order = "YXZ";
+
 //camera.rotation.x = Math.PI/2;
 
 
@@ -128,22 +130,15 @@ function render(){
 
 	if(0 > intendedcamerarotation.x) intendedcamerarotation.x = 0;
 	if(intendedcamerarotation.x > Math.PI) intendedcamerarotation.x = Math.PI;
-	*/
-
-
-	/*
+	
+	
 	camera.rotation.x += (intendedcamerarotation.x - camera.rotation.x) * 0.1;
 	camera.rotation.y += (intendedcamerarotation.y - camera.rotation.y) * 0.1;
 	*/
-	
-	
+
+
+
 	/*
-	camera.rotation.x = intendedcamerarotation.x;
-	camera.rotation.y = intendedcamerarotation.y;
-	*/
-
-
-
 	//quaternions
 	var pitchQuaternion = new THREE.Quaternion();
 	pitchQuaternion.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), Math.PI/3 );
@@ -154,7 +149,8 @@ function render(){
 
 	var rotationQuaternion = pitchQuaternion.multiply(yawQuaternion);
 
-	camera.rotation.setFromQuaternion(rotationQuaternion);
+	//camera.rotation.setFromQuaternion(rotationQuaternion, "YXZ");
+	*/
 
 
 	camera.updateProjectionMatrix();
