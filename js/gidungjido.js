@@ -119,8 +119,7 @@ function render(){
 
 
 	
-	/*
-	//euler angles
+	//rotating the camera with euler angles
 	//pitch and yaw
 
 	intendedcamerarotation.x += (window.innerHeight/2 - mouse.y) * 0.00005;
@@ -134,12 +133,11 @@ function render(){
 	
 	camera.rotation.x += (intendedcamerarotation.x - camera.rotation.x) * 0.1;
 	camera.rotation.y += (intendedcamerarotation.y - camera.rotation.y) * 0.1;
-	*/
 
 
 
-	
-	//quaternions
+	/*
+	//rotating the camera with quaternions
 	var pitchQuaternion = new THREE.Quaternion();
 	pitchQuaternion.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), Math.PI/3 );
 
@@ -150,7 +148,8 @@ function render(){
 	var rotationQuaternion = pitchQuaternion.multiply(yawQuaternion);
 
 	camera.rotation.setFromQuaternion(rotationQuaternion);
-	
+	*/
+
 
 
 	camera.updateProjectionMatrix();
