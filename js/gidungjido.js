@@ -78,7 +78,7 @@ loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
 		}
 
 
-		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/3);
+		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/4);
 
 	
 		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: heightdata * MAXIMUM_COUNTRY_HEIGHT, bevelEnabled: false } );
