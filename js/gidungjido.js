@@ -2,7 +2,16 @@ var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
 
-var mouse = new THREE.Vector2();
+var MOUSE = new THREE.Vector2();
+
+
+
+var MAX_COUNTRY_HEIGHT = 8;
+
+
+//hardcoded constants extracted from the .json files in /data
+var MAXIMUM_GDP_MD_EST = 15169683.3;
+var MAXIMUM_POP_EST = 1346234014;
 
 
 
@@ -66,9 +75,9 @@ loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
 		}
 
 	
-		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 2, bevelEnabled: false } );
+		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/3) * MAX_COUNTRY_HEIGHT, bevelEnabled: false } );
 		
-		var countryMaterial = new THREE.MeshLambertMaterial( { color: 0x3F6536 } );
+		var countryMaterial = new THREE.MeshLambertMaterial( { color: 0xFFFFFF*Math.random() } );
 
 
 		var countryMesh = new THREE.Mesh(countryGeometry, countryMaterial);
@@ -99,7 +108,7 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 
 
-camera.position.z = 10;
+camera.position.z = 40;
 
 //camera.rotation.order = "YXZ";
 
@@ -122,8 +131,8 @@ function render(){
 	//rotating the camera with euler angles
 	//pitch and yaw
 
-	intendedcamerarotation.x += (window.innerHeight/2 - mouse.y) * 0.00005;
-	intendedcamerarotation.y += (window.innerWidth/2 - mouse.x) * 0.00005;
+	intendedcamerarotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005;
+	intendedcamerarotation.y += (window.innerWidth/2 - MOUSE.x) * 0.00005;
 
 	//limit the camera pitch
 
@@ -179,8 +188,8 @@ window.addEventListener("resize", function(e){
 
 window.addEventListener("mousemove", function(e){ //yaw
 
-	mouse.x = e.clientX;
-	mouse.y = e.clientY;
+	MOUSE.x = e.clientX;
+	MOUSE.y = e.clientY;
 
 	return false;
 
