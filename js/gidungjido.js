@@ -1,3 +1,4 @@
+//CONSTANTS
 var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
@@ -19,17 +20,26 @@ var MAXIMUM_GDP_MD_EST = 15169683.3;
 var MAXIMUM_POP_EST = 1346234014;
 
 
-var PRELOADED_DATA_INDICIES = ["Gross Domestic Product",
-					 "Population",
-					 "Gross Domestic Product per Capita"
-					];
+
+var PRELOADED_DATA_INDICIES = [
+	"Gross Domestic Product",
+	"Population",
+	"Gross Domestic Product per Capita"
+];
 
 
-var preloadeddata = [];
+var preloadeddata = { countries: [], maximums: [] }; //the data that will be shown
 
 
 
 
+//varibales that can be changed with user interaction through the GUI
+var CONTRAST = 3;
+
+
+
+
+//variables
 var scene = new THREE.Scene();
 
 
@@ -67,28 +77,50 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 	var data = JSONObject;
 
 
-	for(i = 0; i < data.features.length; ++i){ //each feature (country)
+
+	var maximums = [];
+
+	for(i = 0; i < data.features.length; ++i){ //first, load the data
 
 
 		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //no. no antarctica.
 
 
-		//load data into 'preloadeddata'
-
 		var countrydata = {
-			"SOVEREIGNT": data.features[i].properties.SOVEREIGNT,
+			"name": data.features[i].properties.SOVEREIGNT,
 			"data": [
 				data.features[i].properties.GDP_MD_EST,
 				data.features[i].properties.POP_EST,
-				data.features[i].properties.GDP_MD_EST/POP_EST,
+				data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
 			]
 		};
 
-		preloadeddata.push(countrydata);
+
+		preloadeddata.countries.push(countrydata);
+
+
+		//validate & update maximum values (for later use)
+
+		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] < data.features[i].properties.GDP_MD_EST )
+			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] = data.features[i].properties.GDP_MD_EST;
+
+		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] < data.features[i].properties.POP_EST )
+			maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] = data.features[i].properties.POP_EST;
+
+		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] < data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST )
+			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST;
+	}
+
+	preloadeddata.maximums = maximums;
 
 
 
-		//visualize!
+	for(i = 0; i < data.features.length; ++i){ //then, show the data. (ugh TWO FOR LOOPS?!?)
+
+
+		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue;
+
+
 
 		var countryShapes = []; //will be a THREE.Shape or an Array of THREE.Shape
 
@@ -99,14 +131,12 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 			case "Polygon": //http://geojson.org/geojson-spec.html#id4
 
-
 				Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates) );
 
 				break;
 
 
 			case "MultiPolygon": //
-
 
 				for(l = 0; l < data.features[i].geometry.coordinates.length; ++l)
 					Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates[l]) );
@@ -116,17 +146,20 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 		}
 
 
-		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/4); //0 <= data <= 1
+		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/CONTRAST); //0 <= data <= 1
 
 		
 		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 1, bevelEnabled: false } );
 
-		var countryMaterial = new THREE.MeshLambertMaterial( { color: "#" + colorfromdata(heightdata) .getHexString() } );
+		var countryMaterial = new THREE.MeshLambertMaterial();
+		
+		//var countryMaterial = new THREE.MeshNormalMaterial();
+
 
 
 		var countryMesh = new THREE.Mesh(countryGeometry, countryMaterial);
 
-		setheightdataforcountry(countryMesh, heightdata * MAXIMUM_COUNTRY_HEIGHT);
+		setheightdataforcountry(countryMesh, heightdata);
 
 
 		scene.add(countryMesh);
@@ -144,7 +177,10 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 function setheightdataforcountry(countryMesh, data){
 
-	countryMesh.scale.set(1, 1, data);
+	if(countryMesh.material instanceof THREE.MeshLambertMaterial || countryMesh.material instanceof THREE.MeshPhongMaterial)
+		countryMesh.material.color.copy( colorfromdata(data) );
+	
+	countryMesh.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
 
 }
 
@@ -153,7 +189,7 @@ function setheightdata(which){ //'which' should be chosen from PRELOADED_DATA_IN
 
 	for(i = 0; i < countryMeshes.length; ++i){
 
-		setheightdataforcountry( preloadeddata[i][which] );
+		setheightdataforcountry( preloadeddata.countries[i][which] );
 
 	}
 
@@ -162,7 +198,7 @@ function setheightdata(which){ //'which' should be chosen from PRELOADED_DATA_IN
 
 
 function colorfromdata(data){ //change this all the time!
-	return new THREE.Color(heightdata,heightdata,heightdata);
+	return new THREE.Color(data,data,data);
 }
 
 
@@ -245,7 +281,7 @@ function render(){
 
 	//moving
 	
-	console.log(pressedkeys);
+	//console.log(pressedkeys);
 
 
 	if(keyPressed(87) || keyPressed(38)) //up
@@ -319,6 +355,10 @@ function keyPressed(key){
 
 }
 window.addEventListener("keydown", function(e){
+
+	if(e.which == 9) //ignore the tab key
+		return;
+
 
 	if(!keyPressed(e.which))
 		pressedkeys.push(e.which);
