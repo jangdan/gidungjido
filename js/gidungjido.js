@@ -29,6 +29,8 @@ var MAXIMUM_COUNTRY_HEIGHT = 8;
 var CONTRAST = 3;
 
 
+var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
+
 
 
 
@@ -168,8 +170,8 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 			countryMesh,
 
 			Math.pow(
-				preloadeddata.countries[i].data[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ]/
-				preloadeddata.maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ], 1/CONTRAST
+				preloadeddata.countries[i].data[DATA_INDEX]/
+				preloadeddata.maximums[DATA_INDEX], 1/CONTRAST
 			)
 
 		);
