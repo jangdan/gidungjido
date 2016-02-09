@@ -1,4 +1,4 @@
-//from http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
+//a modified version of http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
 function loadJSON(url, callback){   
 
 	var xobj = new XMLHttpRequest();
@@ -56,12 +56,4 @@ function parsePolygon(coordinates){
 
 	return countryShapes; //returns a THREE.Shape Array
 
-}
-
-
-
-
-
-function vectorAngleToQuaternion( v, theta ){
-	return new THREE.Quaternion( v.x * Math.sin(theta/2), v.y * Math.sin(theta/2), v.z * Math.sin(theta/2), Math.cos(theta/2) );
 }
