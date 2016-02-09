@@ -1,4 +1,4 @@
-//from http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
+//a modified version of http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
 function loadJSON(url, callback){   
 
 	var xobj = new XMLHttpRequest();
