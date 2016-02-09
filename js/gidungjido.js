@@ -39,8 +39,14 @@ var scene = new THREE.Scene();
 
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
 
-var intendedcamerarotation = camera.rotation;
-var intendedcamerazoom = camera.zoom;
+var intendedcamera = {
+	zoom: camera.zoom,
+	rotation: new THREE.Euler(),
+	position: new THREE.Vector3()
+}
+
+camera.rotation.copy(intendedcamera.rotation);
+camera.position.copy(intendedcamera.position);
 
 
 
@@ -252,24 +258,24 @@ function render(){
 
 	//zooming
 
-	camera.zoom += (intendedcamerazoom - camera.zoom) * 0.1;
+	camera.zoom += (intendedcamera.zoom - camera.zoom) * 0.1;
 
 
 	
 	//rotating the camera with euler angles
 	//pitch and yaw
 
-	intendedcamerarotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005;
-	intendedcamerarotation.y += (window.innerWidth/2 - MOUSE.x) * 0.00005;
+	intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005;
+	intendedcamera.rotation.y += (window.innerWidth/2 - MOUSE.x) * 0.00005;
 
 	//limit the camera pitch
 
-	if(0 > intendedcamerarotation.x) intendedcamerarotation.x = 0;
-	if(intendedcamerarotation.x > Math.PI) intendedcamerarotation.x = Math.PI;
+	if(0 > intendedcamera.rotation.x) intendedcamera.rotation.x = 0;
+	if(intendedcamera.rotation.x > Math.PI) intendedcamera.rotation.x = Math.PI;
 	
 	
-	camera.rotation.x += (intendedcamerarotation.x - camera.rotation.x) * 0.1;
-	camera.rotation.y += (intendedcamerarotation.y - camera.rotation.y) * 0.1;
+	camera.rotation.x += (intendedcamera.rotation.x - camera.rotation.x) * 0.1;
+	camera.rotation.y += (intendedcamera.rotation.y - camera.rotation.y) * 0.1;
 
 
 
@@ -294,17 +300,21 @@ function render(){
 	//console.log(pressedkeys);
 
 
-	if(keyPressed(87) || keyPressed(38)) //up
-		camera.position.y += CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(87) || keyPressed(38)) //w and up
+		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED;
 
-	if(keyPressed(83) || keyPressed(40)) //down
-		camera.position.y -= CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(83) || keyPressed(40)) //s and down
+		intendedcamera.position.y -= CAMERA_MOVEMENT_SPEED;
 
-	if(keyPressed(65) || keyPressed(37)) //left
-		camera.position.x -= CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(65) || keyPressed(37)) //a and left
+		intendedcamera.position.x -= CAMERA_MOVEMENT_SPEED;
 
-	if(keyPressed(68) || keyPressed(40)) //right
-		camera.position.x += CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(68) || keyPressed(40)) //d andright
+		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED;
+
+
+	camera.position.x += (intendedcamera.position.x - camera.position.x) * 0.05;
+	camera.position.y += (intendedcamera.position.y - camera.position.y) * 0.05;
 
 
 	camera.updateProjectionMatrix();
@@ -345,9 +355,9 @@ window.addEventListener("mousemove", function(e){ //yaw
 
 window.addEventListener("mousewheel", function(e){ //zooming
 
-	intendedcamerazoom += (e.wheelDelta || e.detail) * 0.005;
-	if(intendedcamerazoom < CAMERA_MINIMUM_ZOOM) intendedcamerazoom = CAMERA_MINIMUM_ZOOM;
-	else if(intendedcamerazoom > CAMERA_MAXIMUM_ZOOM) intendedcamerazoom = CAMERA_MAXIMUM_ZOOM;
+	intendedcamera.zoom += (e.wheelDelta || e.detail) * 0.005;
+	if(intendedcamera.zoom < CAMERA_MINIMUM_ZOOM) intendedcamera.zoom = CAMERA_MINIMUM_ZOOM;
+	else if(intendedcamera.zoom > CAMERA_MAXIMUM_ZOOM) intendedcamera.zoom = CAMERA_MAXIMUM_ZOOM;
 
 	return false;
 
