@@ -9,17 +9,6 @@ var MOUSE = new THREE.Vector2();
 
 
 
-var MAXIMUM_COUNTRY_HEIGHT = 8;
-
-
-var COUNTRY_COLOR_DEVIATION = 16;
-
-
-//hardcoded constants extracted from the .json files in /data
-var MAXIMUM_GDP_MD_EST = 15169683.3;
-var MAXIMUM_POP_EST = 1346234014;
-
-
 
 var PRELOADED_DATA_INDICIES = [
 	"Gross Domestic Product",
@@ -34,7 +23,11 @@ var preloadeddata = { countries: [], maximums: [] }; //the data that will be sho
 
 
 //varibales that can be changed with user interaction through the GUI
+
+var MAXIMUM_COUNTRY_HEIGHT = 8;
+
 var CONTRAST = 3;
+
 
 
 
@@ -76,14 +69,21 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 	var data = JSONObject;
 
+	//console.log(data.features.length);
+
 
 
 	var maximums = [];
 
+	maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] = 0;
+	maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] = 0;
+	maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = 0;
+
+
 	for(i = 0; i < data.features.length; ++i){ //first, load the data
 
 
-		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //no. no antarctica.
+		//if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //no. no antarctica.
 
 
 		var countrydata = {
@@ -109,16 +109,18 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] < data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST )
 			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST;
+
 	}
 
 	preloadeddata.maximums = maximums;
 
+	//console.log(preloadeddata);
 
 
 	for(i = 0; i < data.features.length; ++i){ //then, show the data. (ugh TWO FOR LOOPS?!?)
 
 
-		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue;
+		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //skip Antarctica (although there are stats for the continent)
 
 
 
@@ -145,21 +147,27 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 		}
 
-
-		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/CONTRAST); //0 <= data <= 1
-
 		
 		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 1, bevelEnabled: false } );
 
 		var countryMaterial = new THREE.MeshLambertMaterial();
-		
 		//var countryMaterial = new THREE.MeshNormalMaterial();
-
 
 
 		var countryMesh = new THREE.Mesh(countryGeometry, countryMaterial);
 
-		setheightdataforcountry(countryMesh, heightdata);
+
+		setheightdataforcountry(
+
+			countryMesh,
+
+			Math.pow(
+				preloadeddata.countries[i].data[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ]/
+				preloadeddata.maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ], 1/CONTRAST
+			)
+
+		);
+
 
 
 		scene.add(countryMesh);
@@ -185,6 +193,7 @@ function setheightdataforcountry(countryMesh, data){
 }
 
 
+/*
 function setheightdata(which){ //'which' should be chosen from PRELOADED_DATA_INDICIES
 
 	for(i = 0; i < countryMeshes.length; ++i){
@@ -194,6 +203,7 @@ function setheightdata(which){ //'which' should be chosen from PRELOADED_DATA_IN
 	}
 
 }
+*/
 
 
 
