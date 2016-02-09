@@ -19,6 +19,16 @@ var MAXIMUM_GDP_MD_EST = 15169683.3;
 var MAXIMUM_POP_EST = 1346234014;
 
 
+var PRELOADED_DATA_INDICIES = ["Gross Domestic Product",
+					 "Population",
+					 "Gross Domestic Product per Capita"
+					];
+
+
+var preloadeddata = [];
+
+
+
 
 var scene = new THREE.Scene();
 
@@ -43,13 +53,16 @@ document.body.appendChild(renderer.domElement);
 
 
 
+var countryMeshes = [];
+
+
 var pressedkeys = [];
 
 
 
 
 
-loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
+loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very large GeoJSON-formatted object
 
 	var data = JSONObject;
 
@@ -57,10 +70,28 @@ loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
 	for(i = 0; i < data.features.length; ++i){ //each feature (country)
 
 
-		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue;
+		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //no. no antarctica.
 
+
+		//load data into 'preloadeddata'
+
+		var countrydata = {
+			"SOVEREIGNT": data.features[i].properties.SOVEREIGNT,
+			"data": [
+				data.features[i].properties.GDP_MD_EST,
+				data.features[i].properties.POP_EST,
+				data.features[i].properties.GDP_MD_EST/POP_EST,
+			]
+		};
+
+		preloadeddata.push(countrydata);
+
+
+
+		//visualize!
 
 		var countryShapes = []; //will be a THREE.Shape or an Array of THREE.Shape
+
 
 		if(!data.features[i].geometry) continue;
 
@@ -85,22 +116,56 @@ loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
 		}
 
 
-		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/4);
+		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/4); //0 <= data <= 1
 
-	
+		
 		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 1, bevelEnabled: false } );
 
-		var countryMaterial = new THREE.MeshLambertMaterial( { color: "#"+new THREE.Color(heightdata,heightdata,heightdata).getHexString() } );
+		var countryMaterial = new THREE.MeshLambertMaterial( { color: "#" + colorfromdata(heightdata) .getHexString() } );
 
 
 		var countryMesh = new THREE.Mesh(countryGeometry, countryMaterial);
-		countryMesh.scale.set(1, 1, heightdata * MAXIMUM_COUNTRY_HEIGHT);
-		
+
+		setheightdataforcountry(countryMesh, heightdata * MAXIMUM_COUNTRY_HEIGHT);
+
+
 		scene.add(countryMesh);
+
+
+		countryMeshes.push(countryMesh);
 
 	}
 
 });
+
+
+
+
+
+function setheightdataforcountry(countryMesh, data){
+
+	countryMesh.scale.set(1, 1, data);
+
+}
+
+
+function setheightdata(which){ //'which' should be chosen from PRELOADED_DATA_INDICIES
+
+	for(i = 0; i < countryMeshes.length; ++i){
+
+		setheightdataforcountry( preloadeddata[i][which] );
+
+	}
+
+}
+
+
+
+function colorfromdata(data){ //change this all the time!
+	return new THREE.Color(heightdata,heightdata,heightdata);
+}
+
+
 
 
 
