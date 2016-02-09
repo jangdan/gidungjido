@@ -1,13 +1,45 @@
+//CONSTANTS
 var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
 var CAMERA_MOVEMENT_SPEED = 0.5;
 
 
-var mouse = new THREE.Vector2();
+var MOUSE = new THREE.Vector2();
 
 
 
+var MAXIMUM_COUNTRY_HEIGHT = 8;
+
+
+var COUNTRY_COLOR_DEVIATION = 16;
+
+
+//hardcoded constants extracted from the .json files in /data
+var MAXIMUM_GDP_MD_EST = 15169683.3;
+var MAXIMUM_POP_EST = 1346234014;
+
+
+
+var PRELOADED_DATA_INDICIES = [
+	"Gross Domestic Product",
+	"Population",
+	"Gross Domestic Product per Capita"
+];
+
+
+var preloadeddata = { countries: [], maximums: [] }; //the data that will be shown
+
+
+
+
+//varibales that can be changed with user interaction through the GUI
+var CONTRAST = 3;
+
+
+
+
+//variables
 var scene = new THREE.Scene();
 
 
@@ -31,31 +63,73 @@ document.body.appendChild(renderer.domElement);
 
 
 
+var countryMeshes = [];
+
+
 var pressedkeys = [];
 
 
 
 
 
-loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
+loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very large GeoJSON-formatted object
 
 	var data = JSONObject;
 
 
-	for(i = 0; i < data.features.length; ++i){ //each feature (country)
+
+	var maximums = [];
+
+	for(i = 0; i < data.features.length; ++i){ //first, load the data
+
+
+		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //no. no antarctica.
+
+
+		var countrydata = {
+			"name": data.features[i].properties.SOVEREIGNT,
+			"data": [
+				data.features[i].properties.GDP_MD_EST,
+				data.features[i].properties.POP_EST,
+				data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
+			]
+		};
+
+
+		preloadeddata.countries.push(countrydata);
+
+
+		//validate & update maximum values (for later use)
+
+		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] < data.features[i].properties.GDP_MD_EST )
+			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] = data.features[i].properties.GDP_MD_EST;
+
+		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] < data.features[i].properties.POP_EST )
+			maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] = data.features[i].properties.POP_EST;
+
+		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] < data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST )
+			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST;
+	}
+
+	preloadeddata.maximums = maximums;
+
+
+
+	for(i = 0; i < data.features.length; ++i){ //then, show the data. (ugh TWO FOR LOOPS?!?)
 
 
 		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue;
 
 
+
 		var countryShapes = []; //will be a THREE.Shape or an Array of THREE.Shape
+
 
 		if(!data.features[i].geometry) continue;
 
 		switch(data.features[i].geometry.type){
 
 			case "Polygon": //http://geojson.org/geojson-spec.html#id4
-
 
 				Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates) );
 
@@ -64,7 +138,6 @@ loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
 
 			case "MultiPolygon": //
 
-
 				for(l = 0; l < data.features[i].geometry.coordinates.length; ++l)
 					Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates[l]) );
 
@@ -72,19 +145,63 @@ loadJSON("data/simplified.json", function(JSONObject){ //GeoJSON
 
 		}
 
-	
-		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 2, bevelEnabled: false } );
+
+		var heightdata = Math.pow(data.features[i].properties.GDP_MD_EST/MAXIMUM_GDP_MD_EST, 1/CONTRAST); //0 <= data <= 1
+
 		
-		var countryMaterial = new THREE.MeshLambertMaterial( { color: 0x3F6536 } );
+		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 1, bevelEnabled: false } );
+
+		var countryMaterial = new THREE.MeshLambertMaterial();
+		
+		//var countryMaterial = new THREE.MeshNormalMaterial();
+
 
 
 		var countryMesh = new THREE.Mesh(countryGeometry, countryMaterial);
 
+		setheightdataforcountry(countryMesh, heightdata);
+
+
 		scene.add(countryMesh);
+
+
+		countryMeshes.push(countryMesh);
 
 	}
 
 });
+
+
+
+
+
+function setheightdataforcountry(countryMesh, data){
+
+	if(countryMesh.material instanceof THREE.MeshLambertMaterial || countryMesh.material instanceof THREE.MeshPhongMaterial)
+		countryMesh.material.color.copy( colorfromdata(data) );
+	
+	countryMesh.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
+
+}
+
+
+function setheightdata(which){ //'which' should be chosen from PRELOADED_DATA_INDICIES
+
+	for(i = 0; i < countryMeshes.length; ++i){
+
+		setheightdataforcountry( preloadeddata.countries[i][which] );
+
+	}
+
+}
+
+
+
+function colorfromdata(data){ //change this all the time!
+	return new THREE.Color(data,data,data);
+}
+
+
 
 
 
@@ -106,7 +223,7 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 
 
-camera.position.z = 10;
+camera.position.z = 40;
 
 //camera.rotation.order = "YXZ";
 
@@ -132,8 +249,8 @@ function render(){
 	//rotating the camera with euler angles
 	//pitch and yaw
 
-	intendedcamerarotation.x += (window.innerHeight/2 - mouse.y) * 0.00005;
-	intendedcamerarotation.y += (window.innerWidth/2 - mouse.x) * 0.00005;
+	intendedcamerarotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005;
+	intendedcamerarotation.y += (window.innerWidth/2 - MOUSE.x) * 0.00005;
 
 	//limit the camera pitch
 
@@ -164,7 +281,7 @@ function render(){
 
 	//moving
 	
-	console.log(pressedkeys);
+	//console.log(pressedkeys);
 
 
 	if(keyPressed(87) || keyPressed(38)) //up
@@ -207,8 +324,8 @@ window.addEventListener("resize", function(e){
 
 window.addEventListener("mousemove", function(e){ //yaw
 
-	mouse.x = e.clientX;
-	mouse.y = e.clientY;
+	MOUSE.x = e.clientX;
+	MOUSE.y = e.clientY;
 
 	return false;
 
@@ -238,6 +355,10 @@ function keyPressed(key){
 
 }
 window.addEventListener("keydown", function(e){
+
+	if(e.which == 9) //ignore the tab key
+		return;
+
 
 	if(!keyPressed(e.which))
 		pressedkeys.push(e.which);
