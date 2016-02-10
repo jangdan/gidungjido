@@ -91,9 +91,6 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 	for(i = 0; i < data.features.length; ++i){ //first, load the data
 
 
-		//if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //no. no antarctica.
-
-
 		var countrydata = {
 			"name": data.features[i].properties.SOVEREIGNT,
 			"data": [
