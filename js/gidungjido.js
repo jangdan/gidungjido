@@ -7,6 +7,7 @@ var CAMERA_MOVEMENT_SPEED = 0.5;
 
 var MOUSE = new THREE.Vector2();
 
+stopcameramotion(); //keep the imaginary mouse at the center so nothing moves... yet
 
 
 
@@ -24,7 +25,7 @@ var preloadeddata = { countries: [], maximums: [] }; //the data that will be sho
 
 //varibales that can be changed with user interaction through the GUI
 
-var MAXIMUM_COUNTRY_HEIGHT = 8;
+var MAXIMUM_COUNTRY_HEIGHT = 4;
 
 var CONTRAST = 3;
 
@@ -50,7 +51,9 @@ var intendedcamera = {
 camera.rotation.copy(intendedcamera.rotation);
 camera.position.copy(intendedcamera.position);
 
-camera.rotation.x = intendedcamera.rotation.x = Math.PI/2;
+//random starting rotations
+camera.rotation.x = intendedcamera.rotation.x = Math.random() * Math.PI/2;
+camera.rotation.z = intendedcamera.rotation.z = Math.random() * Math.PI*2;
 
 
 
@@ -158,7 +161,7 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 1, bevelEnabled: false } );
 
 		var countryMaterial = new THREE.MeshLambertMaterial();
-		//var countryMaterial = new THREE.MeshNormalMaterial();
+		var countryMaterial = new THREE.MeshNormalMaterial();
 
 
 		var countryMesh = new THREE.Mesh(countryGeometry, countryMaterial);
@@ -247,7 +250,7 @@ camera.rotation.order = "ZXY";
 
 
 
-function render(){
+function render(time){
 
 	requestAnimationFrame(render);
 
@@ -310,6 +313,8 @@ function render(){
 	camera.updateProjectionMatrix();
 
 
+	TWEEN.update(time);
+
 
 	renderer.render(scene, camera);
 
@@ -323,6 +328,10 @@ render();
 
 window.addEventListener("resize", function(e){
 
+
+	if(menuvisible) stopcameramotion(); //stop any motion
+
+
 	camera.aspect = window.innerWidth/window.innerHeight;
 	camera.updateProjectionMatrix();
 
@@ -331,15 +340,6 @@ window.addEventListener("resize", function(e){
 });
 
 
-
-window.addEventListener("mousemove", function(e){ //yaw
-
-	MOUSE.x = e.clientX;
-	MOUSE.y = e.clientY;
-
-	return false;
-
-}, false);
 
 
 
@@ -356,6 +356,22 @@ window.addEventListener("mousewheel", function(e){ //zooming
 
 
 
+window.addEventListener("mousemove", function(e){
+
+	if(menuvisible //ignore when you have something better to do with the mouse than moving it around without a visible cursor on the monitor
+	)
+		return;
+
+	
+	MOUSE.x = e.clientX;
+	MOUSE.y = e.clientY;
+
+	return false;
+
+}, false);
+
+
+
 
 function keyPressed(key){
 
@@ -364,9 +380,27 @@ function keyPressed(key){
 	return false;
 
 }
+
+
 window.addEventListener("keydown", function(e){
 
-	if(e.which == 9) //ignore the tab key
+	//console.log(e.which);
+
+
+	if(e.which == 9 //ignore the tab key
+	)
+		return;
+
+
+	if(e.which == 27){ //escape key
+
+		togglemenu();
+
+		return;
+	}
+
+
+	if(menuvisible) //note that this must be after the escape key detection or else we're "locked out"
 		return;
 
 
@@ -383,3 +417,57 @@ window.addEventListener("keyup", function(e){
 		pressedkeys.splice( pressedkeys.indexOf(e.which), 1 );
 
 }, false);
+
+
+
+
+
+
+function stopcameramotion(){
+	MOUSE.set(window.innerWidth/2, window.innerHeight/2);
+}
+
+
+
+
+
+//DOM interaction
+var menuvisible = true;
+
+var menuopacity = 1;
+
+
+function togglemenu(){
+
+	if(menuvisible){
+
+		//document.getElementById("esc").style.display = "none"; //the no-tween version (fallback)
+
+		new TWEEN.Tween( { opacity: 1 } )
+			.to( { opacity: 0 }, 100 )
+			.onUpdate( function(){
+				document.getElementById("menu").style.opacity = ""+this.opacity+"";
+			})
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.start();
+
+	} else {
+
+		//document.getElementById("esc").style.display = "block";
+
+		stopcameramotion(); //stop any motion
+
+
+		new TWEEN.Tween( { opacity: 0 } )
+			.to( { opacity: 1 }, 100 )
+			.onUpdate( function(){
+				document.getElementById("menu").style.opacity = ""+this.opacity+"";
+			})
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.start();
+
+	}
+
+	menuvisible = !menuvisible;
+
+}
