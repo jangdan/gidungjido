@@ -50,6 +50,8 @@ var intendedcamera = {
 camera.rotation.copy(intendedcamera.rotation);
 camera.position.copy(intendedcamera.position);
 
+camera.rotation.x = intendedcamera.rotation.x = Math.PI/2;
+
 
 
 var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
@@ -240,9 +242,7 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 camera.position.z = 40;
 
-//camera.rotation.order = "YXZ";
-
-//camera.rotation.x = Math.PI/2;
+camera.rotation.order = "ZXY";
 
 
 
@@ -264,8 +264,8 @@ function render(){
 	//rotating the camera with euler angles
 	//pitch and yaw
 
-	intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005;
-	intendedcamera.rotation.y += (window.innerWidth/2 - MOUSE.x) * 0.00005;
+	intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
+	intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
 
 	//limit the camera pitch
 
@@ -274,23 +274,7 @@ function render(){
 	
 	
 	camera.rotation.x += (intendedcamera.rotation.x - camera.rotation.x) * 0.1;
-	camera.rotation.y += (intendedcamera.rotation.y - camera.rotation.y) * 0.1;
-
-
-
-	/*
-	//rotating the camera with quaternions
-	var pitchQuaternion = new THREE.Quaternion();
-	pitchQuaternion.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), Math.PI/3 );
-
-	var yawQuaternion = new THREE.Quaternion();
-	yawQuaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI/3 )
-
-
-	var rotationQuaternion = pitchQuaternion.multiply(yawQuaternion);
-
-	camera.rotation.setFromQuaternion(rotationQuaternion);
-	*/
+	camera.rotation.z += (intendedcamera.rotation.z - camera.rotation.z) * 0.1;
 
 
 
