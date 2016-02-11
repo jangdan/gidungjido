@@ -283,18 +283,25 @@ function render(){
 	//console.log(pressedkeys);
 
 
-	if(keyPressed(87) || keyPressed(38)) //w and up
-		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(87) || keyPressed(38)){ //w and up 
+		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED * Math.cos(camera.rotation.z + Math.PI/2); //WHY do i have to add 90 degrees someone email me
+		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z + Math.PI/2);
+	}
 
-	if(keyPressed(83) || keyPressed(40)) //s and down
-		intendedcamera.position.y -= CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(83) || keyPressed(40)){ //s and down
+		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED * Math.cos(camera.rotation.z - Math.PI/2);
+		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z - Math.PI/2);
+	}
 
-	if(keyPressed(65) || keyPressed(37)) //a and left
-		intendedcamera.position.x -= CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(65) || keyPressed(37)){ //a and left
+		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED * Math.cos(camera.rotation.z + Math.PI);
+		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z + Math.PI);
+	}
 
-	if(keyPressed(68) || keyPressed(40)) //d andright
-		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED;
-
+	if(keyPressed(68) || keyPressed(40)){ //d and right
+		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED * Math.cos(camera.rotation.z);
+		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z);
+	}
 
 	camera.position.x += (intendedcamera.position.x - camera.position.x) * 0.05;
 	camera.position.y += (intendedcamera.position.y - camera.position.y) * 0.05;
