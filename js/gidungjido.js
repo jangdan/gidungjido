@@ -50,6 +50,8 @@ var intendedcamera = {
 camera.rotation.copy(intendedcamera.rotation);
 camera.position.copy(intendedcamera.position);
 
+camera.rotation.x = intendedcamera.rotation.x = Math.PI/2;
+
 
 
 var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
@@ -240,9 +242,7 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 camera.position.z = 40;
 
-//camera.rotation.order = "YXZ";
-
-//camera.rotation.x = Math.PI/2;
+camera.rotation.order = "ZXY";
 
 
 
@@ -264,8 +264,8 @@ function render(){
 	//rotating the camera with euler angles
 	//pitch and yaw
 
-	intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005;
-	intendedcamera.rotation.y += (window.innerWidth/2 - MOUSE.x) * 0.00005;
+	intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
+	intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
 
 	//limit the camera pitch
 
@@ -274,23 +274,7 @@ function render(){
 	
 	
 	camera.rotation.x += (intendedcamera.rotation.x - camera.rotation.x) * 0.1;
-	camera.rotation.y += (intendedcamera.rotation.y - camera.rotation.y) * 0.1;
-
-
-
-	/*
-	//rotating the camera with quaternions
-	var pitchQuaternion = new THREE.Quaternion();
-	pitchQuaternion.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), Math.PI/3 );
-
-	var yawQuaternion = new THREE.Quaternion();
-	yawQuaternion.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), Math.PI/3 )
-
-
-	var rotationQuaternion = pitchQuaternion.multiply(yawQuaternion);
-
-	camera.rotation.setFromQuaternion(rotationQuaternion);
-	*/
+	camera.rotation.z += (intendedcamera.rotation.z - camera.rotation.z) * 0.1;
 
 
 
@@ -299,18 +283,25 @@ function render(){
 	//console.log(pressedkeys);
 
 
-	if(keyPressed(87) || keyPressed(38)) //w and up
-		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(87) || keyPressed(38)){ //w and up 
+		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED * Math.cos(camera.rotation.z + Math.PI/2); //WHY do i have to add 90 degrees someone email me
+		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z + Math.PI/2);
+	}
 
-	if(keyPressed(83) || keyPressed(40)) //s and down
-		intendedcamera.position.y -= CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(83) || keyPressed(40)){ //s and down
+		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED * Math.cos(camera.rotation.z - Math.PI/2);
+		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z - Math.PI/2);
+	}
 
-	if(keyPressed(65) || keyPressed(37)) //a and left
-		intendedcamera.position.x -= CAMERA_MOVEMENT_SPEED;
+	if(keyPressed(65) || keyPressed(37)){ //a and left
+		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED * Math.cos(camera.rotation.z + Math.PI);
+		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z + Math.PI);
+	}
 
-	if(keyPressed(68) || keyPressed(40)) //d andright
-		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED;
-
+	if(keyPressed(68) || keyPressed(40)){ //d and right
+		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED * Math.cos(camera.rotation.z);
+		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z);
+	}
 
 	camera.position.x += (intendedcamera.position.x - camera.position.x) * 0.05;
 	camera.position.y += (intendedcamera.position.y - camera.position.y) * 0.05;
