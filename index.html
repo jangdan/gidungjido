@@ -101,10 +101,10 @@
 
 			function defaultsettings(){
 				document.getElementById("maximumheight").value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * 10;
-				maximumheightchange();
+				maximumheightinput();
 
 				document.getElementById("contrast").value = DEFAULT_CONTRAST * 10;
-				contrastchange();
+				contrastinput();
 			}
 
 
@@ -113,6 +113,8 @@
 				setHeightDataSource(document.getElementById("source").value);
 
 			}
+
+			//TODO: tween changes
 
 		</script>
 

@@ -175,7 +175,7 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 		}
 
 
-		var country = new Country();
+		var country = new Country(data.features[i].properties.SOVEREIGNT);
 
 		country.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] )
 
@@ -250,7 +250,9 @@ function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_D
 	DATA_INDEX = which;
 
 	for(i = 0; i < countries.length; ++i){
-		countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
+
+		countries[i].setHeightData( preloadeddata.countries.filter( function(datacountry){ return datacountry.name === countries[i].name } )[0].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] ); //TODO: make this more efficient
+		//console.log(countries[i].name, preloadeddata.countries[i].name)
 	}
 
 }
