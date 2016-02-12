@@ -40,7 +40,11 @@ var scene = new THREE.Scene();
 
 
 
+
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
+
+camera.rotation.order = "ZXY";
+
 
 var intendedcamera = {
 	zoom: camera.zoom,
@@ -48,20 +52,17 @@ var intendedcamera = {
 	position: new THREE.Vector3()
 }
 
+intendedcamera.position.copy(camera.position);
+intendedcamera.rotation.copy(camera.rotation);
 
-camera.position.z = 40;
 
-
-camera.rotation.copy(intendedcamera.rotation);
-camera.position.copy(intendedcamera.position);
+intendedcamera.position.z = camera.position.z = 40;
 
 
 //random starting rotations
 camera.rotation.x = intendedcamera.rotation.x = Math.random() * Math.PI/2;
 camera.rotation.z = intendedcamera.rotation.z = Math.random() * Math.PI*2;
 
-
-camera.rotation.order = "ZXY";
 
 
 
@@ -73,6 +74,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 document.body.appendChild(renderer.domElement);
+
 
 
 
