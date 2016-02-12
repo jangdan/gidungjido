@@ -1,46 +1,47 @@
 //create an extension of THREE.Mesh to store statistics data efficiently
 
-var CountryMesh = function(geometry, material){
+var Country = function(geometry, material){
 
-	THREE.Mesh.apply(this, arguments);
-
+	this.mesh = new THREE.Mesh();
 	this.data = 1;
 
 }
 
-CountryMesh.prototype = THREE.Mesh.prototype;
 
 
 
+Country.prototype.setFromShapesAndData = function(shapes, data){
 
-CountryMesh.prototype.setFromShapesAndData = function(shapes, data){
+	data = Math.pow(data, 1/CONTRAST);
+
 
 	var countryGeometry, countryMaterial;
 
 
-	if(data == 0){
+	if(!data){
 		countryGeometry = new THREE.ShapeGeometry( shapes );
 	} else {
 		countryGeometry = new THREE.ExtrudeGeometry( shapes, { amount: 1, bevelEnabled: false } );
 	}
 
-	countryMaterial = new THREE.MeshLambertMaterial();
+	//countryMaterial = new THREE.MeshLambertMaterial();
 	countryMaterial = new THREE.MeshNormalMaterial();
 
 
-	THREE.Mesh.apply( countryGeometry, countryMaterial);
-
-
+	this.mesh = new THREE.Mesh(countryGeometry, countryMaterial);
 
 	this.setHeightData(data, false);
 
+
 	this.data = data;
+
+	console.log(data);
 
 }
 
 
 
-CountryMesh.prototype.setHeightData = function(data, applyContrast){
+Country.prototype.setHeightData = function(data, applyContrast){
 
 	if(applyContrast === undefined) applyContrast = true;
 
@@ -48,11 +49,11 @@ CountryMesh.prototype.setHeightData = function(data, applyContrast){
 	if(applyContrast) data = Math.pow(data, 1/CONTRAST); //process data for more contrast
 
 
-	if(!this.geometry instanceof THREE.ShapeGeometry){
-		this.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
+	if(!(this.mesh.geometry instanceof THREE.ShapeGeometry)){
+		this.mesh.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
 	}
 
-	if(this.material instanceof THREE.MeshLambertMaterial || this.material instanceof THREE.MeshPhongMaterial){
-		countryMesh.material.color.copy( colorfromdata(data) );
+	if(this.mesh.material instanceof THREE.MeshLambertMaterial || this.mesh.material instanceof THREE.MeshPhongMaterial){
+		this.mesh.material.color.copy( colorfromdata(data) );
 	}
 }

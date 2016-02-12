@@ -79,7 +79,7 @@ document.body.appendChild(renderer.domElement);
 
 
 
-var countryMeshes = [];
+var countries = [];
 
 
 var pressedkeys = [];
@@ -168,15 +168,15 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 		}
 
 
-		var countryMesh = new CountryMesh();
+		var country = new Country();
 
-		countryMesh.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] )
-
-
-		scene.add(countryMesh);
+		country.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] )
 
 
-		countryMeshes.push(countryMesh);
+		scene.add(country.mesh);
+
+
+		countries.push(country);
 
 	}
 
