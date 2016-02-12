@@ -20,6 +20,17 @@ canvas {
 
 
 
+
+:lang(ko){
+
+	font-family: "Noto Sans KR", "Noto Sans TC";
+	font-weight: 100;
+
+}
+
+
+
+
 .crt {
 
 	background: transparent url("crt.png") !important;
@@ -40,19 +51,14 @@ canvas {
 	text-align: center;
 
 
-	font-family: "Courier New";
+	font-family: "Courier New", Monospace;
 	font-weight: 100;
 
 	color: #FFF;
 
 }
 
-:lang(ko){
 
-	font-family: "Noto Sans KR", "Noto Sans TC";
-	font-weight: 100;
-
-}
 
 
 h1 {
@@ -62,5 +68,21 @@ h1 {
 	padding: 1em;
 
 	margin-top: 1em;
+
+}
+
+
+ruby rp {
+
+	display: none;
+
+}
+
+
+
+
+p {
+	
+	padding: 1em;
 
 }
