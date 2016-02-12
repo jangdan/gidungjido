@@ -205,6 +205,8 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 function setheightdataforcountry(countryMesh, data){
 
+	if(!data) data = 0
+
 	if(countryMesh.material instanceof THREE.MeshLambertMaterial || countryMesh.material instanceof THREE.MeshPhongMaterial)
 		countryMesh.material.color.copy( colorfromdata(data) );
 	
