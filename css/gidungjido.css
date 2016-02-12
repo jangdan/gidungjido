@@ -21,6 +21,37 @@ canvas {
 
 
 
+body {
+
+	font-size:  16px;
+
+	line-height: 2em;
+
+}
+
+
+
+
+span.underline {
+
+	text-decoration: underline;
+
+}
+
+span.roundedborder {
+
+	padding-left: 3px;
+	padding-right: 3px;
+
+	border: 1px;
+	border-color: #FFF;
+	border-style: solid;
+
+	border-radius: 3px;
+
+}
+
+
 :lang(ko){
 
 	font-family: "Noto Sans KR", "Noto Sans TC";
@@ -68,6 +99,12 @@ h1 {
 	padding: 1em;
 
 	margin-top: 1em;
+
+}
+
+h2 {
+
+	font-size: 20px;
 
 }
 
