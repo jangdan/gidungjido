@@ -5,19 +5,44 @@
 
         <meta name = "viewport" content = "width = device-width, initial-scale = 1, maximum-scale = 1, minimum-scale = 1, user-scalable = no">
 
+
+
 		<link rel = "stylesheet" href = "css/gidungjido.css">
+
 
 		<title>기둥地圖</title>
 
 
 
 		<script src = "lib/three.min.js" type = "text/javascript"></script>
+		<script src = "lib/Tween.js" type = "text/javascript"></script>
+
 
 	</head>
 
 	<body>
 
+		<div id = "menu" class = "overlay crt">
+
+			<!--<h1 lang = "ko">기둥<ruby><rb>地圖</rb><rp>(</rp><rt>지도</rt><rp>)</rp></ruby></h1>-->
+
+			<h1 lang = "ko">기둥<ruby><rb>地</rb><rt>지</rt><rb>圖</rb><rt>도</rt></ruby></h1>
+
+			<p>
+				press <b>esc</b> to toggle this menu
+			</p>
+
+			<p>
+				note: this website uses <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>, which works best on <a href = "https://www.google.com/chrome/">Google Chrome</a>.
+			</p>
+
+			<!-- TODO: add GUI -->
+
+		</div>
+
+
 		<script src = "js/data.js" type = "text/javascript"></script>
+		<script src = "js/dom.js" type = "text/javascript"></script>
 		<script src = "js/gidungjido.js" type = "text/javascript"></script>
 
 	</body>
