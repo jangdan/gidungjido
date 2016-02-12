@@ -40,7 +40,9 @@
 				<h2>settings</h2>
 
 				overall height: <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightchange()"><br>
-				height contrast: <input type = "range" id = "contrast" min = "10" value = "30" max = "50" oninput = "contrastchange()">
+				height contrast: <input type = "range" id = "contrast" min = "10" value = "30" max = "50" oninput = "contrastchange()"><br>
+
+				<button onclick = "defaultsettings()">default</button>
 
 			</p>
 
@@ -69,6 +71,15 @@
 			function contrastchange(){
 				CONTRAST = document.getElementById("contrast").value / 10;
 				updatecountryheights();
+			}
+
+
+			function defaultsettings(){
+				document.getElementById("maximumheight").value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * 10;
+				maximumheightchange();
+
+				document.getElementById("contrast").value = DEFAULT_CONTRAST * 10;
+				contrastchange();
 			}
 
 		</script>

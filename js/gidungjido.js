@@ -23,11 +23,18 @@ var preloadeddata = { countries: [], maximums: [] }; //the data that will be sho
 
 
 
+//defaults
+
+var DEFAULT_MAXIMUM_COUNTRY_HEIGHT = 4;
+
+var DEFAULT_CONTRAST = 3;
+
+
 //varibales that can be changed with user interaction through the GUI
 
-var MAXIMUM_COUNTRY_HEIGHT = 4;
+var MAXIMUM_COUNTRY_HEIGHT = DEFAULT_MAXIMUM_COUNTRY_HEIGHT;
 
-var CONTRAST = 3;
+var CONTRAST = DEFAULT_CONTRAST;
 
 
 var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
