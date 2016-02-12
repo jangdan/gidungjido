@@ -40,7 +40,11 @@ var scene = new THREE.Scene();
 
 
 
+
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
+
+camera.rotation.order = "ZXY";
+
 
 var intendedcamera = {
 	zoom: camera.zoom,
@@ -48,12 +52,17 @@ var intendedcamera = {
 	position: new THREE.Vector3()
 }
 
-camera.rotation.copy(intendedcamera.rotation);
-camera.position.copy(intendedcamera.position);
+intendedcamera.position.copy(camera.position);
+intendedcamera.rotation.copy(camera.rotation);
+
+
+intendedcamera.position.z = camera.position.z = 40;
+
 
 //random starting rotations
 camera.rotation.x = intendedcamera.rotation.x = Math.random() * Math.PI/2;
 camera.rotation.z = intendedcamera.rotation.z = Math.random() * Math.PI*2;
+
 
 
 
@@ -65,6 +74,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 
 document.body.appendChild(renderer.domElement);
+
 
 
 
@@ -195,6 +205,8 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 function setheightdataforcountry(countryMesh, data){
 
+	if(!data) data = 0
+
 	if(countryMesh.material instanceof THREE.MeshLambertMaterial || countryMesh.material instanceof THREE.MeshPhongMaterial)
 		countryMesh.material.color.copy( colorfromdata(data) );
 	
@@ -225,7 +237,7 @@ function colorfromdata(data){ //change this all the time!
 
 
 
-scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMaterial( { color: 0xFF0000 } ))); //debug
+//scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMaterial( { color: 0xFF0000 } ))); //debug
 
 
 
@@ -241,11 +253,6 @@ scene.add(spotlight);
 
 scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
-
-
-camera.position.z = 40;
-
-camera.rotation.order = "ZXY";
 
 
 
@@ -306,8 +313,19 @@ function render(time){
 		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z);
 	}
 
+	//z-axis motion
+	if(keyPressed(16)){
+		intendedcamera.position.z -= CAMERA_MOVEMENT_SPEED;
+	}
+
+	if(keyPressed(32)){
+		intendedcamera.position.z += CAMERA_MOVEMENT_SPEED;
+	}
+
+
 	camera.position.x += (intendedcamera.position.x - camera.position.x) * 0.05;
 	camera.position.y += (intendedcamera.position.y - camera.position.y) * 0.05;
+	camera.position.z += (intendedcamera.position.z - camera.position.z) * 0.05;
 
 
 	camera.updateProjectionMatrix();
