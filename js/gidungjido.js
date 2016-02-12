@@ -168,7 +168,7 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 		}
 
 
-		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 1, bevelEnabled: false } );
+		var countryGeometry = new THREE.ExtrudeGeometry( countryShapes, { amount: 1, bevelEnabled: false } );
 
 		var countryMaterial = new THREE.MeshLambertMaterial();
 		var countryMaterial = new THREE.MeshNormalMaterial();
@@ -177,16 +177,7 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 		var countryMesh = new THREE.Mesh(countryGeometry, countryMaterial);
 
 
-		setheightdataforcountry(
-
-			countryMesh,
-
-			Math.pow(
-				preloadeddata.countries[i].data[DATA_INDEX]/
-				preloadeddata.maximums[DATA_INDEX], 1/CONTRAST
-			)
-
-		);
+		setheightdataforcountry( countryMesh, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
 
 
 
@@ -203,7 +194,22 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 
 
-function setheightdataforcountry(countryMesh, data){
+function updatecountryheights(){
+
+
+	for(i = 0; i < countryMeshes.length; ++i){
+
+		data = Math.pow(data, 1/CONTRAST);
+
+		countryMeshes[i].scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
+
+	}
+}
+
+
+function setheightdataforcountry(countryMesh, data){ //data should be a number between 0 and 1
+
+	data = Math.pow(data, 1/CONTRAST);
 
 	if(!data) data = 0;
 
