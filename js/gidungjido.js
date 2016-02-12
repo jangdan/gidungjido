@@ -48,12 +48,20 @@ var intendedcamera = {
 	position: new THREE.Vector3()
 }
 
+
+camera.position.z = 40;
+
+
 camera.rotation.copy(intendedcamera.rotation);
 camera.position.copy(intendedcamera.position);
+
 
 //random starting rotations
 camera.rotation.x = intendedcamera.rotation.x = Math.random() * Math.PI/2;
 camera.rotation.z = intendedcamera.rotation.z = Math.random() * Math.PI*2;
+
+
+camera.rotation.order = "ZXY";
 
 
 
@@ -243,11 +251,6 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 
 
-camera.position.z = 40;
-
-camera.rotation.order = "ZXY";
-
-
 
 
 function render(time){
@@ -306,8 +309,19 @@ function render(time){
 		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z);
 	}
 
+	//z-axis motion
+	if(keyPressed(16)){
+		intendedcamera.position.z -= CAMERA_MOVEMENT_SPEED;
+	}
+
+	if(keyPressed(32)){
+		intendedcamera.position.z += CAMERA_MOVEMENT_SPEED;
+	}
+
+
 	camera.position.x += (intendedcamera.position.x - camera.position.x) * 0.05;
 	camera.position.y += (intendedcamera.position.y - camera.position.y) * 0.05;
+	camera.position.z += (intendedcamera.position.z - camera.position.z) * 0.05;
 
 
 	camera.updateProjectionMatrix();
