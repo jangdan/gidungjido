@@ -35,7 +35,7 @@ Country.prototype.setFromShapesAndData = function(shapes, data){
 
 	this.data = data;
 
-	console.log(data);
+	//console.log(data);
 
 }
 
@@ -46,12 +46,15 @@ Country.prototype.setHeightData = function(data, applyContrast){
 	if(applyContrast === undefined) applyContrast = true;
 
 
+	this.data = data;
+
 	if(applyContrast) data = Math.pow(data, 1/CONTRAST); //process data for more contrast
 
 
 	if(!(this.mesh.geometry instanceof THREE.ShapeGeometry)){
 		this.mesh.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
 	}
+	console.log(data);
 
 	if(this.mesh.material instanceof THREE.MeshLambertMaterial || this.mesh.material instanceof THREE.MeshPhongMaterial){
 		this.mesh.material.color.copy( colorfromdata(data) );

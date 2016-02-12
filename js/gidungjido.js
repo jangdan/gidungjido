@@ -245,17 +245,15 @@ function updatecountryheights(){
 
 
 
-/*
-function setheightdata(which){ //'which' should be chosen from PRELOADED_DATA_INDICIES
+function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_DATA_INDICIES
+	
+	DATA_INDEX = which;
 
-	for(i = 0; i < countryMeshes.length; ++i){
-
-		setheightdataforcountry( preloadeddata.countries[i][which] );
-
+	for(i = 0; i < countries.length; ++i){
+		countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
 	}
 
 }
-*/
 
 
 
