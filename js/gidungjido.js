@@ -167,7 +167,7 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 		}
 
-		
+
 		var countryGeometry = new THREE.ExtrudeGeometry(countryShapes, { amount: 1, bevelEnabled: false } );
 
 		var countryMaterial = new THREE.MeshLambertMaterial();
@@ -205,7 +205,7 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 function setheightdataforcountry(countryMesh, data){
 
-	if(!data) data = 0
+	if(!data) data = 0;
 
 	if(countryMesh.material instanceof THREE.MeshLambertMaterial || countryMesh.material instanceof THREE.MeshPhongMaterial)
 		countryMesh.material.color.copy( colorfromdata(data) );
@@ -329,6 +329,7 @@ function render(time){
 
 
 	camera.updateProjectionMatrix();
+
 
 
 	TWEEN.update(time);
