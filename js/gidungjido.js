@@ -180,25 +180,61 @@ loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very la
 
 	}
 
+
+
+	function parsePolygon(coordinates){
+
+		var countryShapes;
+
+		var paths = [];
+
+		for(j = 0; j < coordinates.length; ++j){ //each seperate 'part' of a country (islands, exclaves, etc)
+
+
+			var points = [];
+
+			for(k = 0; k < coordinates[j].length; ++k){ //the points of that 'part'
+				
+				points.push(new THREE.Vector2( coordinates[j][k][0], coordinates[j][k][1] ));
+
+			}
+
+			var path = new THREE.Path(points);
+
+			paths.push(path);
+
+		}
+
+
+		countryShapes = paths[0].toShapes(); //initialize the shape (toShapes() will only return ONE THREE.Shape)
+
+
+		paths.splice(0, 1); //remove the first path (check GeoJSON specs for more information)
+
+		Array.prototype.push.apply(countryShapes[0].holes, paths); //add the holes
+
+		return countryShapes; //returns a THREE.Shape Array
+
+	}
+
+
 });
 
 
 
 
 
-/*
 function updatecountryheights(){
 
-	for(i = 0; i < countryMeshes.length; ++i){
+	for(i = 0; i < countries.length; ++i){
 
-		data = Math.pow(data, 1/CONTRAST);
+		var data = countries[i].data;
 
-		countryMeshes[i].scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
+		countries[i].setHeightData(data);
 
 	}
 
 }
-*/
 
 
 
