@@ -20,12 +20,11 @@ Country.prototype.setFromShapesAndData = function(shapes, data){
 	var countryGeometry, countryMaterial;
 
 
-	//TODO: fix the geometry problem
-	//if(!data){
-	//	countryGeometry = new THREE.ShapeGeometry( shapes );
-	//} else {
+	if(!data){
+		countryGeometry = new THREE.ShapeGeometry( shapes );
+	} else {
 		countryGeometry = new THREE.ExtrudeGeometry( shapes, { amount: 1, bevelEnabled: false } );
-	//}
+	}
 
 	//countryMaterial = new THREE.MeshLambertMaterial();
 	countryMaterial = new THREE.MeshNormalMaterial();
