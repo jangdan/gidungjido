@@ -4,6 +4,8 @@ var Country = function(name, geometry, material){
 
 	this.mesh = new THREE.Mesh(geometry, material);
 
+	this.tween;
+
 	this.name = name;
 	this.data = 1;
 
@@ -53,8 +55,16 @@ Country.prototype.setHeightData = function(data, applyContrast){
 	if(applyContrast) data = Math.pow(data, 1/CONTRAST); //process data for more contrast
 
 
+
 	if(!(this.mesh.geometry instanceof THREE.ShapeGeometry)){
-		this.mesh.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
+
+		//this.mesh.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
+
+		this.tween = new TWEEN.Tween( this.mesh.scale )
+			.to( { z: data * MAXIMUM_COUNTRY_HEIGHT }, 700 )
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.start();
+
 	}
 	//console.log(data);
 

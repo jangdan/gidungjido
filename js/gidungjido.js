@@ -474,6 +474,7 @@ window.addEventListener("keyup", function(e){
 
 function stopcameramotion(){
 	MOUSE.set(window.innerWidth/2, window.innerHeight/2);
+	pressedkeys = [];
 }
 
 
@@ -488,9 +489,10 @@ var menuopacity = 1;
 
 function togglemenu(){
 
-	if(menuvisible){
+	document.getElementById("source").blur();
 
-		//document.getElementById("esc").style.display = "none"; //the no-tween version (fallback)
+
+	if(menuvisible){
 
 		new TWEEN.Tween( { opacity: 1 } )
 			.to( { opacity: 0 }, 100 )
@@ -501,8 +503,6 @@ function togglemenu(){
 			.start();
 
 	} else {
-
-		//document.getElementById("esc").style.display = "block";
 
 		stopcameramotion(); //stop any motion
 
