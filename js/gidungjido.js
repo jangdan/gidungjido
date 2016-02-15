@@ -95,7 +95,7 @@ var pressedkeys = [];
 
 
 
-loadJSON("data/simplified.json", function(JSONObject){ //JSONObject is a very large GeoJSON-formatted object
+loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ //JSONObject is a very large GeoJSON-formatted object
 
 	var data = JSONObject;
 
