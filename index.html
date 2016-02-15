@@ -42,7 +42,7 @@
 				overall height: <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightinput()"><br>
 				height contrast: <input type = "range" id = "contrast" min = "10" value = "30" max = "50" oninput = "contrastinput()"><br>
 
-				<button onclick = "defaultsettings()">default settings</button><br>
+				<button type = "button" onclick = "defaultsettings()">default settings</button><br>
 
 				<select id = "source" onchange = "sourcechange()">
 				</select>
@@ -52,8 +52,6 @@
 			<p>
 				note: this website uses <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>, which works best on <a href = "https://www.google.com/chrome/">Google Chrome</a>. you also need a keyboard, so not much will work on mobile.
 			</p>
-
-			<!-- TODO: add GUI -->
 
 		</div>
 
@@ -83,8 +81,6 @@
 				"</optgroup>"
 			;
 
-			//console.log(sourceselect.innerHTML);
-
 
 			//DOM events
 
@@ -100,19 +96,19 @@
 
 
 			function defaultsettings(){
+
 				document.getElementById("maximumheight").value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * 10;
 				maximumheightinput();
 
 				document.getElementById("contrast").value = DEFAULT_CONTRAST * 10;
 				contrastinput();
+
 			}
 
 
 			function sourcechange(){
 				setHeightDataSource(document.getElementById("source").value);
 			}
-
-			//TODO: tween changes
 
 		</script>
 

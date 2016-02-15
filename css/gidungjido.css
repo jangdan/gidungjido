@@ -14,6 +14,7 @@ canvas {
 
 	display: block;
 
+
 }
 
 
@@ -23,9 +24,13 @@ canvas {
 
 body {
 
-	font-size:  16px;
+	font-size: 16px;
 
 	line-height: 2em;
+
+
+	font-family: "Courier New", Monospace;
+	font-weight: 100;
 
 }
 
@@ -50,6 +55,42 @@ span.roundedborder {
 	border-radius: 3px;
 
 }
+
+
+
+/*
+button {
+
+	padding: 0;
+	margin: 0;
+
+	padding-left: 3px;
+	padding-right: 3px;
+
+
+	font-size: 16px;
+
+
+	text-align: center;
+
+
+	font-family: "Courier New", Monospace;
+	font-weight: 100;
+
+	color: #FFF;
+
+
+	background: none;
+
+
+	border: 1px;
+	border-color: #FFF;
+	border-style: solid;
+
+	border-radius: 3px;
+
+}
+*/
 
 
 :lang(ko){
@@ -81,9 +122,6 @@ span.roundedborder {
 
 	text-align: center;
 
-
-	font-family: "Courier New", Monospace;
-	font-weight: 100;
 
 	color: #FFF;
 
