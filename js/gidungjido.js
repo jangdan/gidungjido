@@ -270,11 +270,15 @@ function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_D
 
 
 
+
+/*
 var spotlight = new THREE.SpotLight(0xFFFFD0, 1);
 
 spotlight.position.set( -100, 100, 100 );
 
 scene.add(spotlight);
+*/
+
 
 
 
@@ -359,6 +363,11 @@ function render(time){
 	camera.position.x += (intendedcamera.position.x - camera.position.x) * 0.05;
 	camera.position.y += (intendedcamera.position.y - camera.position.y) * 0.05;
 	camera.position.z += (intendedcamera.position.z - camera.position.z) * 0.05;
+
+
+
+	//spotlight.position.copy(camera.position);
+
 
 
 	camera.updateProjectionMatrix();

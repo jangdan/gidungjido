@@ -28,8 +28,8 @@ Country.prototype.setFromShapesAndData = function(shapes, data){
 		countryGeometry = new THREE.ExtrudeGeometry( shapes, { amount: 1, bevelEnabled: false } );
 	}
 
-	countryMaterial = new THREE.MeshLambertMaterial();
-	//countryMaterial = new THREE.MeshNormalMaterial();
+	//countryMaterial = new THREE.MeshLambertMaterial();
+	countryMaterial = new THREE.MeshNormalMaterial();
 
 
 	this.mesh = new THREE.Mesh(countryGeometry, countryMaterial);
@@ -79,10 +79,10 @@ Country.prototype.setHeightData = function(data, applyContrast){
 
 function colorfromdata(data){
 
-	var from = new THREE.Color(0xFFFFFF);
-	var to = new THREE.Color(0x66FF66);
+	var from = new THREE.Color(0x555555);
+	var to = new THREE.Color(0xFFFFFF);
 
-	var lerp = advancedLerp( from, to, data, function(r){ return r }, function(g){ return 1 }, function(b){ return Math.pow(b, 4) } );
+	var lerp = advancedLerp( from, to, data, function(r){ return r }, function(g){ return g }, function(b){ return b } );
 
 	return lerp;
 }
