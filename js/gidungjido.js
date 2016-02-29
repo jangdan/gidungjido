@@ -1,4 +1,8 @@
 //CONSTANTS
+var CLEAR_COLOR = 0xDDDDDD;
+
+
+
 var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
@@ -42,7 +46,6 @@ var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 
 
 
-//variables
 var scene = new THREE.Scene();
 
 
@@ -75,7 +78,7 @@ camera.rotation.z = intendedcamera.rotation.z = Math.random() * Math.PI*2;
 
 var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
 
-renderer.setClearColor(0xDDDDDD, 1);
+renderer.setClearColor(CLEAR_COLOR, 1);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -259,12 +262,6 @@ function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_D
 
 
 
-function colorfromdata(data){ //change this all the time!
-	return new THREE.Color(data,data,data);
-}
-
-
-
 
 
 //scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMaterial( { color: 0xFF0000 } ))); //debug
@@ -282,6 +279,10 @@ scene.add(spotlight);
 
 
 scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
+
+
+
+//scene.fog = new THREE.FogExp2( CLEAR_COLOR, 0.0035 );
 
 
 
@@ -518,5 +519,30 @@ function togglemenu(){
 	}
 
 	menuvisible = !menuvisible;
+
+}
+
+
+
+
+
+//misc. functions
+
+//a modified version of http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
+function loadJSON(url, callback){   
+
+	var xobj = new XMLHttpRequest();
+	xobj.overrideMimeType("application/json");
+
+	xobj.open('GET', url, true);
+
+	xobj.onreadystatechange = function(){
+		if(xobj.readyState == 4 && xobj.status == "200"){
+			// Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+			callback(JSON.parse(xobj.responseText));
+		}
+	};
+
+	xobj.send(null);  
 
 }
