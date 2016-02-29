@@ -72,3 +72,36 @@ Country.prototype.setHeightData = function(data, applyContrast){
 		this.mesh.material.color.copy( colorfromdata(data) );
 	}
 }
+
+
+
+
+
+function colorfromdata(data){
+
+	var from = new THREE.Color(0x555555);
+	var to = new THREE.Color(0xFFFFFF);
+
+	var lerp = advancedLerp( from, to, data, function(r){ return r }, function(g){ return g }, function(b){ return b } );
+
+	return lerp;
+}
+
+
+
+function advancedLerp( from, to, alpha, r, g, b ){
+
+	var result = new THREE.Color(
+		from.r + (to.r - from.r)*alpha,
+		from.g + (to.g - from.g)*alpha,
+		from.b + (to.b - from.b)*alpha
+	);
+
+	result.r = r(result.r);
+	result.g = g(result.g);
+	result.b = b(result.b);
+
+
+	return result;
+
+}
