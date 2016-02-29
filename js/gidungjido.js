@@ -88,11 +88,19 @@ document.body.appendChild(renderer.domElement);
 
 
 
+var pressedkeys = [];
+
+
+
+var raycaster = new THREE.Raycaster();
+
+var NORMALIZED_MOUSE = new THREE.Vector2();
+
+
+
+
 
 var countries = [];
-
-
-var pressedkeys = [];
 
 
 
@@ -374,6 +382,43 @@ function render(time){
 
 
 
+
+	raycaster.setFromCamera( NORMALIZED_MOUSE, camera );
+
+
+
+	//the code that follows might, in a worst case, execute two for loops - it needs optimization
+
+	var intersections = raycaster.intersectObjects(scene.children);
+
+
+	if(intersections.length > 0){
+
+		//console.log(intersections[0]);
+
+
+		var pointedCountry;
+	
+		for(i = 0; i < countries.length; ++i){
+	
+			if(countries[i].mesh === intersections[0].object){
+	
+				pointedCountry = countries[i];
+	
+				break;
+			}
+		}
+	
+		console.log(pointedCountry);
+
+
+		//TODO: show country information, the stat data in numbers, make it clear that youre pointing at that country by coloring it in, etc
+
+	}
+
+
+
+
 	TWEEN.update(time);
 
 
@@ -426,6 +471,13 @@ window.addEventListener("mousemove", function(e){
 	
 	MOUSE.x = e.clientX;
 	MOUSE.y = e.clientY;
+
+
+	//make NORMALIZED_MOUSE feel cartesian (ugh what does that even mean)
+
+	NORMALIZED_MOUSE.x =  (e.clientX/window.innerWidth)*2 - 1;
+	NORMALIZED_MOUSE.y = -(e.clientY/window.innerHeight)*2 + 1;
+
 
 	return false;
 
