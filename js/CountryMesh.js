@@ -77,10 +77,7 @@ Country.prototype.setHeightData = function(data, applyContrast){
 
 
 
-
-
-
-function colorfromdata(data){ //change this all the time!
+function colorfromdata(data){
 
 	var from = new THREE.Color(0xFFFFFF);
 	var to = new THREE.Color(0x66FF66);

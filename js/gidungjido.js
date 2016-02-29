@@ -282,6 +282,8 @@ scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
 
 
 
+
+
 //scene.fog = new THREE.FogExp2( CLEAR_COLOR, 0.0035 );
 
 
