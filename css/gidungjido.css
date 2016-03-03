@@ -1,8 +1,8 @@
-@import url(reset.css);
+@import url(fallback/reset.css);
 @import url(http://meyerweb.com/eric/tools/css/reset/reset.css);
 
 
-@import url(overlay.css);
+@import url(fallback/overlay.css);
 @import url(http://jangdan.github.io/css/overlay.css);
 
 
