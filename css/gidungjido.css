@@ -1,10 +1,14 @@
+@import url(reset.css);
 @import url(http://meyerweb.com/eric/tools/css/reset/reset.css);
 
 
+@import url(overlay.css);
 @import url(http://jangdan.github.io/css/overlay.css);
+
 
 @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
 @import url(http://fonts.googleapis.com/earlyaccess/notosanstc.css);
+
 
 
 canvas {
