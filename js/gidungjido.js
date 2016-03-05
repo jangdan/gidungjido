@@ -17,8 +17,8 @@ var MOUSE = new THREE.Vector2();
 
 var PRELOADED_DATA_INDICIES = [
 	"Gross Domestic Product",
-	"Population",
-	"Gross Domestic Product per Capita"
+	"Population"/*,
+	"Gross Domestic Product per Capita"*/
 ];
 
 
@@ -120,7 +120,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 	maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] = 0;
 	maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] = 0;
-	maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = 0;
+	//maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = 0;
 
 
 	for(i = 0; i < data.features.length; ++i){ //first, load the data
@@ -131,7 +131,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 			"data": [
 				data.features[i].properties.GDP_MD_EST,
 				data.features[i].properties.POP_EST,
-				data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
+				//data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
 			]
 		};
 
@@ -147,8 +147,10 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] < data.features[i].properties.POP_EST )
 			maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] = data.features[i].properties.POP_EST;
 
+		/*
 		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] < data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST )
 			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST;
+		*/
 
 	}
 
@@ -272,6 +274,9 @@ function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_D
 
 
 
+function DATA_MAXIMUM(){
+	return preloadeddata.maximums[DATA_INDEX];
+}
 
 
 //scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMaterial( { color: 0xFF0000 } ))); //debug
@@ -415,7 +420,7 @@ function render(time){
 			}
 		}
 	
-		console.log(pointedCountry);
+		//console.log(pointedCountry);
 
 
 		
@@ -427,8 +432,14 @@ function render(time){
 
 
 		countrytext.innerHTML =
-			"<h2>"+pointedCountry.name+"</h2>"
-		+	"";
+			"<h3>"+pointedCountry.name+"</h3>"
+		+	""+PRELOADED_DATA_INDICIES[DATA_INDEX]+":<br>"
+		+	""+Math.round(pointedCountry.data * DATA_MAXIMUM())+""
+		;
+
+	} else {
+
+		countrytext.style.display = "none";
 
 	}
 

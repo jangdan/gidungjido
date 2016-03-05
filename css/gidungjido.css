@@ -138,12 +138,27 @@ button {
 
 #countrytext {
 
-	background-color: rgba(68, 68, 68, 0.4);
+	display: inline-block;
 
-	
+
 	position: absolute;
 
-	display: inline-block;
+
+
+	background-color: rgba(68, 68, 68, 0.4);
+
+
+	font-size: 12px;
+
+	padding: 1em;
+
+}
+
+h3 {
+
+	font-size: 16px;
+
+	padding: 0 1em;
 
 }
 
