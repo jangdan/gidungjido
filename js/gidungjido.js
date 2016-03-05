@@ -420,22 +420,20 @@ function render(time){
 
 		
 		countrytext.style.opacity = 1;
+		countrytext.style.display = "block";
 
 		countrytext.style.left = MOUSE.x+"px";
 		countrytext.style.top = MOUSE.y+"px";
+
 
 		countrytext.innerHTML =
 			"<h2>"+pointedCountry.name+"</h2>"
 		+	"";
 
-	} else {
-
-		countrytext.style.opacity = 0;
-
 	}
 
 
-	if(menuvisible) countrytext.style.opacity = 0;
+	if(menuvisible) countrytext.style.display = "none";
 
 
 
@@ -591,6 +589,9 @@ function togglemenu(){
 			.onUpdate( function(){
 				document.getElementById("menu").style.opacity = ""+this.opacity+"";
 			})
+			.onComplete( function(){
+				document.getElementById("menu").style.display = "none";
+			})
 			.easing(TWEEN.Easing.Quadratic.Out)
 			.start();
 
@@ -598,6 +599,7 @@ function togglemenu(){
 
 		stopcameramotion(); //stop any motion
 
+		document.getElementById("menu").style.display = "block";
 
 		new TWEEN.Tween( { opacity: 0 } )
 			.to( { opacity: 1 }, 100 )
