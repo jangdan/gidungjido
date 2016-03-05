@@ -11,7 +11,7 @@ var CAMERA_MOVEMENT_SPEED = 0.5;
 
 var MOUSE = new THREE.Vector2();
 
-stopcameramotion(); //keep the imaginary mouse at the center so nothing moves... yet
+//stopcameramotion(); //keep the imaginary mouse at the center so nothing moves... yet
 
 
 
@@ -97,6 +97,8 @@ var raycaster = new THREE.Raycaster();
 var NORMALIZED_MOUSE = new THREE.Vector2();
 
 
+//country "captions" on mouse over
+var countrytext = document.getElementById("countrytext");
 
 
 
@@ -309,7 +311,6 @@ function render(time){
 	
 	//camera 조작
 
-
 	//zooming
 
 	camera.zoom += (intendedcamera.zoom - camera.zoom) * 0.1;
@@ -317,10 +318,16 @@ function render(time){
 
 	
 	//rotating the camera with euler angles
+
 	//pitch and yaw
 
-	intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
-	intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
+	if(!menuvisible){
+
+		intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
+		intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
+
+	}
+
 
 	//limit the camera pitch
 
@@ -334,8 +341,6 @@ function render(time){
 
 
 	//moving
-	
-	//console.log(pressedkeys);
 
 
 	if(keyPressed(87) || keyPressed(38)){ //w and up 
@@ -392,6 +397,7 @@ function render(time){
 	var intersections = raycaster.intersectObjects(scene.children);
 
 
+
 	if(intersections.length > 0){
 
 		//console.log(intersections[0]);
@@ -412,9 +418,24 @@ function render(time){
 		console.log(pointedCountry);
 
 
-		//TODO: show country information, the stat data in numbers, make it clear that youre pointing at that country by coloring it in, etc
+		
+		countrytext.style.opacity = 1;
+
+		countrytext.style.left = MOUSE.x+"px";
+		countrytext.style.top = MOUSE.y+"px";
+
+		countrytext.innerHTML =
+			"<h2>"+pointedCountry.name+"</h2>"
+		+	"";
+
+	} else {
+
+		countrytext.style.opacity = 0;
 
 	}
+
+
+	if(menuvisible) countrytext.style.opacity = 0;
 
 
 
@@ -451,6 +472,13 @@ window.addEventListener("resize", function(e){
 
 window.addEventListener("mousewheel", function(e){ //zooming
 
+	/*
+	if(menuvisible
+	)
+		return;
+	*/
+
+
 	intendedcamera.zoom += (e.wheelDelta || e.detail) * 0.005;
 	if(intendedcamera.zoom < CAMERA_MINIMUM_ZOOM) intendedcamera.zoom = CAMERA_MINIMUM_ZOOM;
 	else if(intendedcamera.zoom > CAMERA_MAXIMUM_ZOOM) intendedcamera.zoom = CAMERA_MAXIMUM_ZOOM;
@@ -462,7 +490,7 @@ window.addEventListener("mousewheel", function(e){ //zooming
 
 
 
-window.addEventListener("mousemove", function(e){
+window.addEventListener("mousemove",function(e){
 
 	if(menuvisible //ignore when you have something better to do with the mouse than moving it around without a visible cursor on the monitor
 	)
@@ -473,8 +501,7 @@ window.addEventListener("mousemove", function(e){
 	MOUSE.y = e.clientY;
 
 
-	//make NORMALIZED_MOUSE feel cartesian (ugh what does that even mean)
-
+	//from a three.js example
 	NORMALIZED_MOUSE.x =  (e.clientX/window.innerWidth)*2 - 1;
 	NORMALIZED_MOUSE.y = -(e.clientY/window.innerHeight)*2 + 1;
 
@@ -537,7 +564,8 @@ window.addEventListener("keyup", function(e){
 
 
 function stopcameramotion(){
-	MOUSE.set(window.innerWidth/2, window.innerHeight/2);
+	//MOUSE.set(window.innerWidth/2, window.innerHeight/2);
+
 	pressedkeys = [];
 }
 
