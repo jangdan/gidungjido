@@ -150,6 +150,9 @@ button {
 
 	font-size: 12px;
 
+	line-height: 1.4em;
+	
+
 	padding: 1em;
 
 }
@@ -157,6 +160,9 @@ button {
 h3 {
 
 	font-size: 16px;
+
+	line-height: 2em;
+
 
 	padding: 0 1em;
 
