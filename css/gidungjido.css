@@ -145,15 +145,20 @@ button {
 
 
 
+	padding: 1em;
+
+
+
 	background-color: rgba(68, 68, 68, 0.4);
 
 
 	font-size: 12px;
 
 	line-height: 1.4em;
-	
 
-	padding: 1em;
+
+
+	border-radius: 3px;
 
 }
 
