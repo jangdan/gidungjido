@@ -34,7 +34,12 @@ var DEFAULT_MAXIMUM_COUNTRY_HEIGHT = 4;
 var DEFAULT_CONTRAST = 3;
 
 
+
 //varibales that can be changed with user interaction through the GUI
+
+var SHOW_INFO = true;
+
+
 
 var MAXIMUM_COUNTRY_HEIGHT = DEFAULT_MAXIMUM_COUNTRY_HEIGHT;
 
@@ -393,58 +398,62 @@ function render(time){
 
 
 
-	raycaster.setFromCamera( NORMALIZED_MOUSE, camera );
+	if(!menuvisible && SHOW_INFO){ //dont show the info pane if the main menu is visible, or if the user doesn't want to see it
 
 
-
-	//the code that follows might, in a worst case, execute two for loops - it needs optimization
-
-	var intersections = raycaster.intersectObjects(scene.children);
-
-
-
-	if(intersections.length > 0){
-
-		//console.log(intersections[0]);
-
-
-		var pointedCountry;
+		raycaster.setFromCamera( NORMALIZED_MOUSE, camera );
 	
-		for(i = 0; i < countries.length; ++i){
 	
-			if(countries[i].mesh === intersections[0].object){
 	
-				pointedCountry = countries[i];
+		//the code that follows might, in a worst case, execute two for loops - it needs optimization
 	
-				break;
+		var intersections = raycaster.intersectObjects(scene.children);
+	
+	
+	
+		if(intersections.length > 0){
+	
+			//console.log(intersections[0]);
+	
+	
+			var pointedCountry;
+		
+			for(i = 0; i < countries.length; ++i){
+		
+				if(countries[i].mesh === intersections[0].object){
+		
+					pointedCountry = countries[i];
+		
+					break;
+				}
 			}
+		
+			//console.log(pointedCountry);
+	
+	
+			
+			showinfo();
+	
+			countrytext.style.left = MOUSE.x+"px";
+			countrytext.style.top = MOUSE.y+"px";
+	
+	
+			countrytext.innerHTML =
+				"<h3>"+pointedCountry.name+"</h3>"
+			+	""+PRELOADED_DATA_INDICIES[DATA_INDEX]+":<br>"
+			+	""+Math.round(pointedCountry.data * DATA_MAXIMUM()).toLocaleString()+""
+			;
+	
+		} else {
+	
+			hideinfo();
+	
 		}
 	
-		//console.log(pointedCountry);
-
-
-		
-		countrytext.style.opacity = 1;
-		countrytext.style.display = "block";
-
-		countrytext.style.left = MOUSE.x+"px";
-		countrytext.style.top = MOUSE.y+"px";
-
-
-		countrytext.innerHTML =
-			"<h3>"+pointedCountry.name+"</h3>"
-		+	""+PRELOADED_DATA_INDICIES[DATA_INDEX]+":<br>"
-		+	""+Math.round(pointedCountry.data * DATA_MAXIMUM())+""
-		;
-
-	} else {
-
-		countrytext.style.display = "none";
+	
+		//if(menuvisible) hideinfo();
 
 	}
-
-
-	if(menuvisible) countrytext.style.display = "none";
 
 
 
@@ -605,13 +614,8 @@ function stopcameramotion(){
 //DOM interaction
 var menuvisible = true;
 
-var menuopacity = 1;
-
 
 function togglemenu(){
-
-	document.getElementById("source").blur();
-
 
 	if(menuvisible){
 
@@ -626,7 +630,8 @@ function togglemenu(){
 			.easing(TWEEN.Easing.Quadratic.Out)
 			.start();
 
-	} else {
+	}
+	else {
 
 		stopcameramotion(); //stop any motion
 
@@ -637,6 +642,8 @@ function togglemenu(){
 			.onUpdate( function(){
 				document.getElementById("menu").style.opacity = ""+this.opacity+"";
 			})
+			.onComplete( function(){
+			})
 			.easing(TWEEN.Easing.Quadratic.Out)
 			.start();
 
@@ -644,15 +651,51 @@ function togglemenu(){
 
 	menuvisible = !menuvisible;
 
+
+	document.getElementById("source").blur();
+
+	revalidateinfo();
+
 }
+
 
 
 
 function toggleinfo(){
 
+	SHOW_INFO = !SHOW_INFO;	
 
+	document.getElementById("countryinfocheckbox").checked = SHOW_INFO;
+
+
+	/*
+	if(countrytext.style.display === "none" && SHOW_INFO) showinfo();
+	else if(countrytext.style.display === "block" || !SHOW_INFO) hideinfo();
+	*/
+
+	revalidateinfo();
 
 }
+
+function revalidateinfo(){
+
+	if(SHOW_INFO && !menuvisible) showinfo();
+	else if(!SHOW_INFO || menuvisible) hideinfo();
+
+}
+
+function hideinfo(){
+
+	countrytext.style.display = "none";
+
+}
+
+function showinfo(){
+
+	countrytext.style.display = "block";
+
+}
+
 
 
 
