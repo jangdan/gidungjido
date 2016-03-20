@@ -1,9 +1,7 @@
-@import url(fallback/reset.css);
-@import url(http://meyerweb.com/eric/tools/css/reset/reset.css);
+@import url(lib/reset.css);
 
 
-@import url(fallback/overlay.css);
-@import url(http://jangdan.github.io/css/overlay.css);
+@import url(lib/overlay.css);
 
 
 @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
@@ -118,7 +116,7 @@ button {
 
 .crt {
 
-	background: transparent url("crt.png") !important;
+	background: transparent url("../assets/crt.png") !important;
 
 }
 
