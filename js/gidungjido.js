@@ -76,7 +76,7 @@ camera.rotation.z = intendedcamera.rotation.z = Math.random() * Math.PI*2;
 
 
 
-var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
+var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false, preserveDrawingBuffer: true } );
 
 renderer.setClearColor(CLEAR_COLOR, 1);
 
@@ -533,7 +533,7 @@ function keyPressed(key){
 
 window.addEventListener("keydown", function(e){
 
-	//console.log(e.which);
+	console.log(e.which);
 
 
 	if(e.which == 9 //ignore the tab key
@@ -549,8 +549,28 @@ window.addEventListener("keydown", function(e){
 	}
 
 
+	if(e.which == 73){ //'i'
+
+		toggleinfo();
+
+		return;
+
+	}
+
+
+
 	if(menuvisible) //note that this must be after the escape key detection or else we're "locked out"
 		return;
+
+
+	if(e.which == 80){ //'p'
+
+		screenshot();
+
+		return;
+
+	}
+
 
 
 	if(!keyPressed(e.which))
@@ -628,6 +648,24 @@ function togglemenu(){
 
 
 
+function toggleinfo(){
+
+
+
+}
+
+
+
+function screenshot(){
+
+	window.open( renderer.domElement.toDataURL("image/png"), "Final");
+
+	togglemenu();
+
+}
+
+
+
 
 
 //misc. functions
@@ -636,7 +674,7 @@ function togglemenu(){
 function loadJSON(url, callback){   
 
 	var xobj = new XMLHttpRequest();
-	
+
 	xobj.overrideMimeType("application/json");
 
 	xobj.open('GET', url, true);

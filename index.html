@@ -31,9 +31,18 @@
 			<p>
 				<h2>controls</h2>
 
+				move around with the <span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span> keys, <span class = "roundedborder">shift</span> to go up, <span class = "roundedborder">space</span> to go down. scroll to zoom in and out.<br>
+
+				<span class = "roundedborder">p</span>: to save the current frame as an image.<br>
+
+				<!--<span class = "roundedborder">i</span>: hide/show country information<br>-->
+
+				<!--<span class = "roundedborder">l</span>: lock camera rotation<br>-->
+
+
+
 				press <span class = "roundedborder">esc</span> to toggle this menu<br>
 
-				<span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span>, <span class = "roundedborder">shift</span> to go up, <span class = "roundedborder">space</span> to go down. scroll to zoom in and out.
 			</p>
 
 			<p>
@@ -41,6 +50,8 @@
 
 				overall height: <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightinput()"><br>
 				height contrast: <input type = "range" id = "contrast" min = "10" value = "30" max = "50" oninput = "contrastinput()"><br>
+
+				<input type = "checkbox" checked = "checked" disabled = "disabled"> continuous mouse movement<br>
 
 				<button type = "button" onclick = "defaultsettings()">default settings</button><br>
 
