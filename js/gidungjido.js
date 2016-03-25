@@ -330,7 +330,7 @@ function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_D
 
 			preloadeddata.countries.filter(
 				function(datacountry){ return datacountry.name === countries[i].name } //select the country by name
-			} )[0].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX]
+			)[0].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX]
 
 		); //TODO: make this more efficient
 
