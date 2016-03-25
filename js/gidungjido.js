@@ -88,7 +88,7 @@ intendedcamera.rotation.copy(camera.rotation);
 
 
 
-//TODO: random starting position
+//SUGGESTION: random starting position
 
 intendedcamera.position.z = camera.position.z = 30;
 
@@ -326,8 +326,16 @@ function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_D
 
 	for(i = 0; i < countries.length; ++i){
 
-		countries[i].setHeightData( preloadeddata.countries.filter( function(datacountry){ return datacountry.name === countries[i].name } )[0].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] ); //TODO: make this more efficient
+		countries[i].setHeightData(
+
+			preloadeddata.countries.filter(
+				function(datacountry){ return datacountry.name === countries[i].name } //select the country by name
+			} )[0].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX]
+
+		); //TODO: make this more efficient
+
 		//console.log(countries[i].name, preloadeddata.countries[i].name)
+
 	}
 
 }
@@ -446,7 +454,7 @@ function render(time){
 	
 	
 			
-			showinfo(); //TODO: organize these functions
+			showinfo();
 	
 
 			countryinfo.style.left = MOUSE.x+"px";
