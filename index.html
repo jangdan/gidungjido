@@ -1,6 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
+
 <html>
+
 	<head>
+
 		<meta charset = "utf-8">
 
         <meta name = "viewport" content = "width = device-width, initial-scale = 1, maximum-scale = 1, minimum-scale = 1, user-scalable = no">
@@ -10,6 +13,7 @@
 		<link rel = "stylesheet" href = "css/gidungjido.css">
 
 
+
 		<title>기둥地圖</title>
 
 
@@ -17,18 +21,16 @@
 		<script src = "lib/three.min.js" type = "text/javascript"></script>
 		<script src = "lib/Tween.js" type = "text/javascript"></script>
 
-
 	</head>
 
 	<body>
 
 		<div id = "menu" class = "overlay crt">
 
-			<!--<h1 lang = "ko">기둥<ruby><rb>地圖</rb><rp>(</rp><rt>지도</rt><rp>)</rp></ruby></h1>-->
-
 			<h1 lang = "ko">기둥<ruby><rb>地</rb><rt>지</rt><rb>圖</rb><rt>도</rt></ruby></h1>
 
 			<p>
+
 				<h2>controls</h2>
 
 				move around with the <span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span> keys, <span class = "roundedborder">shift</span> to go up, <span class = "roundedborder">space</span> to go down. scroll to zoom in and out.<br>
@@ -40,12 +42,12 @@
 				<!--<span class = "roundedborder">l</span>: lock camera rotation<br>-->
 
 
-
 				press <span class = "roundedborder">esc</span> to toggle this menu<br>
 
 			</p>
 
 			<p>
+
 				<h2>settings</h2>
 
 				overall height: <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightinput()"><br>
@@ -59,29 +61,33 @@
 				<button type = "button" onclick = "defaultsettings()">default settings</button><br>
 
 				<select id = "source" onchange = "sourcechange()">
+					<!--javascript will add stuff here-->
 				</select>
 
 			</p>
 
 			<p>
+
 				note: this website uses <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>, which works best on <a href = "https://www.google.com/chrome/">Google Chrome</a>.<br>
 
 				you also need a keyboard, so not much will work on mobile.
+
 			</p>
 
 		</div>
 
 
-		<div id = "countrytext" class = "crt">
+		<div id = "countryinfo" class = "crt">
+			<!--javascript will add stuff here-->
 		</div>
+
 
 
 		<script src = "js/CountryMesh.js" type = "text/javascript"></script>
 		<script src = "js/gidungjido.js" type = "text/javascript"></script>
 
 
-
-		<script type = "text/javascript"> //DOM
+		<script type = "text/javascript"> //DOM-related
 
 			var sourceselect = document.getElementById("source");
 
@@ -103,7 +109,8 @@
 			;
 
 
-			//DOM events
+
+			//events
 
 			function maximumheightinput(){
 				MAXIMUM_COUNTRY_HEIGHT = document.getElementById("maximumheight").value / 10;
@@ -120,7 +127,7 @@
 				SHOW_INFO = document.getElementById("countryinfocheckbox").checked;
 
 				revalidateinfo();
-				
+
 			}
 
 
@@ -142,4 +149,5 @@
 		</script>
 
 	</body>
+
 </html>

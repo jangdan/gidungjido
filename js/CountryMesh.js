@@ -1,10 +1,12 @@
 //create an extension of THREE.Mesh to store statistics data efficiently
 
-var Country = function(name, geometry, material){
+var Country = function( name, geometry, material ){
 
-	this.mesh = new THREE.Mesh(geometry, material);
+	this.mesh = new THREE.Mesh( geometry, material );
+
 
 	this.tween;
+
 
 	this.name = name;
 	this.data = 1;
@@ -14,25 +16,28 @@ var Country = function(name, geometry, material){
 
 
 
-Country.prototype.setFromShapesAndData = function(shapes, data){
+Country.prototype.setFromShapesAndData = function( shapes, data ){
 
-	data = Math.pow(data, 1/CONTRAST);
+	data = Math.pow( data, 1/CONTRAST );
+
 
 
 	var countryGeometry, countryMaterial;
 
-
-	if(!data){
+	if(!data)
 		countryGeometry = new THREE.ShapeGeometry( shapes );
-	} else {
+
+	else
 		countryGeometry = new THREE.ExtrudeGeometry( shapes, { amount: 1, bevelEnabled: false } );
-	}
+
 
 	//countryMaterial = new THREE.MeshLambertMaterial();
 	countryMaterial = new THREE.MeshNormalMaterial();
 
 
-	this.mesh = new THREE.Mesh(countryGeometry, countryMaterial);
+	this.mesh = new THREE.Mesh( countryGeometry, countryMaterial );
+
+
 
 	this.setHeightData(data, false);
 
@@ -45,18 +50,19 @@ Country.prototype.setFromShapesAndData = function(shapes, data){
 
 
 
-Country.prototype.setHeightData = function(data, applyContrast){
+Country.prototype.setHeightData = function( data, applyContrast ){
 
 	if(applyContrast === undefined) applyContrast = true;
 
 
 	this.data = data;
 
+
 	if(applyContrast) data = Math.pow(data, 1/CONTRAST); //process data for more contrast
 
 
 
-	if(!(this.mesh.geometry instanceof THREE.ShapeGeometry)){
+	if( !(this.mesh.geometry instanceof THREE.ShapeGeometry) ){
 
 		//this.mesh.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
 
@@ -66,16 +72,23 @@ Country.prototype.setHeightData = function(data, applyContrast){
 			.start();
 
 	}
+
 	//console.log(data);
 
+
+
 	if(this.mesh.material instanceof THREE.MeshLambertMaterial || this.mesh.material instanceof THREE.MeshPhongMaterial){
+
 		this.mesh.material.color.copy( colorfromdata(data) );
+
 	}
+
 }
 
 
 
 
+//WIP color code
 
 function colorfromdata(data){
 
@@ -85,6 +98,7 @@ function colorfromdata(data){
 	var lerp = advancedLerp( from, to, data, function(r){ return r }, function(g){ return g }, function(b){ return b } );
 
 	return lerp;
+
 }
 
 

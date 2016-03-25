@@ -1,6 +1,5 @@
 @import url(lib/reset.css);
 
-
 @import url(lib/overlay.css);
 
 
@@ -18,9 +17,7 @@ canvas {
 
 	display: block;
 
-
 }
-
 
 
 
@@ -46,26 +43,13 @@ body {
 
 
 
+:lang(ko){
 
-
-span.underline {
-
-	text-decoration: underline;
-
-}
-
-span.roundedborder {
-
-	padding-left: 3px;
-	padding-right: 3px;
-
-	border: 1px;
-	border-color: #FFF;
-	border-style: solid;
-
-	border-radius: 3px;
+	font-family: "Noto Sans KR", "Noto Sans TC";
+	font-weight: 100;
 
 }
+
 
 
 
@@ -104,10 +88,27 @@ button {
 */
 
 
-:lang(ko){
 
-	font-family: "Noto Sans KR", "Noto Sans TC";
-	font-weight: 100;
+
+span.underline {
+
+	text-decoration: underline;
+
+}
+
+
+
+span.roundedborder {
+
+	padding-left: 3px;
+	padding-right: 3px;
+
+
+	border: 1px;
+	border-color: #FFF;
+	border-style: solid;
+
+	border-radius: 3px;
 
 }
 
@@ -122,11 +123,31 @@ button {
 
 
 
+
+
+ruby rp {
+
+	display: none;
+
+}
+
+
+
+
+p {
+	
+	padding: 1em;
+
+}
+
+
+
+
+
 #menu {
 
 	width: 100%;
 	height: 100%;
-
 	
 	background-color: rgba(68, 68, 68, 0.4);
 
@@ -134,7 +155,28 @@ button {
 
 
 
-#countrytext {
+h1 {
+
+	font-size: 64px;
+	
+	padding: 1em;
+
+	margin-top: 1em;
+
+}
+
+h2 {
+
+	padding: 1em;
+	
+	font-size: 20px;
+
+}
+
+
+
+
+#countryinfo {
 
 	display: inline-block;
 
@@ -160,6 +202,8 @@ button {
 
 }
 
+
+
 h3 {
 
 	font-size: 16px;
@@ -168,43 +212,5 @@ h3 {
 
 
 	padding: 0 1em;
-
-}
-
-
-
-
-
-h1 {
-
-	font-size: 64px;
-	
-	padding: 1em;
-
-	margin-top: 1em;
-
-}
-
-h2 {
-
-	padding: 1em;
-	
-	font-size: 20px;
-
-}
-
-
-ruby rp {
-
-	display: none;
-
-}
-
-
-
-
-p {
-	
-	padding: 1em;
 
 }

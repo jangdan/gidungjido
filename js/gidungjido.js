@@ -1,4 +1,5 @@
 //CONSTANTS
+
 var CLEAR_COLOR = 0xDDDDDD;
 
 
@@ -9,9 +10,18 @@ var CAMERA_MAXIMUM_ZOOM = 15;
 var CAMERA_MOVEMENT_SPEED = 0.5;
 
 
+
 var MOUSE = new THREE.Vector2();
 
 //stopcameramotion(); //keep the imaginary mouse at the center so nothing moves... yet
+
+
+var NORMALIZED_MOUSE = new THREE.Vector2(); //for use with the raycaster
+
+
+
+var PRESSED_KEYS = []; //keys that are currently pressed
+
 
 
 
@@ -24,14 +34,20 @@ var PRELOADED_DATA_INDICIES = [
 
 var preloadeddata = { countries: [], maximums: [] }; //the data that will be shown
 
+function DATA_MAXIMUM(){ //a function that pretends to be a variable
+
+	return preloadeddata.maximums[DATA_INDEX];
+
+}
 
 
 
-//defaults
+//default values
 
 var DEFAULT_MAXIMUM_COUNTRY_HEIGHT = 4;
 
 var DEFAULT_CONTRAST = 3;
+
 
 
 
@@ -40,13 +56,13 @@ var DEFAULT_CONTRAST = 3;
 var SHOW_INFO = true;
 
 
-
 var MAXIMUM_COUNTRY_HEIGHT = DEFAULT_MAXIMUM_COUNTRY_HEIGHT;
 
 var CONTRAST = DEFAULT_CONTRAST;
 
 
 var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
+
 
 
 
@@ -71,10 +87,14 @@ intendedcamera.position.copy(camera.position);
 intendedcamera.rotation.copy(camera.rotation);
 
 
-intendedcamera.position.z = camera.position.z = 40;
+
+//TODO: random starting position
+
+intendedcamera.position.z = camera.position.z = 30;
 
 
 //random starting rotations
+
 camera.rotation.x = intendedcamera.rotation.x = Math.random() * Math.PI/2;
 camera.rotation.z = intendedcamera.rotation.z = Math.random() * Math.PI*2;
 
@@ -93,17 +113,16 @@ document.body.appendChild(renderer.domElement);
 
 
 
-var pressedkeys = [];
-
-
 
 var raycaster = new THREE.Raycaster();
 
-var NORMALIZED_MOUSE = new THREE.Vector2();
 
 
 //country "captions" on mouse over
-var countrytext = document.getElementById("countrytext");
+
+var countryinfo = document.getElementById("countryinfo");
+
+
 
 
 
@@ -112,12 +131,12 @@ var countries = [];
 
 
 
-
-loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ //JSONObject is a very large GeoJSON-formatted object
+loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ //'JSONObject' is a very large GeoJSON-formatted object
 
 	var data = JSONObject;
 
 	//console.log(data.features.length);
+
 
 
 
@@ -128,8 +147,8 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 	//maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = 0;
 
 
-	for(i = 0; i < data.features.length; ++i){ //first, load the data
 
+	for(i = 0; i < data.features.length; ++i){ //first, load the data
 
 		var countrydata = {
 			"name": data.features[i].properties.SOVEREIGNT,
@@ -140,8 +159,8 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 			]
 		};
 
-
 		preloadeddata.countries.push(countrydata);
+
 
 
 		//validate & update maximum values (for later use)
@@ -159,22 +178,26 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 	}
 
-	preloadeddata.maximums = maximums;
+	preloadeddata.maximums = maximums; //save the maximum data
 
 	//console.log(preloadeddata);
+
 
 
 	for(i = 0; i < data.features.length; ++i){ //then, show the data. (ugh TWO FOR LOOPS?!?)
 
 
-		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //skip Antarctica (although there are stats for the continent)
+		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //ignore Antarctica (even if there are stats for that barren ice continent)
 
 
 
-		var countryShapes = []; //will be a THREE.Shape or an Array of THREE.Shape
+
+		var countryShapes = []; //this will be a THREE.Shape or an Array of THREE.Shape
 
 
-		if(!data.features[i].geometry) continue;
+
+		if(!data.features[i].geometry) continue; //skip if null
+
 
 		switch(data.features[i].geometry.type){
 
@@ -185,7 +208,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 				break;
 
 
-			case "MultiPolygon": //
+			case "MultiPolygon": //an array of "Polygon"s
 
 				for(l = 0; l < data.features[i].geometry.coordinates.length; ++l)
 					Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates[l]) );
@@ -193,6 +216,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 				break;
 
 		}
+
 
 
 		var country = new Country(data.features[i].properties.SOVEREIGNT);
@@ -209,14 +233,16 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
+
 	function parsePolygon(coordinates){
 
 		var countryShapes;
 
+
 		var paths = [];
 
-		for(j = 0; j < coordinates.length; ++j){ //each seperate 'part' of a country (islands, exclaves, etc)
 
+		for(j = 0; j < coordinates.length; ++j){ //each seperate 'part' of a country (islands, exclaves, etc)
 
 			var points = [];
 
@@ -233,23 +259,52 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		}
 
 
+
 		countryShapes = paths[0].toShapes(); //initialize the shape (toShapes() will only return ONE THREE.Shape)
 
 
 		paths.splice(0, 1); //remove the first path (check GeoJSON specs for more information)
 
+
 		Array.prototype.push.apply(countryShapes[0].holes, paths); //add the holes
+
 
 		return countryShapes; //returns a THREE.Shape Array
 
 	}
-
 
 });
 
 
 
 
+
+//add misc stuff to the scene
+
+//scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMaterial( { color: 0xFF0000 } ))); //debug
+
+
+
+/*
+var spotlight = new THREE.SpotLight(0xFFFFD0, 1);
+
+spotlight.position.set( -100, 100, 100 );
+
+scene.add(spotlight);
+*/
+
+
+scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
+
+
+
+//scene.fog = new THREE.FogExp2( CLEAR_COLOR, 0.0035 );
+
+
+
+
+
+//global functions that apply on all countries & their data
 
 function updatecountryheights(){
 
@@ -279,39 +334,6 @@ function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_D
 
 
 
-function DATA_MAXIMUM(){
-	return preloadeddata.maximums[DATA_INDEX];
-}
-
-
-//scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMaterial( { color: 0xFF0000 } ))); //debug
-
-
-
-
-
-
-/*
-var spotlight = new THREE.SpotLight(0xFFFFD0, 1);
-
-spotlight.position.set( -100, 100, 100 );
-
-scene.add(spotlight);
-*/
-
-
-
-
-scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
-
-
-
-
-
-//scene.fog = new THREE.FogExp2( CLEAR_COLOR, 0.0035 );
-
-
-
 
 
 function render(time){
@@ -319,8 +341,8 @@ function render(time){
 	requestAnimationFrame(render);
 
 	
-	//camera 조작
 
+	//camera 조작
 	//zooming
 
 	camera.zoom += (intendedcamera.zoom - camera.zoom) * 0.1;
@@ -328,14 +350,11 @@ function render(time){
 
 	
 	//rotating the camera with euler angles
-
 	//pitch and yaw
 
 	if(!menuvisible){
-
 		intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
 		intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
-
 	}
 
 
@@ -349,11 +368,9 @@ function render(time){
 	camera.rotation.z += (intendedcamera.rotation.z - camera.rotation.z) * 0.1;
 
 
-
 	//moving
 
-
-	if(keyPressed(87) || keyPressed(38)){ //w and up 
+	if(keyPressed(87) || keyPressed(38)){ //w and up
 		intendedcamera.position.x += CAMERA_MOVEMENT_SPEED * Math.cos(camera.rotation.z + Math.PI/2); //WHY do i have to add 90 degrees someone email me
 		intendedcamera.position.y += CAMERA_MOVEMENT_SPEED * Math.sin(camera.rotation.z + Math.PI/2);
 	}
@@ -374,6 +391,7 @@ function render(time){
 	}
 
 	//z-axis motion
+
 	if(keyPressed(16)){
 		intendedcamera.position.z -= CAMERA_MOVEMENT_SPEED;
 	}
@@ -388,7 +406,6 @@ function render(time){
 	camera.position.z += (intendedcamera.position.z - camera.position.z) * 0.05;
 
 
-
 	//spotlight.position.copy(camera.position);
 
 
@@ -400,21 +417,17 @@ function render(time){
 
 	if(!menuvisible && SHOW_INFO){ //dont show the info pane if the main menu is visible, or if the user doesn't want to see it
 
-
 		raycaster.setFromCamera( NORMALIZED_MOUSE, camera );
-	
 	
 	
 		//the code that follows might, in a worst case, execute two for loops - it needs optimization
 	
 		var intersections = raycaster.intersectObjects(scene.children);
 	
-	
-	
+
 		if(intersections.length > 0){
 	
 			//console.log(intersections[0]);
-	
 	
 			var pointedCountry;
 		
@@ -425,6 +438,7 @@ function render(time){
 					pointedCountry = countries[i];
 		
 					break;
+
 				}
 			}
 		
@@ -432,13 +446,14 @@ function render(time){
 	
 	
 			
-			showinfo();
+			showinfo(); //TODO: organize these functions
 	
-			countrytext.style.left = MOUSE.x+"px";
-			countrytext.style.top = MOUSE.y+"px";
+
+			countryinfo.style.left = MOUSE.x+"px";
+			countryinfo.style.top = MOUSE.y+"px";
 	
-	
-			countrytext.innerHTML =
+
+			countryinfo.innerHTML =
 				"<h3>"+pointedCountry.name+"</h3>"
 			+	""+PRELOADED_DATA_INDICIES[DATA_INDEX]+":<br>"
 			+	""+Math.round(pointedCountry.data * DATA_MAXIMUM()).toLocaleString()+""
@@ -449,9 +464,6 @@ function render(time){
 			hideinfo();
 	
 		}
-	
-	
-		//if(menuvisible) hideinfo();
 
 	}
 
@@ -465,20 +477,26 @@ function render(time){
 
 }
 
+
 render();
 
 
 
 
 
-window.addEventListener("resize", function(e){
+//events
+
+window.addEventListener( "resize", function(e){
 
 
-	if(menuvisible) stopcameramotion(); //stop any motion
+	if(menuvisible) stopcameramotion(); //stop any motion if the menu is visible
+
 
 
 	camera.aspect = window.innerWidth/window.innerHeight;
+
 	camera.updateProjectionMatrix();
+
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -488,18 +506,22 @@ window.addEventListener("resize", function(e){
 
 
 
-window.addEventListener("mousewheel", function(e){ //zooming
+window.addEventListener( "mousewheel", function(e){ //zooming
 
-	/*
+	/* //don't uncomment
 	if(menuvisible
 	)
 		return;
 	*/
 
 
+
 	intendedcamera.zoom += (e.wheelDelta || e.detail) * 0.005;
+
+	//clip value
 	if(intendedcamera.zoom < CAMERA_MINIMUM_ZOOM) intendedcamera.zoom = CAMERA_MINIMUM_ZOOM;
 	else if(intendedcamera.zoom > CAMERA_MAXIMUM_ZOOM) intendedcamera.zoom = CAMERA_MAXIMUM_ZOOM;
+
 
 	return false;
 
@@ -508,18 +530,23 @@ window.addEventListener("mousewheel", function(e){ //zooming
 
 
 
-window.addEventListener("mousemove",function(e){
+window.addEventListener( "mousemove", function(e){
+
 
 	if(menuvisible //ignore when you have something better to do with the mouse than moving it around without a visible cursor on the monitor
 	)
 		return;
+
 
 	
 	MOUSE.x = e.clientX;
 	MOUSE.y = e.clientY;
 
 
+
 	//from a three.js example
+	//for the raycaster
+
 	NORMALIZED_MOUSE.x =  (e.clientX/window.innerWidth)*2 - 1;
 	NORMALIZED_MOUSE.y = -(e.clientY/window.innerHeight)*2 + 1;
 
@@ -531,18 +558,23 @@ window.addEventListener("mousemove",function(e){
 
 
 
-function keyPressed(key){
+//specifically key events
 
-	if(pressedkeys.indexOf(key) != -1) return true;
+function keyPressed(key){ //check if the key is currently pressed
+
+
+	if(PRESSED_KEYS.indexOf(key) != -1) return true;
 
 	return false;
 
 }
 
 
+
+
 window.addEventListener("keydown", function(e){
 
-	console.log(e.which);
+	//console.log(e.which);
 
 
 	if(e.which == 9 //ignore the tab key
@@ -567,11 +599,6 @@ window.addEventListener("keydown", function(e){
 	}
 
 
-
-	if(menuvisible) //note that this must be after the escape key detection or else we're "locked out"
-		return;
-
-
 	if(e.which == 80){ //'p'
 
 		screenshot();
@@ -582,8 +609,16 @@ window.addEventListener("keydown", function(e){
 
 
 
+	if(menuvisible) //note that this must be after the escape key detection or else we're "locked out"
+		return;
+
+
+
+
+
 	if(!keyPressed(e.which))
-		pressedkeys.push(e.which);
+		PRESSED_KEYS.push(e.which);
+
 
 }, false);
 
@@ -591,8 +626,10 @@ window.addEventListener("keydown", function(e){
 
 window.addEventListener("keyup", function(e){
 
+
 	if(keyPressed(e.which))
-		pressedkeys.splice( pressedkeys.indexOf(e.which), 1 );
+		PRESSED_KEYS.splice( PRESSED_KEYS.indexOf(e.which), 1 );
+
 
 }, false);
 
@@ -600,22 +637,26 @@ window.addEventListener("keyup", function(e){
 
 
 
-
 function stopcameramotion(){
+
 	//MOUSE.set(window.innerWidth/2, window.innerHeight/2);
 
-	pressedkeys = [];
+	PRESSED_KEYS = [];
+
 }
 
 
 
 
 
+
 //DOM interaction
+
 var menuvisible = true;
 
 
 function togglemenu(){
+
 
 	if(menuvisible){
 
@@ -630,10 +671,11 @@ function togglemenu(){
 			.easing(TWEEN.Easing.Quadratic.Out)
 			.start();
 
-	}
-	else {
+	} else {
+
 
 		stopcameramotion(); //stop any motion
+
 
 		document.getElementById("menu").style.display = "block";
 
@@ -642,17 +684,17 @@ function togglemenu(){
 			.onUpdate( function(){
 				document.getElementById("menu").style.opacity = ""+this.opacity+"";
 			})
-			.onComplete( function(){
-			})
 			.easing(TWEEN.Easing.Quadratic.Out)
 			.start();
 
 	}
 
+
 	menuvisible = !menuvisible;
 
 
 	document.getElementById("source").blur();
+
 
 	revalidateinfo();
 
@@ -665,17 +707,20 @@ function toggleinfo(){
 
 	SHOW_INFO = !SHOW_INFO;	
 
+
 	document.getElementById("countryinfocheckbox").checked = SHOW_INFO;
 
 
 	/*
-	if(countrytext.style.display === "none" && SHOW_INFO) showinfo();
-	else if(countrytext.style.display === "block" || !SHOW_INFO) hideinfo();
+	if(countryinfo.style.display === "none" && SHOW_INFO) showinfo();
+	else if(countryinfo.style.display === "block" || !SHOW_INFO) hideinfo();
 	*/
+
 
 	revalidateinfo();
 
 }
+
 
 function revalidateinfo(){
 
@@ -686,13 +731,13 @@ function revalidateinfo(){
 
 function hideinfo(){
 
-	countrytext.style.display = "none";
+	countryinfo.style.display = "none";
 
 }
 
 function showinfo(){
 
-	countrytext.style.display = "block";
+	countryinfo.style.display = "block";
 
 }
 
@@ -713,21 +758,25 @@ function screenshot(){
 
 //misc. functions
 
+
 //a modified version of http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
+
 function loadJSON(url, callback){   
 
 	var xobj = new XMLHttpRequest();
 
 	xobj.overrideMimeType("application/json");
 
+
 	xobj.open('GET', url, true);
 
 
 	xobj.onreadystatechange = function(){
 
+
 		if(xobj.readyState == 4 && xobj.status == "200"){
 
-			// Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+			//Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
 			callback(JSON.parse(xobj.responseText));
 
 		}
