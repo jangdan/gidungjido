@@ -41,8 +41,21 @@ function DATA_MAXIMUM(){ //a function that pretends to be a variable
 }
 
 
+//DOM CONSTANTS
 
-//default values
+var SLIDER_RESOLUTION = 10;
+
+
+var MAXIMUM_COUNTRY_HEIGHT_MINIMUM = 1;
+var MAXIMUM_COUNTRY_HEIGHT_MAXIMUM = 10;
+
+var CONTRAST_MINIMUM = 1;
+var CONTRAST_MAXIMUM = 5;
+
+
+
+
+//DEFAULT VALUES
 
 var DEFAULT_MAXIMUM_COUNTRY_HEIGHT = 4;
 

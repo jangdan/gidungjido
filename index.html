@@ -6,6 +6,9 @@
 
 		<meta charset = "utf-8">
 
+		<meta name = "description" content = "a 3D bar graph of the world">
+		<meta name = "keywords" content = "gidungjido, 3D, bar graph, world, WebGl, three.js, GDP, population, visualization">
+
         <meta name = "viewport" content = "width = device-width, initial-scale = 1, maximum-scale = 1, minimum-scale = 1, user-scalable = no">
 
 
@@ -29,9 +32,10 @@
 
 			<h1 lang = "ko">기둥<ruby><rb>地</rb><rt>지</rt><rb>圖</rb><rt>도</rt></ruby></h1>
 
-			<p>
 
-				<h2>controls</h2>
+			<h2>controls</h2>
+
+			<p>
 
 				move around with the <span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span> keys, <span class = "roundedborder">shift</span> to go up, <span class = "roundedborder">space</span> to go down. scroll to zoom in and out.<br>
 
@@ -46,23 +50,27 @@
 
 			</p>
 
+
+			<h2>settings</h2>
+
 			<p>
 
-				<h2>settings</h2>
-
 				overall height: <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightinput()"><br>
+
 				height contrast: <input type = "range" id = "contrast" min = "10" value = "30" max = "50" oninput = "contrastinput()"><br>
+
 
 				<input type = "checkbox" id = "countryinfocheckbox" checked = "checked" onclick = "countryinfocheckboxclicked()"> show country information (keyboard shortcut <span class = "roundedborder">i</span>)<br>
 
 				<!--<input type = "checkbox" checked = "checked"> continuous mouse movement (keyboard shortcut <span class = "roundedborder">l</span>)<br>-->
 
+
 				<br>
 
-				
+
 				<button type = "button" onclick = "defaultsettings()">default settings</button><br>
 
-				<select id = "source" onchange = "sourcechange()">
+				source data: <select id = "source" onchange = "sourcechange()">
 					<!--javascript will add stuff here-->
 				</select>
 
@@ -79,6 +87,7 @@
 		</div>
 
 
+
 		<div id = "countryinfo" class = "crt">
 			<!--javascript will add stuff here-->
 		</div>
@@ -90,6 +99,27 @@
 
 
 		<script type = "text/javascript"> //DOM-related
+
+			//set min, max, value attributes for the sliders
+
+			var maximumheight = document.getElementById("maximumheight");
+
+			maximumheight.min = MAXIMUM_COUNTRY_HEIGHT_MINIMUM * SLIDER_RESOLUTION;
+			maximumheight.max = MAXIMUM_COUNTRY_HEIGHT_MAXIMUM * SLIDER_RESOLUTION;
+
+			maximumheight.value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * SLIDER_RESOLUTION;
+
+
+
+			var contrast = document.getElementById("contrast");
+
+			contrast.min = CONTRAST_MINIMUM * SLIDER_RESOLUTION;
+			contrast.max = CONTRAST_MAXIMUM * SLIDER_RESOLUTION;
+
+			contrast.value = DEFAULT_CONTRAST * SLIDER_RESOLUTION;
+
+
+
 
 			var sourceselect = document.getElementById("source");
 
@@ -112,15 +142,16 @@
 
 
 
+
 			//events
 
 			function maximumheightinput(){
-				MAXIMUM_COUNTRY_HEIGHT = document.getElementById("maximumheight").value / 10;
+				MAXIMUM_COUNTRY_HEIGHT = maximumheight.value / SLIDER_RESOLUTION;
 				updatecountryheights();
 			}
 
 			function contrastinput(){
-				CONTRAST = document.getElementById("contrast").value / 10;
+				CONTRAST = contrast.value / SLIDER_RESOLUTION;
 				updatecountryheights();
 			}
 
@@ -135,10 +166,10 @@
 
 			function defaultsettings(){
 
-				document.getElementById("maximumheight").value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * 10;
+				maximumheight.value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * SLIDER_RESOLUTION;
 				maximumheightinput();
 
-				document.getElementById("contrast").value = DEFAULT_CONTRAST * 10;
+				contrast.value = DEFAULT_CONTRAST * SLIDER_RESOLUTION;
 				contrastinput();
 
 			}
@@ -147,6 +178,8 @@
 			function sourcechange(){
 				setHeightDataSource(document.getElementById("source").value);
 			}
+
+			defaultsettings();
 
 		</script>
 
