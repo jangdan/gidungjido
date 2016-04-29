@@ -32,7 +32,8 @@ Country.prototype.setFromShapesAndData = function( shapes, data ){
 
 
 	//countryMaterial = new THREE.MeshLambertMaterial();
-	countryMaterial = new THREE.MeshNormalMaterial();
+	//countryMaterial = new THREE.MeshNormalMaterial();
+	countryMaterial = new THREE.MeshPhongMaterial( { color: 0xFFFFFF, specular: 0xFF0000, shininess: 100 } );
 
 
 	this.mesh = new THREE.Mesh( countryGeometry, countryMaterial );
@@ -77,11 +78,13 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
+	/*
 	if(this.mesh.material instanceof THREE.MeshLambertMaterial || this.mesh.material instanceof THREE.MeshPhongMaterial){
 
 		this.mesh.material.color.copy( colorfromdata(data) );
 
 	}
+	*/
 
 }
 
@@ -92,7 +95,7 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 function colorfromdata(data){
 
-	var from = new THREE.Color(0x555555);
+	var from = new THREE.Color(0xFFFFFF);
 	var to = new THREE.Color(0xFFFFFF);
 
 	var lerp = advancedLerp( from, to, data, function(r){ return r }, function(g){ return g }, function(b){ return b } );

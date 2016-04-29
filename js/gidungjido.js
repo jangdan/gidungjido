@@ -63,6 +63,12 @@ var DEFAULT_CONTRAST = 3;
 
 
 
+var FLOOR_WIDTH = 1000;
+var FLOOR_HEIGHT = 1000;
+
+
+
+
 
 //varibales that can be changed with user interaction through the GUI
 
@@ -135,6 +141,18 @@ var raycaster = new THREE.Raycaster();
 
 var countryinfo = document.getElementById("countryinfo");
 
+
+
+
+
+var floorGeometry = new THREE.BoxGeometry( FLOOR_WIDTH, FLOOR_HEIGHT, DEFAULT_MAXIMUM_COUNTRY_HEIGHT );
+var floorMaterial = new THREE.MeshPhongMaterial( { color: CLEAR_COLOR, specular: 0xFF0000, shininess: 100 } );
+
+
+var floor = new THREE.Mesh( floorGeometry, floorMaterial );
+
+floor.position.set( 0, 0, -DEFAULT_MAXIMUM_COUNTRY_HEIGHT );
+scene.add( floor );
 
 
 
@@ -299,7 +317,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 /*
-var spotlight = new THREE.SpotLight(0xFFFFD0, 1);
+var spotlight = new THREE.SpotLight( 0xFFFFD0, 1 );
 
 spotlight.position.set( -100, 100, 100 );
 
@@ -307,7 +325,7 @@ scene.add(spotlight);
 */
 
 
-scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
+scene.add(new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1 ));
 
 
 
@@ -443,7 +461,7 @@ function render(time){
 	
 		//the code that follows might, in a worst case, execute two for loops - it needs optimization
 	
-		var intersections = raycaster.intersectObjects(scene.children);
+		var intersections = raycaster.intersectObjects( countries.map( function(country){ return country.mesh; } ) );
 	
 
 		if(intersections.length > 0){
