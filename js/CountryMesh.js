@@ -31,9 +31,9 @@ Country.prototype.setFromShapesAndData = function( shapes, data ){
 		countryGeometry = new THREE.ExtrudeGeometry( shapes, { amount: 1, bevelEnabled: false } );
 
 
-	//countryMaterial = new THREE.MeshLambertMaterial();
+	countryMaterial = new THREE.MeshLambertMaterial();
+	//countryMaterial = new THREE.MeshPhongMaterial( { color: 0xFFFFFF, shininess: 100 } );
 	//countryMaterial = new THREE.MeshNormalMaterial();
-	countryMaterial = new THREE.MeshPhongMaterial( { color: 0xFFFFFF, specular: 0xFF0000, shininess: 100 } );
 
 
 	this.mesh = new THREE.Mesh( countryGeometry, countryMaterial );

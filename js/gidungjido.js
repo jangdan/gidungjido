@@ -63,8 +63,8 @@ var DEFAULT_CONTRAST = 3;
 
 
 
-var FLOOR_WIDTH = 1000;
-var FLOOR_HEIGHT = 1000;
+var FLOOR_WIDTH = 400;
+var FLOOR_HEIGHT = 200;
 
 
 
@@ -146,7 +146,8 @@ var countryinfo = document.getElementById("countryinfo");
 
 
 var floorGeometry = new THREE.BoxGeometry( FLOOR_WIDTH, FLOOR_HEIGHT, DEFAULT_MAXIMUM_COUNTRY_HEIGHT );
-var floorMaterial = new THREE.MeshPhongMaterial( { color: CLEAR_COLOR, specular: 0xFF0000, shininess: 100 } );
+var floorMaterial = new THREE.MeshLambertMaterial( { color: CLEAR_COLOR } );
+//var floorMaterial = new THREE.MeshPhongMaterial( { color: CLEAR_COLOR, shininess: 100 } );
 
 
 var floor = new THREE.Mesh( floorGeometry, floorMaterial );
@@ -316,20 +317,19 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-/*
-var spotlight = new THREE.SpotLight( 0xFFFFD0, 1 );
-
-spotlight.position.set( -100, 100, 100 );
-
-scene.add(spotlight);
-*/
 
 
-scene.add(new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 1 ));
+var directionallight = new THREE.DirectionalLight( 0xFFFFFF, 0.2 );
+
+directionallight.position.set( 1, 1, Math.sqrt(3) );
+
+scene.add(directionallight);
 
 
 
-//scene.fog = new THREE.FogExp2( CLEAR_COLOR, 0.0035 );
+
+
+scene.add(new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 0.7 ));
 
 
 
