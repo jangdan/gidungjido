@@ -63,8 +63,8 @@ var DEFAULT_CONTRAST = 3;
 
 
 
-var FLOOR_WIDTH = 400;
-var FLOOR_HEIGHT = 200;
+var FLOOR_WIDTH = 500;
+var FLOOR_HEIGHT = 300;
 
 
 
@@ -81,6 +81,17 @@ var CONTRAST = DEFAULT_CONTRAST;
 
 
 var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
+
+
+
+
+
+//settings that can't be changed (for now)
+
+var MATERIAL;
+
+
+var SHADOWS = false;
 
 
 
@@ -152,7 +163,12 @@ var floorMaterial = new THREE.MeshLambertMaterial( { color: CLEAR_COLOR } );
 
 var floor = new THREE.Mesh( floorGeometry, floorMaterial );
 
-floor.position.set( 0, 0, -DEFAULT_MAXIMUM_COUNTRY_HEIGHT );
+floor.position.set( 0, 0, -DEFAULT_MAXIMUM_COUNTRY_HEIGHT/2 );
+
+
+if(SHADOWS) floor.recieveShadow = true;
+
+
 scene.add( floor );
 
 
@@ -256,6 +272,14 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		country.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] )
 
 
+
+		if(SHADOWS){
+
+			country.mesh.castShadow = true;
+			country.mesh.recieveShadow = true;
+
+		}
+
 		scene.add(country.mesh);
 
 
@@ -323,7 +347,25 @@ var directionallight = new THREE.DirectionalLight( 0xFFFFFF, 0.2 );
 
 directionallight.position.set( 1, 1, Math.sqrt(3) );
 
+
+
+//TODO: shadows
+if(SHADOWS){
+
+	directionallight.castShadow = true;
+
+	directionallight.shadow.camera.position.set( 1, 1, Math.sqrt(3) );
+
+}
+
+
+
 scene.add(directionallight);
+
+
+//scene.add( new THREE.DirectionalLightHelper(directionallight) );
+
+//scene.add( new THREE.CameraHelper(directionallight.shadow.camera) );
 
 
 
