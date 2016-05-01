@@ -25,6 +25,12 @@ var PRESSED_KEYS = []; //keys that are currently pressed
 
 
 
+var MATERIAL_INDICIES = [
+	"MeshNormalMaterial",
+	"flags"
+];
+
+
 var PRELOADED_DATA_INDICIES = [
 	"Gross Domestic Product",
 	"Population"/*,
@@ -39,6 +45,9 @@ function DATA_MAXIMUM(){ //a function that pretends to be a variable
 	return preloadeddata.maximums[DATA_INDEX];
 
 }
+
+
+
 
 
 //DOM CONSTANTS
@@ -63,8 +72,7 @@ var DEFAULT_CONTRAST = 3;
 
 
 
-var FLOOR_WIDTH = 500;
-var FLOOR_HEIGHT = 300;
+var DEFAULT_MATERIAL = 1;
 
 
 
@@ -84,11 +92,7 @@ var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 
 
 
-
-
-//settings that can't be changed (for now)
-
-var MATERIAL;
+var MATERIAL = 1;
 
 
 var SHADOWS = false;
@@ -156,9 +160,16 @@ var countryinfo = document.getElementById("countryinfo");
 
 
 
+var FLOOR_WIDTH = 500;
+var FLOOR_HEIGHT = 300;
+
+
+
 var floorGeometry = new THREE.BoxGeometry( FLOOR_WIDTH, FLOOR_HEIGHT, DEFAULT_MAXIMUM_COUNTRY_HEIGHT );
+
 var floorMaterial = new THREE.MeshLambertMaterial( { color: CLEAR_COLOR } );
 //var floorMaterial = new THREE.MeshPhongMaterial( { color: CLEAR_COLOR, shininess: 100 } );
+
 
 
 var floor = new THREE.Mesh( floorGeometry, floorMaterial );
@@ -169,7 +180,9 @@ floor.position.set( 0, 0, -DEFAULT_MAXIMUM_COUNTRY_HEIGHT/2 );
 if(SHADOWS) floor.recieveShadow = true;
 
 
+
 scene.add( floor );
+
 
 
 
@@ -393,7 +406,7 @@ function updatecountryheights(){
 
 
 
-function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_DATA_INDICIES
+function setheightdatasource(which){ //'which' should be chosen from PRELOADED_DATA_INDICIES
 	
 	DATA_INDEX = which;
 
@@ -409,6 +422,52 @@ function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_D
 
 		//console.log(countries[i].name, preloadeddata.countries[i].name)
 
+	}
+
+}
+
+
+
+
+function setMaterial(which){
+
+
+	//console.log("setMaterial");
+
+	
+	MATERIAL = parseInt(which);
+
+	//console.log(MATERIAL, which, typeof MATERIAL, typeof which);
+
+
+	switch(MATERIAL){
+
+		case 0: // "MeshNormalMaterial"
+
+			//console.log("MeshNormalMaterial");
+
+
+			for(i = 0; i < countries.length; ++i){
+
+				countries[i].mesh.material = new THREE.MeshNormalMaterial();
+
+				//console.log(i, countries[i].mesh.material);
+				
+			}
+
+			break;
+
+		case 1: // "flags"
+
+			for(i = 0; i < countries.length; ++i){
+
+				countries[i].mesh.material = new THREE.MeshPhongMaterial();
+
+				//set the texture from a pre-loaded array of flag images
+
+			}
+
+			break;
 	}
 
 }

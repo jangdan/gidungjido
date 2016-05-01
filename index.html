@@ -65,10 +65,23 @@
 				<!--<input type = "checkbox" checked = "checked"> continuous mouse movement (keyboard shortcut <span class = "roundedborder">l</span>)<br>-->
 
 
+
+				material/texture: <select id = "material" onchange = "materialchange()">
+					<!--javascript will add stuff here-->
+				</select><br>
+
+
+
+				<!--<input type = "checkbox" id = "shadowcheckbox" checked = "checked" onclick = "shadowcheckboxclicked()"> cast shadows (requires more computing power)<br>-->
+
+
+
 				<br>
 
 
+
 				<button type = "button" onclick = "defaultsettings()">default settings</button><br>
+
 
 				source data: <select id = "source" onchange = "sourcechange()">
 					<!--javascript will add stuff here-->
@@ -78,9 +91,9 @@
 
 			<p>
 
-				note: this website uses <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>, which works best on <a href = "https://www.google.com/chrome/">Google Chrome</a>.<br>
+				note: this website uses <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>, which seems to work best on <a href = "https://www.google.com/chrome/">Google Chrome</a>.<br>
 
-				you also need a keyboard, so not much will work on mobile.
+				you also need a keyboard, sorry mobile users
 
 			</p>
 
@@ -143,6 +156,35 @@
 
 
 
+			var materialselect = document.getElementById("material");
+
+			materialselect.innerHTML = "";
+
+
+			/*
+			materialselect.innerHTML +=
+				"<optgroup label = ''>\n"
+			;
+			*/
+
+			for(i = 0; i < MATERIAL_INDICIES.length; ++i){
+				materialselect.innerHTML +=
+					"<option value = '"+i+"'>"+MATERIAL_INDICIES[i]+"</option>\n"
+				;
+			}
+
+			/*
+			materialselect.innerHTML +=
+				"</optgroup>"
+			;
+			*/
+
+
+			materialselect.value = DEFAULT_MATERIAL;
+
+
+
+
 			//events
 
 			function maximumheightinput(){
@@ -164,6 +206,12 @@
 			}
 
 
+			function materialchange(){
+				setMaterial( materialselect.value );
+			}
+
+
+
 			function defaultsettings(){
 
 				maximumheight.value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * SLIDER_RESOLUTION;
@@ -176,7 +224,7 @@
 
 
 			function sourcechange(){
-				setHeightDataSource(document.getElementById("source").value);
+				setheightdatasource( sourceselect.value );
 			}
 
 			defaultsettings();
