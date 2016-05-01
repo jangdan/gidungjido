@@ -1,6 +1,6 @@
 //CONSTANTS
 
-var CLEAR_COLOR = 0xDDDDDD;
+var CLEAR_COLOR = 0x444444;
 
 
 
@@ -160,6 +160,9 @@ var countryinfo = document.getElementById("countryinfo");
 
 
 
+//disable the floor code until shadows work
+
+/*
 var FLOOR_WIDTH = 500;
 var FLOOR_HEIGHT = 300;
 
@@ -182,7 +185,7 @@ if(SHADOWS) floor.recieveShadow = true;
 
 
 scene.add( floor );
-
+*/
 
 
 
