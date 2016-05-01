@@ -11,14 +11,21 @@ var Country = function( name, geometry, material ){
 	this.name = name;
 	this.data = 1;
 
+	this.flag; //"assets/flags-ultra/" + countrydata.ISO_A2 + ".png"
+
 }
 
 
 
 
-Country.prototype.setFromShapesAndData = function( shapes, data ){
+Country.prototype.setFromShapesAndData = function( shapes, data, flag ){
 
 	data = Math.pow( data, 1/CONTRAST );
+
+
+	this.flag = flag;
+
+	console.log(this.flag);
 
 
 
@@ -31,7 +38,7 @@ Country.prototype.setFromShapesAndData = function( shapes, data ){
 		countryGeometry = new THREE.ExtrudeGeometry( shapes, { amount: 1, bevelEnabled: false } );
 
 
-	countryMaterial = new THREE.MeshLambertMaterial();
+	countryMaterial = new THREE.MeshLambertMaterial( { map: this.flag } );
 	//countryMaterial = new THREE.MeshPhongMaterial( { color: 0xFFFFFF, shininess: 100 } );
 	//countryMaterial = new THREE.MeshNormalMaterial();
 

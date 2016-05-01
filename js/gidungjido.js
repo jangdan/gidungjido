@@ -31,20 +31,12 @@ var MATERIAL_INDICIES = [
 ];
 
 
+
 var PRELOADED_DATA_INDICIES = [
 	"Gross Domestic Product",
 	"Population"/*,
 	"Gross Domestic Product per Capita"*/
 ];
-
-
-var preloadeddata = { countries: [], maximums: [] }; //the data that will be shown
-
-function DATA_MAXIMUM(){ //a function that pretends to be a variable
-
-	return preloadeddata.maximums[DATA_INDEX];
-
-}
 
 
 
@@ -96,6 +88,20 @@ var MATERIAL = 1;
 
 
 var SHADOWS = false;
+
+
+
+
+
+//data
+
+var preloadeddata = { countries: [], maximums: [] }; //the data that will be shown
+
+function DATA_MAXIMUM(){ //a function that pretends to be a variable
+
+	return preloadeddata.maximums[DATA_INDEX];
+
+}
 
 
 
@@ -190,6 +196,10 @@ scene.add( floor );
 
 
 
+
+var textureloader = new THREE.TextureLoader();
+
+
 var countries = [];
 
 
@@ -215,13 +225,30 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 	for(i = 0; i < data.features.length; ++i){ //first, load the data
 
 		var countrydata = {
+
 			"name": data.features[i].properties.SOVEREIGNT,
+
 			"data": [
 				data.features[i].properties.GDP_MD_EST,
 				data.features[i].properties.POP_EST,
 				//data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
-			]
+			],
+
+			"ISO_A2": data.features[i].properties.ISO_A2
+
 		};
+
+
+		//textureloader.load( "assets/flags-ultra/" + countrydata.ISO_A2.toLowerCase() + ".png", function(texture){
+		textureloader.load( "assets/flags-ultra/kr.png", function(texture){
+
+			console.log(texture);
+
+			countrydata.flag = texture;
+
+		});
+
+
 
 		preloadeddata.countries.push(countrydata);
 
@@ -244,7 +271,9 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 	preloadeddata.maximums = maximums; //save the maximum data
 
-	//console.log(preloadeddata);
+	console.log(preloadeddata);
+
+
 
 
 
@@ -285,7 +314,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		var country = new Country(data.features[i].properties.SOVEREIGNT);
 
-		country.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] )
+		country.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX], preloadeddata.countries[i].flag)
 
 
 
