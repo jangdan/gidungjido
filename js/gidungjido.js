@@ -239,16 +239,6 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		};
 
 
-		//textureloader.load( "assets/flags-ultra/" + countrydata.ISO_A2.toLowerCase() + ".png", function(texture){
-		textureloader.load( "assets/flags-ultra/kr.png", function(texture){
-
-			console.log(texture);
-
-			countrydata.flag = texture;
-
-		});
-
-
 
 		preloadeddata.countries.push(countrydata);
 
@@ -271,7 +261,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 	preloadeddata.maximums = maximums; //save the maximum data
 
-	console.log(preloadeddata);
+	//console.log(preloadeddata);
 
 
 

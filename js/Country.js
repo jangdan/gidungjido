@@ -25,7 +25,7 @@ Country.prototype.setFromShapesAndData = function( shapes, data, flag ){
 
 	this.flag = flag;
 
-	console.log(this.flag);
+	//console.log(this.flag);
 
 
 
@@ -38,8 +38,7 @@ Country.prototype.setFromShapesAndData = function( shapes, data, flag ){
 		countryGeometry = new THREE.ExtrudeGeometry( shapes, { amount: 1, bevelEnabled: false } );
 
 
-	countryMaterial = new THREE.MeshLambertMaterial( { map: this.flag } );
-	//countryMaterial = new THREE.MeshPhongMaterial( { color: 0xFFFFFF, shininess: 100 } );
+	countryMaterial = new THREE.MeshLambertMaterial( { } ); //TODO: finish flags
 	//countryMaterial = new THREE.MeshNormalMaterial();
 
 
