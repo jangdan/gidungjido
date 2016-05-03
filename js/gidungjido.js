@@ -197,6 +197,7 @@ scene.add( floor );
 
 
 
+
 var textureloader = new THREE.TextureLoader();
 
 
@@ -234,10 +235,9 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 				//data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
 			],
 
-			"ISO_A2": data.features[i].properties.ISO_A2
+			"flagurl": "assets/flags-ultra/" + data.features[i].properties.ISO_A2 + ".png"
 
 		};
-
 
 
 		preloadeddata.countries.push(countrydata);
@@ -302,9 +302,9 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-		var country = new Country(data.features[i].properties.SOVEREIGNT);
+		var country = new Country(data.features[i].properties.SOVEREIGNT, preloadeddata.countries[i].flagurl);
 
-		country.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX], preloadeddata.countries[i].flag)
+		country.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX]);
 
 
 
@@ -412,6 +412,7 @@ scene.add(new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 0.7 ));
 
 
 
+
 //global functions that apply on all countries & their data
 
 function updatecountryheights(){
@@ -453,46 +454,23 @@ function setheightdatasource(which){ //'which' should be chosen from PRELOADED_D
 
 function setMaterial(which){
 
-
-	//console.log("setMaterial");
-
 	
 	MATERIAL = parseInt(which);
 
-	//console.log(MATERIAL, which, typeof MATERIAL, typeof which);
 
-
-	switch(MATERIAL){
+	switch(which){
 
 		case 0: // "MeshNormalMaterial"
-
-			//console.log("MeshNormalMaterial");
-
-
-			for(i = 0; i < countries.length; ++i){
-
-				countries[i].mesh.material = new THREE.MeshNormalMaterial();
-
-				//console.log(i, countries[i].mesh.material);
-				
-			}
-
+			for(i = 0; i < countries.length; ++i) countries[i].setMaterial(which);
 			break;
 
 		case 1: // "flags"
-
-			for(i = 0; i < countries.length; ++i){
-
-				countries[i].mesh.material = new THREE.MeshPhongMaterial();
-
-				//set the texture from a pre-loaded array of flag images
-
-			}
-
+			for(i = 0; i < countries.length; ++i) countries[i].setMaterial(which);
 			break;
 	}
 
 }
+
 
 
 
@@ -641,6 +619,7 @@ function render(time){
 
 
 render();
+
 
 
 

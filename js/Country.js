@@ -1,6 +1,6 @@
 //create an extension of THREE.Mesh to store statistics data efficiently
 
-var Country = function( name, geometry, material ){
+var Country = function( name, flagurl, geometry, material ){
 
 	this.mesh = new THREE.Mesh( geometry, material );
 
@@ -11,21 +11,17 @@ var Country = function( name, geometry, material ){
 	this.name = name;
 	this.data = 1;
 
-	this.flag; //"assets/flags-ultra/" + countrydata.ISO_A2 + ".png"
+	this.flagtexture = textureloader.load( flagurl ); //"assets/flags-ultra/" + countrydata.ISO_A2 + ".png"
+
+	//console.log(this.flagtexture);
 
 }
 
 
 
-
-Country.prototype.setFromShapesAndData = function( shapes, data, flag ){
+Country.prototype.setFromShapesAndData = function( shapes, data ){
 
 	data = Math.pow( data, 1/CONTRAST );
-
-
-	this.flag = flag;
-
-	//console.log(this.flag);
 
 
 
@@ -38,7 +34,7 @@ Country.prototype.setFromShapesAndData = function( shapes, data, flag ){
 		countryGeometry = new THREE.ExtrudeGeometry( shapes, { amount: 1, bevelEnabled: false } );
 
 
-	countryMaterial = new THREE.MeshLambertMaterial( { } ); //TODO: finish flags
+	countryMaterial = new THREE.MeshPhongMaterial( { map: this.flagtexture } );
 	//countryMaterial = new THREE.MeshNormalMaterial();
 
 
@@ -52,6 +48,8 @@ Country.prototype.setFromShapesAndData = function( shapes, data, flag ){
 	this.data = data;
 
 	//console.log(data);
+
+	this.setMaterial(1);
 
 }
 
@@ -96,7 +94,6 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-
 //WIP color code
 
 function colorfromdata(data){
@@ -126,5 +123,29 @@ function advancedLerp( from, to, alpha, r, g, b ){
 
 
 	return result;
+
+}
+
+
+
+
+
+Country.prototype.setMaterial = function(which){
+
+	switch(which){
+
+		case 0: // "MeshNormalMaterial"
+
+			this.mesh.material = new THREE.MeshNormalMaterial();
+
+			break;
+
+		case 1: // "flags"
+
+			this.mesh.material = new THREE.MeshPhongMaterial( { map: this.flagtexture } );
+
+			break;
+
+	}
 
 }
