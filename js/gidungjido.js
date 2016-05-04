@@ -3,11 +3,16 @@
 var CLEAR_COLOR = 0x444444;
 
 
+var FLOOR_WIDTH = 500;
+var FLOOR_HEIGHT = 300;
+
+
 
 var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
 var CAMERA_MOVEMENT_SPEED = 0.5;
+
 
 
 
@@ -31,7 +36,6 @@ var MATERIAL_INDICIES = [
 ];
 
 
-
 var PRELOADED_DATA_INDICIES = [
 	"Gross Domestic Product",
 	"Population"/*,
@@ -45,6 +49,7 @@ var PRELOADED_DATA_INDICIES = [
 //DOM CONSTANTS
 
 var SLIDER_RESOLUTION = 10;
+
 
 
 var MAXIMUM_COUNTRY_HEIGHT_MINIMUM = 1;
@@ -87,7 +92,9 @@ var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 var MATERIAL = 1;
 
 
+
 var SHADOWS = false;
+
 
 
 
@@ -106,6 +113,10 @@ function DATA_MAXIMUM(){ //a function that pretends to be a variable
 
 
 
+
+
+
+//initialization
 
 var scene = new THREE.Scene();
 
@@ -127,8 +138,7 @@ intendedcamera.position.copy(camera.position);
 intendedcamera.rotation.copy(camera.rotation);
 
 
-
-//SUGGESTION: random starting position
+//TODO: random starting position
 
 intendedcamera.position.z = camera.position.z = 30;
 
@@ -148,6 +158,7 @@ renderer.setClearColor(CLEAR_COLOR, 1);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 
+
 document.body.appendChild(renderer.domElement);
 
 
@@ -158,9 +169,13 @@ var raycaster = new THREE.Raycaster();
 
 
 
-//country "captions" on mouse over
+
+
+
+//frequently accessed DOM elements
 
 var countryinfo = document.getElementById("countryinfo");
+
 
 
 
@@ -169,16 +184,11 @@ var countryinfo = document.getElementById("countryinfo");
 //disable the floor code until shadows work
 
 /*
-var FLOOR_WIDTH = 500;
-var FLOOR_HEIGHT = 300;
-
-
 
 var floorGeometry = new THREE.BoxGeometry( FLOOR_WIDTH, FLOOR_HEIGHT, DEFAULT_MAXIMUM_COUNTRY_HEIGHT );
 
 var floorMaterial = new THREE.MeshLambertMaterial( { color: CLEAR_COLOR } );
 //var floorMaterial = new THREE.MeshPhongMaterial( { color: CLEAR_COLOR, shininess: 100 } );
-
 
 
 var floor = new THREE.Mesh( floorGeometry, floorMaterial );
@@ -191,6 +201,7 @@ if(SHADOWS) floor.recieveShadow = true;
 
 
 scene.add( floor );
+
 */
 
 
@@ -198,7 +209,11 @@ scene.add( floor );
 
 
 
+
+//data
+
 var textureloader = new THREE.TextureLoader();
+
 
 
 var countries = [];
@@ -223,6 +238,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
+
 	for(i = 0; i < data.features.length; ++i){ //first, load the data
 
 		var countrydata = {
@@ -240,7 +256,9 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		};
 
 
+
 		preloadeddata.countries.push(countrydata);
+
 
 
 
@@ -259,7 +277,10 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 	}
 
+
+
 	preloadeddata.maximums = maximums; //save the maximum data
+
 
 	//console.log(preloadeddata);
 
