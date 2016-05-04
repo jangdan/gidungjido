@@ -1,57 +1,37 @@
 //create an extension of THREE.Mesh to store statistics data efficiently
 
-var Country = function( name, flagurl, geometry, material ){
+var Country = function( name, iso1366, shapes, flagurl){
 
-	this.mesh = new THREE.Mesh( geometry, material );
+	this.name = name;
+
+	this.iso1366 = iso1366;
+
+
+
+	this.shapes = shapes;
+
+
+	this.flagurl = flagurl;
+
+	this.flagtexture = textureloader.load( this.flagurl ); //"assets/flags-ultra/" + countrydata.ISO_A2 + ".png"
+
+
+
+
+	this.data = 1;
+
+
+
+
+	this.mesh;
+
 
 
 	this.tween;
 
-
-	this.name = name;
-	this.data = 1;
-
-	this.flagtexture = textureloader.load( flagurl ); //"assets/flags-ultra/" + countrydata.ISO_A2 + ".png"
-
-	//console.log(this.flagtexture);
-
 }
 
 
-
-Country.prototype.setFromShapesAndData = function( shapes, data ){
-
-	data = Math.pow( data, 1/CONTRAST );
-
-
-
-	var countryGeometry, countryMaterial;
-
-	if(!data)
-		countryGeometry = new THREE.ShapeGeometry( shapes );
-
-	else
-		countryGeometry = new THREE.ExtrudeGeometry( shapes, { amount: 1, bevelEnabled: false } );
-
-
-	countryMaterial = new THREE.MeshPhongMaterial( { map: this.flagtexture } );
-	//countryMaterial = new THREE.MeshNormalMaterial();
-
-
-	this.mesh = new THREE.Mesh( countryGeometry, countryMaterial );
-
-
-
-	this.setHeightData(data, false);
-
-
-	this.data = data;
-
-	//console.log(data);
-
-	this.setMaterial(1);
-
-}
 
 
 
@@ -60,10 +40,33 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 	if(applyContrast === undefined) applyContrast = true;
 
 
+
 	this.data = data;
 
 
 	if(applyContrast) data = Math.pow(data, 1/CONTRAST); //process data for more contrast
+
+
+
+	if( !this.mesh ){ //if 'this.mesh' is null
+
+		var countryGeometry, countryMaterial;
+
+
+		if(!this.data)
+			countryGeometry = new THREE.ShapeGeometry( this.shapes );
+
+		else
+			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
+
+
+		countryMaterial = new THREE.MeshPhongMaterial( { map: this.flagtexture } );
+		//countryMaterial = new THREE.MeshNormalMaterial();
+
+
+		this.mesh = new THREE.Mesh( countryGeometry, countryMaterial );
+
+	}
 
 
 
@@ -94,7 +97,33 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-//WIP color code
+
+Country.prototype.setMaterial = function(which){
+
+	switch(which){
+
+		case 0: // "MeshNormalMaterial"
+
+			this.mesh.material = new THREE.MeshNormalMaterial();
+
+			break;
+
+		case 1: // "flags"
+
+			this.mesh.material = new THREE.MeshPhongMaterial( { map: this.flagtexture } );
+
+			break;
+
+	}
+
+}
+
+
+
+
+
+
+//WIP static color functions
 
 function colorfromdata(data){
 
@@ -123,29 +152,5 @@ function advancedLerp( from, to, alpha, r, g, b ){
 
 
 	return result;
-
-}
-
-
-
-
-
-Country.prototype.setMaterial = function(which){
-
-	switch(which){
-
-		case 0: // "MeshNormalMaterial"
-
-			this.mesh.material = new THREE.MeshNormalMaterial();
-
-			break;
-
-		case 1: // "flags"
-
-			this.mesh.material = new THREE.MeshPhongMaterial( { map: this.flagtexture } );
-
-			break;
-
-	}
 
 }

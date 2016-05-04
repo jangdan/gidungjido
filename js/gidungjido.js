@@ -239,26 +239,32 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-	for(i = 0; i < data.features.length; ++i){ //first, load the data
+	for(i = 0; i < data.features.length; ++i){
+
+
+		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //ignore Antarctica (even if there are stats for that barren ice continent)
+
+
+
+		//data
 
 		var countrydata = {
 
 			"name": data.features[i].properties.SOVEREIGNT,
 
+			"ISO_3166-1": data.features[i].properties.ISO_A2, // ISO 3166-1: the default identification method for countries in this project
+
 			"data": [
 				data.features[i].properties.GDP_MD_EST,
 				data.features[i].properties.POP_EST,
 				//data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
-			],
-
-			"flagurl": "assets/flags-mini/" + data.features[i].properties.ISO_A2 + ".png"
+			]
 
 		};
 
 
 
 		preloadeddata.countries.push(countrydata);
-
 
 
 
@@ -275,32 +281,17 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST;
 		*/
 
-	}
-
-
-
-	preloadeddata.maximums = maximums; //save the maximum data
-
-
-	//console.log(preloadeddata);
 
 
 
 
-
-	for(i = 0; i < data.features.length; ++i){ //then, show the data. (ugh TWO FOR LOOPS?!?)
-
-
-		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //ignore Antarctica (even if there are stats for that barren ice continent)
-
-
-
+		//shapes
 
 		var countryShapes = []; //this will be a THREE.Shape or an Array of THREE.Shape
 
 
 
-		if(!data.features[i].geometry) continue; //skip if null
+		if(!data.features[i].geometry) continue; //skip if there is no geometry
 
 
 		switch(data.features[i].geometry.type){
@@ -323,10 +314,11 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-		var country = new Country(data.features[i].properties.SOVEREIGNT, preloadeddata.countries[i].flagurl);
 
-		country.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX]);
 
+		//creating 'Country' objects
+
+		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, countryShapes, "assets/flags-mini/" + data.features[i].properties.ISO_A2 + ".png" );
 
 
 		if(SHADOWS){
@@ -336,10 +328,27 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		}
 
-		scene.add(country.mesh);
-
 
 		countries.push(country);
+
+	}
+
+
+
+	preloadeddata.maximums = maximums; //save the maximum data
+
+
+	//console.log(preloadeddata);
+
+
+
+
+
+	for(i = 0; i < countries.length; ++i){
+
+		countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
+
+		scene.add(countries[i].mesh);
 
 	}
 
@@ -404,8 +413,8 @@ var directionallight = new THREE.DirectionalLight( 0xFFFFFF, 0.2 );
 directionallight.position.set( 1, 1, Math.sqrt(3) );
 
 
-
 //TODO: shadows
+
 if(SHADOWS){
 
 	directionallight.castShadow = true;
@@ -415,13 +424,7 @@ if(SHADOWS){
 }
 
 
-
 scene.add(directionallight);
-
-
-//scene.add( new THREE.DirectionalLightHelper(directionallight) );
-
-//scene.add( new THREE.CameraHelper(directionallight.shadow.camera) );
 
 
 
@@ -503,7 +506,10 @@ function render(time){
 
 	
 
+
+
 	//camera 조작
+
 	//zooming
 
 	camera.zoom += (intendedcamera.zoom - camera.zoom) * 0.1;
@@ -511,6 +517,7 @@ function render(time){
 
 	
 	//rotating the camera with euler angles
+
 	//pitch and yaw
 
 	if(!menuvisible){
@@ -527,6 +534,7 @@ function render(time){
 	
 	camera.rotation.x += (intendedcamera.rotation.x - camera.rotation.x) * 0.1;
 	camera.rotation.z += (intendedcamera.rotation.z - camera.rotation.z) * 0.1;
+
 
 
 	//moving
@@ -562,16 +570,16 @@ function render(time){
 	}
 
 
+
+
 	camera.position.x += (intendedcamera.position.x - camera.position.x) * 0.05;
 	camera.position.y += (intendedcamera.position.y - camera.position.y) * 0.05;
 	camera.position.z += (intendedcamera.position.z - camera.position.z) * 0.05;
 
 
-	//spotlight.position.copy(camera.position);
-
-
 
 	camera.updateProjectionMatrix();
+
 
 
 
@@ -631,12 +639,15 @@ function render(time){
 
 
 
+
 	TWEEN.update(time);
+
 
 
 	renderer.render(scene, camera);
 
 }
+
 
 
 render();
@@ -649,7 +660,6 @@ render();
 //events
 
 window.addEventListener( "resize", function(e){
-
 
 	if(menuvisible) stopcameramotion(); //stop any motion if the menu is visible
 
@@ -694,7 +704,6 @@ window.addEventListener( "mousewheel", function(e){ //zooming
 
 window.addEventListener( "mousemove", function(e){
 
-
 	if(menuvisible //ignore when you have something better to do with the mouse than moving it around without a visible cursor on the monitor
 	)
 		return;
@@ -723,7 +732,6 @@ window.addEventListener( "mousemove", function(e){
 //specifically key events
 
 function keyPressed(key){ //check if the key is currently pressed
-
 
 	if(PRESSED_KEYS.indexOf(key) != -1) return true;
 
@@ -788,7 +796,6 @@ window.addEventListener("keydown", function(e){
 
 window.addEventListener("keyup", function(e){
 
-
 	if(keyPressed(e.which))
 		PRESSED_KEYS.splice( PRESSED_KEYS.indexOf(e.which), 1 );
 
@@ -819,7 +826,6 @@ var menuvisible = true;
 
 function togglemenu(){
 
-
 	if(menuvisible){
 
 		new TWEEN.Tween( { opacity: 1 } )
@@ -834,7 +840,6 @@ function togglemenu(){
 			.start();
 
 	} else {
-
 
 		stopcameramotion(); //stop any motion
 
@@ -852,15 +857,19 @@ function togglemenu(){
 	}
 
 
+
 	menuvisible = !menuvisible;
+
 
 
 	document.getElementById("source").blur();
 
 
+
 	revalidateinfo();
 
 }
+
 
 
 
@@ -884,12 +893,16 @@ function toggleinfo(){
 }
 
 
+
+
+
 function revalidateinfo(){
 
 	if(SHOW_INFO && !menuvisible) showinfo();
 	else if(!SHOW_INFO || menuvisible) hideinfo();
 
 }
+
 
 function hideinfo(){
 
@@ -906,6 +919,7 @@ function showinfo(){
 
 
 
+
 function screenshot(){
 
 	window.open( renderer.domElement.toDataURL("image/png"), "Final");
@@ -918,7 +932,8 @@ function screenshot(){
 
 
 
-//misc. functions
+
+//other functions
 
 
 //a modified version of http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
