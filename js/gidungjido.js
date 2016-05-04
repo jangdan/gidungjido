@@ -235,7 +235,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 				//data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
 			],
 
-			"flagurl": "assets/flags-ultra/" + data.features[i].properties.ISO_A2 + ".png"
+			"flagurl": "assets/flags-mini/" + data.features[i].properties.ISO_A2 + ".png"
 
 		};
 
