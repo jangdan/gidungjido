@@ -60,7 +60,7 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
 
 
-		countryMaterial = new THREE.MeshPhongMaterial( { map: this.flagtexture } );
+		countryMaterial = new THREE.MeshLambertMaterial( { map: this.flagtexture } );
 		//countryMaterial = new THREE.MeshNormalMaterial();
 
 
@@ -110,7 +110,7 @@ Country.prototype.setMaterial = function(which){
 
 		case 1: // "flags"
 
-			this.mesh.material = new THREE.MeshPhongMaterial( { map: this.flagtexture } );
+			this.mesh.material = new THREE.MeshLambertMaterial( { map: this.flagtexture } );
 
 			break;
 
