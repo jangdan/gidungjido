@@ -457,6 +457,7 @@ function setheightdatasource(which){ //'which' should be chosen from PRELOADED_D
 	
 	DATA_INDEX = which;
 
+
 	for(i = 0; i < countries.length; ++i){
 
 		countries[i].setHeightData(
@@ -478,7 +479,6 @@ function setheightdatasource(which){ //'which' should be chosen from PRELOADED_D
 
 function setMaterial(which){
 
-	
 	MATERIAL = parseInt(which);
 
 
@@ -497,7 +497,7 @@ function setMaterial(which){
 				countries[i].setMaterial(MATERIAL);
 
 			break;
-			
+
 	}
 
 }
