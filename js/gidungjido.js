@@ -482,15 +482,22 @@ function setMaterial(which){
 	MATERIAL = parseInt(which);
 
 
-	switch(which){
+	switch(MATERIAL){
 
 		case 0: // "MeshNormalMaterial"
-			for(i = 0; i < countries.length; ++i) countries[i].setMaterial(which);
+
+			for(i = 0; i < countries.length; ++i)
+				countries[i].setMaterial(MATERIAL);
+
 			break;
 
 		case 1: // "flags"
-			for(i = 0; i < countries.length; ++i) countries[i].setMaterial(which);
+
+			for(i = 0; i < countries.length; ++i)
+				countries[i].setMaterial(MATERIAL);
+
 			break;
+			
 	}
 
 }
