@@ -16,7 +16,7 @@ var Country = function( name, iso1366, shapes, centers, flagurl){
 	this.centers = [];
 
 
-	if(!centers){
+	/*if(!centers)*/{
 
 		for(j = 0; j < shapes.length; ++j){
 
@@ -24,7 +24,7 @@ var Country = function( name, iso1366, shapes, centers, flagurl){
 			this.centers.push( new THREE.Vector2(0, 0) );
 
 
-			for(k = 0; k < shapes[j].actions.length; ++k){
+			for( k = 0; k < shapes[j].actions.length; ++k ){
 
 				this.centers[j].x += shapes[j].actions[k].args[0];
 				this.centers[j].y += shapes[j].actions[k].args[1];
@@ -48,7 +48,7 @@ var Country = function( name, iso1366, shapes, centers, flagurl){
 			max.fromArray( shapes[j].actions[0].args );
 
 
-			for(k = 1; k < shapes[j].actions.length; ++k){ //skip k = 0
+			for( k = 1; k < shapes[j].actions.length; ++k ){ //skip k = 0
 
 				if( shapes[j].actions[k].args[0] < min.x){
 
@@ -81,29 +81,32 @@ var Country = function( name, iso1366, shapes, centers, flagurl){
 
 
 
-			var boundingbox = new THREE.Box2();
+			var boundingBox = new THREE.Box2();
+
 
 			var shapepoints = [];
 
-			for(k = 0; k < shapes[j].actions.length; ++k){
+			for( k = 0; k < shapes[j].actions.length; ++k ){
 
 				shapepoints.push( ( new THREE.Vector2() ).fromArray( shapes[j].actions[k].args ) );
 
 			}
 
-			boundingbox.setFromPoints( shapepoints );
+
+			boundingBox.setFromPoints( shapepoints );
 
 
 
-			this.centers.push( boundingbox.center() );
+			this.centers.push( boundingBox.center() );
 
 		}
 
-	} else {
+	} /* else {
 
 		this.centers = centers;
 
 	}
+	*/
 
 	
 
@@ -154,15 +157,26 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 		var countryGeometry, countryMaterial;
 
 
-		if(!this.data)
+
+		if(!this.data || this.data === 0)
 			countryGeometry = new THREE.ShapeGeometry( this.shapes );
 
 		else
 			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
 
 
+
+		for( j = 0; j < countryGeometry.faceVertexUvs.length; ++j ){
+
+			countryGeometry.faceVertexUvs[j].sub( this.centers[0] ); 
+
+		}
+
+
+
 		countryMaterial = new THREE.MeshLambertMaterial( { map: this.flagtexture } );
 		//countryMaterial = new THREE.MeshNormalMaterial();
+
 
 
 		this.mesh = new THREE.Mesh( countryGeometry, countryMaterial );
@@ -182,6 +196,7 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 	}
 
+
 	//console.log(data);
 
 
@@ -193,6 +208,8 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 	}
 	*/
+
+	//console.log( this.mesh.geometry.faceVertexUvs );
 
 }
 
