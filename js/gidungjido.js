@@ -318,7 +318,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		//creating 'Country' objects
 
-		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, countryShapes, "assets/flags-mini/" + data.features[i].properties.ISO_A2 + ".png" );
+		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, countryShapes, undefined, "assets/flags-mini/" + data.features[i].properties.ISO_A2 + ".png" );
 
 
 		if(SHADOWS){
@@ -339,18 +339,6 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 	//console.log(preloadeddata);
-
-
-
-
-
-	for(i = 0; i < countries.length; ++i){
-
-		countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
-
-		scene.add(countries[i].mesh);
-
-	}
 
 
 
@@ -391,6 +379,21 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 		return countryShapes; //returns a THREE.Shape Array
+
+	}
+
+
+
+
+
+
+	//mamuri
+
+	for(i = 0; i < countries.length; ++i){
+
+		countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
+
+		scene.add(countries[i].mesh);
 
 	}
 
