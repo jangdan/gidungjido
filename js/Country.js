@@ -1,6 +1,6 @@
 //create an extension of THREE.Mesh to store statistics data efficiently
 
-var Country = function( name, iso1366, shapes, centers, flagurl){
+var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* boundingBox, center, boundingBoxes, centers */){
 
 	this.name = name;
 
@@ -11,16 +11,22 @@ var Country = function( name, iso1366, shapes, centers, flagurl){
 	this.shapes = shapes;
 
 
+
+
+	/*
+
 	//TODO: calculate distance between centers, then group them, then draw the textures relative to the centers so the 무늬 turns out correctly
 
 	this.centers = [];
 
 
-	/*if(!centers)*/{
+	if(!centers){
 
 		for(j = 0; j < shapes.length; ++j){
 
 			/*
+			//center of mass
+
 			this.centers.push( new THREE.Vector2(0, 0) );
 
 
@@ -33,51 +39,7 @@ var Country = function( name, iso1366, shapes, centers, flagurl){
 
 			this.centers[j].divideScalar( shapes[j].actions.length );
 
-			*/
-
-
-
-			/*
-
-			//initialize
-
-			var min = new THREE.Vector2();
-			var max = new THREE.Vector2();
-
-			min.fromArray( shapes[j].actions[0].args );
-			max.fromArray( shapes[j].actions[0].args );
-
-
-			for( k = 1; k < shapes[j].actions.length; ++k ){ //skip k = 0
-
-				if( shapes[j].actions[k].args[0] < min.x){
-
-					min.x = shapes[j].actions[k].args[0];
-
-				}
-
-				if( shapes[j].actions[k].args[1] < min.y){
-
-					min.y = shapes[j].actions[k].args[1];
-
-				}
-
-
-				if( shapes[j].actions[k].args[0] > max.x){
-
-					max.x = shapes[j].actions[k].args[0];
-
-				}
-
-				if( shapes[j].actions[k].args[1] > max.y){
-
-					max.y = shapes[j].actions[k].args[1];
-
-				}
-
-			}
-
-			*/
+			*
 
 
 
@@ -92,32 +54,54 @@ var Country = function( name, iso1366, shapes, centers, flagurl){
 
 			}
 
-
 			boundingBox.setFromPoints( shapepoints );
 
+
+			/*
+			if(!boundingBox) this.boundingBoxes.push( boundingBox );
+			else this.boundingBoxes = boundingBoxes;
+			*
 
 
 			this.centers.push( boundingBox.center() );
 
 		}
 
-	} /* else {
+	} else this.centers = centers; */
 
-		this.centers = centers;
+	
+
+
+	var boundingBox = new THREE.Box2();
+
+	//var centerofgravity = new THREE.Vector2(0, 0);
+
+
+	/*
+	for( j = 0; j < exteriorRing.length; ++j ){
+
+		centerofgravity.add( exteriorRing[j] );
 
 	}
 	*/
 
-	
+
+	boundingBox.setFromPoints( exteriorRing );
+
+	//centerofgravity.divideScalar( exteriorRing.length );
+
+
+	this.flagcenter = boundingBox.center();
+
+
+
 
 	this.flagurl = flagurl;
 
 	this.flagtexture = textureloader.load( this.flagurl ); //"assets/flags-ultra/" + countrydata.ISO_A2 + ".png"
+	
+	this.flagtexture.offset = new THREE.Vector2(0.5, 0.5);
 
-	/*
-	this.flagtexture.wrapS = THREE.RepeatWrapping;
-	this.flagtexture.wrapT = THREE.RepeatWrapping;
-	*/
 
 
 
@@ -168,7 +152,17 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 		for( j = 0; j < countryGeometry.faceVertexUvs.length; ++j ){
 
-			countryGeometry.faceVertexUvs[j].sub( this.centers[0] ); 
+			for( k = 0; k < countryGeometry.faceVertexUvs[j].length; ++k ){
+
+				for( l = 0; l < countryGeometry.faceVertexUvs[j][k].length; ++l){
+
+					countryGeometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
+
+					countryGeometry.faceVertexUvs[j][k][l].multiplyScalar(1); //flag scale
+
+				}
+
+			}
 
 		}
 

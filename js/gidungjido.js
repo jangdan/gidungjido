@@ -239,7 +239,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-	for(i = 0; i < data.features.length; ++i){
+	for( i = 0; i < data.features.length; ++i ){
 
 
 		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //ignore Antarctica (even if there are stats for that barren ice continent)
@@ -289,6 +289,8 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		var countryShapes = []; //this will be a THREE.Shape or an Array of THREE.Shape
 
+		var exteriorRing = []; //an array of Vector2s
+
 
 
 		if(!data.features[i].geometry) continue; //skip if there is no geometry
@@ -298,15 +300,24 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 			case "Polygon": //http://geojson.org/geojson-spec.html#id4
 
-				Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates) );
+				var parseddata = parsePolygon(data.features[i].geometry.coordinates);
+
+				Array.prototype.push.apply( countryShapes, parseddata.countryShapes );
+				Array.prototype.push.apply( exteriorRing, parseddata.exteriorRing );
 
 				break;
 
 
-			case "MultiPolygon": //an array of "Polygon"s
+			case "MultiPolygon": //an array of 'Polygon's
 
-				for(l = 0; l < data.features[i].geometry.coordinates.length; ++l)
-					Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates[l]) );
+				for( l = 0; l < data.features[i].geometry.coordinates.length; ++l ){
+				
+					var parseddata = parsePolygon(data.features[i].geometry.coordinates[l]);
+
+					Array.prototype.push.apply( countryShapes, parseddata.countryShapes );
+					Array.prototype.push.apply( exteriorRing, parseddata.exteriorRing );
+
+				}
 
 				break;
 
@@ -318,7 +329,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		//creating 'Country' objects
 
-		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, countryShapes, undefined, "assets/flags-mini/" + data.features[i].properties.ISO_A2 + ".png" );
+		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, "assets/flags-normal/" + data.features[i].properties.ISO_A2 + ".png", countryShapes, exteriorRing );
 
 
 		if(SHADOWS){
@@ -347,17 +358,26 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		var countryShapes;
 
+		var exteriorRing = [];
+
 
 		var paths = [];
 
 
-		for(j = 0; j < coordinates.length; ++j){ //each seperate 'part' of a country (islands, exclaves, etc)
+		for( j = 0; j < coordinates.length; ++j ){ //the lines that define the country (or a part of a country)
 
 			var points = [];
 
-			for(k = 0; k < coordinates[j].length; ++k){ //the points of that 'part'
+			for( k = 0; k < coordinates[j].length; ++k ){ //the points of that line
 				
-				points.push(new THREE.Vector2( coordinates[j][k][0], coordinates[j][k][1] ));
+				points.push( new THREE.Vector2( coordinates[j][k][0], coordinates[j][k][1] ) );
+
+
+				if( j === 0 ){
+
+					exteriorRing.push( new THREE.Vector2( coordinates[j][k][0], coordinates[j][k][1] ) );
+
+				}
 
 			}
 
@@ -369,16 +389,15 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-		countryShapes = paths[0].toShapes(); //initialize the shape (toShapes() will only return ONE THREE.Shape)
+		countryShapes = paths[0].toShapes(); //initialize the shape (toShapes() will only return ONE THREE.Shape; it won't be an array)
 
 
-		paths.splice(0, 1); //remove the first path (check GeoJSON specs for more information)
-
+		paths.splice(0, 1); //remove the first path to add holes (check GeoJSON specs for more information)
 
 		Array.prototype.push.apply(countryShapes[0].holes, paths); //add the holes
 
 
-		return countryShapes; //returns a THREE.Shape Array
+		return { countryShapes, exteriorRing }; //returns a THREE.Shape array
 
 	}
 
@@ -389,7 +408,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 	//mamuri
 
-	for(i = 0; i < countries.length; ++i){
+	for( i = 0; i < countries.length; ++i ){
 
 		countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
 
@@ -461,7 +480,7 @@ function setheightdatasource(which){ //'which' should be chosen from PRELOADED_D
 	DATA_INDEX = which;
 
 
-	for(i = 0; i < countries.length; ++i){
+	for( i = 0; i < countries.length; ++i ){
 
 		countries[i].setHeightData(
 
@@ -489,14 +508,14 @@ function setMaterial(which){
 
 		case 0: // "MeshNormalMaterial"
 
-			for(i = 0; i < countries.length; ++i)
+			for( i = 0; i < countries.length; ++i )
 				countries[i].setMaterial(MATERIAL);
 
 			break;
 
 		case 1: // "flags"
 
-			for(i = 0; i < countries.length; ++i)
+			for( i = 0; i < countries.length; ++i )
 				countries[i].setMaterial(MATERIAL);
 
 			break;
@@ -610,7 +629,7 @@ function render(time){
 	
 			var pointedCountry;
 		
-			for(i = 0; i < countries.length; ++i){
+			for( i = 0; i < countries.length; ++i ){
 		
 				if(countries[i].mesh === intersections[0].object){
 		
