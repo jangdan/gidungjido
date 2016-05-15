@@ -214,7 +214,23 @@ scene.add( floor );
 
 //data
 
-var textureloader = new THREE.TextureLoader();
+var loadingmanager = new THREE.LoadingManager();
+
+loadingmanager.onProgress = function ( item, loaded, total ) {
+
+	//console.log( item, loaded, total );
+
+};
+
+
+
+var textureloader = new THREE.TextureLoader( loadingmanager );
+
+
+
+loadingmanager.onLoad = function(){
+
+};
 
 
 
