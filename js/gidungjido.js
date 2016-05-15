@@ -158,6 +158,8 @@ renderer.setClearColor(CLEAR_COLOR, 1);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 
+var MAX_ANISOTROPY = renderer.getMaxAnisotropy();
+
 
 document.body.appendChild(renderer.domElement);
 

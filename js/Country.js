@@ -102,7 +102,7 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 	
 	this.flagtexture.offset = new THREE.Vector2(0.5, 0.5);
 
-
+	//this.flagtexture.anisotropy = MAX_ANISOTROPY;
 
 
 
