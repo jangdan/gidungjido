@@ -74,10 +74,10 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 
 	var boundingBox = new THREE.Box2();
 
-	//var centerofgravity = new THREE.Vector2(0, 0);
-
-
 	/*
+	var centerofgravity = new THREE.Vector2(0, 0);
+
+
 	for( j = 0; j < exteriorRing.length; ++j ){
 
 		centerofgravity.add( exteriorRing[j] );
@@ -88,7 +88,9 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 
 	boundingBox.setFromPoints( exteriorRing );
 
-	//centerofgravity.divideScalar( exteriorRing.length );
+	/*
+	centerofgravity.divideScalar( exteriorRing.length );
+	*/
 
 
 	this.flagcenter = boundingBox.center();
@@ -98,11 +100,29 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 
 	this.flagurl = flagurl;
 
-	this.flagtexture = textureloader.load( this.flagurl ); //"assets/flags-ultra/" + countrydata.ISO_A2 + ".png"
-	
-	this.flagtexture.offset = new THREE.Vector2(0.5, 0.5);
+	if( !( !this.flagurl ) && ( this.iso1366 !== "-99" && this.iso1366 !== "SS" && this.iso1366 !== "XK" ) ){ //excude South Sudan & Kosovo because I can't find a flag that fits the dimensions (sorry! really really sorry!), but wait–I might be able to do something
 
-	//this.flagtexture.anisotropy = MAX_ANISOTROPY;
+		console.log(this.iso1366 === "-99");
+
+		this.flagtexture = textureloader.load(
+	
+			flagurl, //"assets/flags-ultra/" + countrydata.ISO_A2 + ".png"
+	
+			function(texture){
+	
+				this.textureaspectratio = texture.image.width/texture.image.height;
+	
+			}
+	
+		); 
+	
+		
+		//this.flagtexture.offset = new THREE.Vector2(0.5, 0.5);
+	
+		//this.flagtexture.anisotropy = MAX_ANISOTROPY;
+	
+	}
+
 
 
 
@@ -149,6 +169,7 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
 
 
+		console.log(this.textureaspectratio);
 
 		for( j = 0; j < countryGeometry.faceVertexUvs.length; ++j ){
 
@@ -156,9 +177,35 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 				for( l = 0; l < countryGeometry.faceVertexUvs[j][k].length; ++l){
 
+					/*
+
+					var vector3 = new THREE.Vector3( countryGeometry.faceVertexUvs[j][k][l].x, countryGeometry.faceVertexUvs[j][k][l].y, 0 );
+					
+
+					var matrix = new THREE.Matrix4();
+
+
+					matrix.makeScale( 1/2, 1/2, 1/2 );
+
+					matrix.makeTranslation( -this.flagcenter.x, -this.flagcenter.y, -this.flagcenter.z )
+
+
+					vector3.applyMatrix4( matrix );
+
+
+					countryGeometry.faceVertexUvs[j][k][l].set( vector3.x, vector3.y );
+					
+					*/
+
+
+
+					//alt
+
 					countryGeometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
 
-					countryGeometry.faceVertexUvs[j][k][l].multiplyScalar(1); //flag scale
+					//flag scaling (WIP; TODO)
+					//countryGeometry.faceVertexUvs[j][k][l].multiplyScalar(1/2);
+					//countryGeometry.faceVertexUvs[j][k][l].add( new THREE.Vector2( this.flagaspectratio * countryGeometry.faceVertexUvs[j][k][l].x, 0 ) );
 
 				}
 
