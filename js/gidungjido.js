@@ -3,6 +3,7 @@
 var CLEAR_COLOR = 0xDDDDDD;
 
 
+
 var FLOOR_WIDTH = 500;
 var FLOOR_HEIGHT = 300;
 
@@ -218,7 +219,7 @@ var loadingmanager = new THREE.LoadingManager();
 
 loadingmanager.onProgress = function ( item, loaded, total ) {
 
-	//console.log( item, loaded, total );
+	console.log( item, loaded, total );
 
 };
 
@@ -260,7 +261,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 	for( i = 0; i < data.features.length; ++i ){
 
 
-		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //ignore Antarctica (even if there are stats for that barren ice continent)
+		if(data.features[i].properties.TYPE === "Indeterminate") continue; //ignore 'Indeterminate' countries
 
 
 
