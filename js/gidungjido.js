@@ -217,6 +217,7 @@ scene.add( floor );
 
 var loadingmanager = new THREE.LoadingManager();
 
+
 loadingmanager.onProgress = function ( item, loaded, total ) {
 
 	console.log( item, loaded, total );
@@ -225,11 +226,16 @@ loadingmanager.onProgress = function ( item, loaded, total ) {
 
 
 
+
 var textureloader = new THREE.TextureLoader( loadingmanager );
 
 
 
+
 loadingmanager.onLoad = function(){
+
+	document.getElementById("loading").style.visibility = "hidden";
+	document.getElementById("loaded").style.visibility = "visible";
 
 };
 

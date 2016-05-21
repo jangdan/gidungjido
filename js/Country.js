@@ -215,7 +215,10 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-		countryMaterial = new THREE.MeshLambertMaterial( { map: this.flagtexture } );
+		if(!this.flagtexture) countryMaterial = new THREE.MeshLambertMaterial();
+		else countryMaterial = new THREE.MeshLambertMaterial( { map: this.flagtexture } );
+
+
 		//countryMaterial = new THREE.MeshNormalMaterial();
 
 
