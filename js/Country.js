@@ -1,4 +1,7 @@
+
 //create an extension of THREE.Mesh to store statistics data efficiently
+
+
 
 var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* boundingBox, center, boundingBoxes, centers */){
 
@@ -8,9 +11,8 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 
 
 
+
 	this.shapes = shapes;
-
-
 
 
 	/*
@@ -71,7 +73,6 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 
 	
 
-
 	var boundingBox = new THREE.Box2();
 
 	/*
@@ -98,11 +99,11 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 
 
 
+
 	this.flagurl = flagurl;
 
-	if( !( !this.flagurl ) && ( this.iso1366 !== "-99" && this.iso1366 !== "SS" && this.iso1366 !== "XK" ) ){ //excude South Sudan & Kosovo because I can't find a flag that fits the dimensions (sorry! really really sorry!), but wait–I might be able to do something
 
-		console.log(this.iso1366 === "-99");
+	if( !( !this.flagurl ) && (this.iso1366 !== "-99" && this.iso1366 !== "SS" && this.iso1366 !== "XK") ){ //excude South Sudan & Kosovo because I can't find a flag that fits the dimensions (sorry! really really sorry!), but wait–I might be able to do something
 
 		this.flagtexture = textureloader.load(
 	
@@ -117,7 +118,7 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 		); 
 	
 		
-		//this.flagtexture.offset = new THREE.Vector2(0.5, 0.5);
+		this.flagtexture.offset = new THREE.Vector2(0.5, 0.5);
 	
 		//this.flagtexture.anisotropy = MAX_ANISOTROPY;
 	
@@ -135,9 +136,12 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 
 
 
+
 	this.tween;
 
 }
+
+
 
 
 
@@ -162,20 +166,21 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-		if(!this.data || this.data === 0)
+		if( !this.data || this.data === 0)
 			countryGeometry = new THREE.ShapeGeometry( this.shapes );
 
 		else
 			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
 
 
+
 		console.log(this.textureaspectratio);
 
-		for( j = 0; j < countryGeometry.faceVertexUvs.length; ++j ){
+		for(j = 0; j < countryGeometry.faceVertexUvs.length; ++j){
 
-			for( k = 0; k < countryGeometry.faceVertexUvs[j].length; ++k ){
+			for(k = 0; k < countryGeometry.faceVertexUvs[j].length; ++k){
 
-				for( l = 0; l < countryGeometry.faceVertexUvs[j][k].length; ++l){
+				for(l = 0; l < countryGeometry.faceVertexUvs[j][k].length; ++l){
 
 					/*
 
@@ -215,7 +220,7 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-		if(!this.flagtexture) countryMaterial = new THREE.MeshLambertMaterial();
+		if( !this.flagtexture ) countryMaterial = new THREE.MeshLambertMaterial();
 		else countryMaterial = new THREE.MeshLambertMaterial( { map: this.flagtexture } );
 
 
@@ -223,22 +228,24 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-		this.mesh = new THREE.Mesh( countryGeometry, countryMaterial );
+		this.mesh = new THREE.Mesh(countryGeometry, countryMaterial);
 
 	}
 
 
 
-	if( !(this.mesh.geometry instanceof THREE.ShapeGeometry) ){
+	if( !( this.mesh.geometry instanceof THREE.ShapeGeometry ) ){
 
 		//this.mesh.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
 
 		this.tween = new TWEEN.Tween( this.mesh.scale )
 			.to( { z: data * MAXIMUM_COUNTRY_HEIGHT }, 700 )
-			.easing(TWEEN.Easing.Quadratic.Out)
+			.easing( TWEEN.Easing.Quadratic.Out )
 			.start();
 
 	}
+
+
 
 
 	//console.log(data);
@@ -253,9 +260,8 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 	}
 	*/
 
-	//console.log( this.mesh.geometry.faceVertexUvs );
-
 }
+
 
 
 
@@ -284,6 +290,9 @@ Country.prototype.setMaterial = function(which){
 
 
 
+
+
+/*
 
 //WIP static color functions
 
@@ -316,3 +325,5 @@ function advancedLerp( from, to, alpha, r, g, b ){
 	return result;
 
 }
+
+*/

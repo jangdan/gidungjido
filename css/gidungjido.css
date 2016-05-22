@@ -10,6 +10,8 @@
 
 
 
+
+
 canvas {
 
 	width: 100%;
@@ -44,12 +46,15 @@ body {
 
 
 
+
 :lang(ko){
 
 	font-family: "Noto Sans KR", "Noto Sans TC";
 	font-weight: 100;
 
 }
+
+
 
 
 
@@ -91,11 +96,14 @@ button {
 
 
 
+
+
 span.underline {
 
 	text-decoration: underline;
 
 }
+
 
 
 
@@ -116,11 +124,13 @@ span.roundedborder {
 
 
 
+
 .crt {
 
 	background: transparent url("../assets/crt.png") !important;
 
 }
+
 
 
 
@@ -145,6 +155,7 @@ p {
 
 
 
+
 #menu {
 
 	width: 100%;
@@ -156,35 +167,11 @@ p {
 
 
 
+
 #loading {
 
 	margin-top: 64px; /* fallback */
 	margin-top: 33vh;
-
-}
-
-
-
-h1 {
-
-	padding: 1em;
-
-	margin-top: 1em;
-
-	
-	line-height: 1em;
-
-	font-size: 64px;
-
-}
-
-h2 {
-	padding: 1em;
-	
-	
-	line-height: 1em;
-
-	font-size: 24px;
 
 }
 
@@ -214,6 +201,36 @@ h2 {
 
 
 	border-radius: 3px;
+
+}
+
+
+
+
+
+
+h1 {
+
+	padding: 1em;
+
+	margin-top: 1em;
+
+	
+	line-height: 1em;
+
+	font-size: 64px;
+
+}
+
+
+
+h2 {
+	padding: 1em;
+	
+	
+	line-height: 1em;
+
+	font-size: 24px;
 
 }
 
