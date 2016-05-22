@@ -158,7 +158,11 @@ p {
 
 #loading {
 
+	margin-top: 64px; /* fallback */
+	margin-top: 33vh;
+
 }
+
 
 
 h1 {
