@@ -215,6 +215,12 @@ scene.add( floor );
 
 //data
 
+var countries = [];
+
+
+
+
+
 var loadingmanager = new THREE.LoadingManager();
 
 
@@ -234,14 +240,10 @@ var textureloader = new THREE.TextureLoader( loadingmanager );
 
 loadingmanager.onLoad = function(){
 
-	document.getElementById("loading").style.visibility = "hidden";
-	document.getElementById("loaded").style.visibility = "visible";
+	document.getElementById("loading").style.display = "none";
+	document.getElementById("loaded").style.display = "block";
 
 };
-
-
-
-var countries = [];
 
 
 
