@@ -103,6 +103,10 @@ var SHADOWS = false;
 
 //data
 
+var flags = [];
+
+
+
 var preloadeddata = { countries: [], maximums: [] }; //the data that will be shown
 
 function DATA_MAXIMUM(){ //a function that pretends to be a variable
@@ -226,7 +230,7 @@ var loadingmanager = new THREE.LoadingManager();
 
 loadingmanager.onProgress = function ( item, loaded, total ) {
 
-	console.log( item, loaded, total );
+	//console.log( item, loaded, total );
 
 };
 
@@ -244,6 +248,7 @@ loadingmanager.onLoad = function(){
 	document.getElementById("loaded").style.display = "block";
 
 };
+
 
 
 
@@ -266,10 +271,59 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-	for( i = 0; i < data.features.length; ++i ){
 
+	for(i = 0; i < data.features.length; ++i){
 
 		if(data.features[i].properties.TYPE === "Indeterminate") continue; //ignore 'Indeterminate' countries
+
+
+
+
+
+		var flagdata = {
+
+			"name": data.features[i].properties.SOVEREIGNT,
+
+			"ISO_3166-1": data.features[i].properties.ISO_A2, // ISO 3166-1: the default identification method for countries in this project
+
+			"texture": undefined,
+			"aspectratio": undefined
+
+		}
+
+		flags.push(flagdata);
+
+
+
+
+		//textures
+
+		textureloader.load(
+
+			"assets/flags-normal/" + data.features[i].properties.ISO_A2 + ".png",
+
+			function(texture){
+
+				//TODO: optimize
+
+				var flagdata = flags.filter( function(flagdatum){
+
+					var splitpath = texture.image.src.split("/");
+					var filename = splitpath[ splitpath.length - 1 ];
+
+					return flagdatum["ISO_3166-1"] === filename.split(".")[0];
+
+				} )[0];
+
+
+				flagdata.texture = texture;
+				flagdata.aspectratio = texture.image.width/texture.image.height;	
+
+			}
+
+		);
+
+
 
 
 
@@ -356,7 +410,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		//creating 'Country' objects
 
-		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, "assets/flags-normal/" + data.features[i].properties.ISO_A2 + ".png", countryShapes, exteriorRing );
+		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, undefined, countryShapes, exteriorRing );
 
 
 		if(SHADOWS){

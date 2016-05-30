@@ -3,7 +3,7 @@
 
 
 
-var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* boundingBox, center, boundingBoxes, centers */){
+var Country = function( name, iso1366, textureObject, shapes, exteriorRing /* boundingBox, center, boundingBoxes, centers */){
 
 	this.name = name;
 
@@ -100,6 +100,13 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 
 
 
+	/*
+	this.flagtexture = textureObject.texture;
+
+	this.flagtextureaspectratio = textureObject.aspectratio;
+	*/
+
+	/*
 	this.flagurl = flagurl;
 
 
@@ -123,6 +130,7 @@ var Country = function( name, iso1366, flagurl, shapes, exteriorRing /* bounding
 		//this.flagtexture.anisotropy = MAX_ANISOTROPY;
 	
 	}
+	*/
 
 
 
