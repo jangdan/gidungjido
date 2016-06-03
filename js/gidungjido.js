@@ -542,7 +542,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		for(i = 0; i < countries.length; ++i){
 
-			countries[i].setTexture(flags[i]);
+			countries[i].setTexture(flagTextures[i]);
 
 
 			countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
