@@ -3,7 +3,7 @@
 
 
 
-var Country = function( name, iso1366, textureObject, shapes, exteriorRing /* boundingBox, center, boundingBoxes, centers */){
+var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, center, boundingBoxes, centers */){
 
 	this.name = name;
 
@@ -155,6 +155,17 @@ var Country = function( name, iso1366, textureObject, shapes, exteriorRing /* bo
 
 
 
+Country.prototype.setTexture = function( flagTextureObject ){
+
+	this.flagtexture = flagTextureObject.texture;
+	this.flagaspectratio = flagTextureObject.flagaspectratio;
+
+}
+
+
+
+
+
 Country.prototype.setHeightData = function( data, applyContrast ){
 
 	if(applyContrast === undefined) applyContrast = true;
@@ -182,7 +193,7 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-		console.log(this.textureaspectratio);
+		//console.log(this.textureaspectratio);
 
 		for(j = 0; j < countryGeometry.faceVertexUvs.length; ++j){
 

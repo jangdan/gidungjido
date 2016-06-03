@@ -230,7 +230,7 @@ var loadingmanager = new THREE.LoadingManager();
 
 loadingmanager.onProgress = function ( item, loaded, total ) {
 
-	//console.log( item, loaded, total );
+	console.log( item, loaded, total );
 
 };
 
@@ -242,18 +242,40 @@ var textureloader = new THREE.TextureLoader( loadingmanager );
 
 
 
+/*
 loadingmanager.onLoad = function(){
 
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("loaded").style.display = "block";
 
+	render();
+
 };
+*/
 
 
 
 
 
 loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ //'JSONObject' is a very large GeoJSON-formatted object
+
+
+
+	loadingmanager.onLoad = function(){
+
+		mamuri();
+
+
+		document.getElementById("loading").style.display = "none";
+		document.getElementById("loaded").style.display = "block";
+
+		render();
+
+	}
+
+
+
+
 
 	var data = JSONObject;
 
@@ -276,6 +298,11 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		if(data.features[i].properties.TYPE === "Indeterminate") continue; //ignore 'Indeterminate' countries
 
+
+
+		if(data.features[i].properties.ISO_A2 === "-99"
+		|| data.features[i].properties.ISO_A2 === "XK"
+		|| data.features[i].properties.ISO_A2 === "SS") continue; // delete this later
 
 
 
@@ -324,7 +351,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		);
 
 
-
+		
 
 
 		//data
@@ -410,7 +437,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		//creating 'Country' objects
 
-		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, undefined, countryShapes, exteriorRing );
+		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, countryShapes, exteriorRing );
 
 
 		if(SHADOWS){
@@ -489,6 +516,23 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 	//mamuri
 
+	function mamuri(){
+
+		for(i = 0; i < countries.length; ++i){
+
+			countries[i].setTexture(flags[i]);
+
+
+			countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
+
+
+			scene.add(countries[i].mesh);
+
+		}
+
+	}
+
+	/*
 	for( i = 0; i < countries.length; ++i ){
 
 		countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
@@ -496,6 +540,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		scene.add(countries[i].mesh);
 
 	}
+	*/
 
 });
 
@@ -757,10 +802,6 @@ function render(time){
 	renderer.render(scene, camera);
 
 }
-
-
-
-render();
 
 
 
