@@ -100,6 +100,14 @@ var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, cent
 
 
 
+	this.boundingBoxdimensions = new THREE.Vector2( boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y);
+
+	//this.boundingBoxaspectratio = boundingBox.width/boundingBox.height;
+
+
+
+
+
 	/*
 	this.flagtexture = textureObject.texture;
 
@@ -158,8 +166,86 @@ var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, cent
 Country.prototype.setTexture = function( flagTextureObject ){
 
 	this.flagtexture = flagTextureObject.texture;
+	this.flagtexture.offset.set(0.5, 0.5);
+
 	this.flagaspectratio = flagTextureObject.flagaspectratio;
 
+
+	this.adjustuvs();
+
+}
+
+
+
+Country.prototype.adjustuvs = function(){
+
+		if(!this.mesh) return;
+
+
+		console.log(this.flagtexture);
+
+
+		for(j = 0; j < this.mesh.geometry.faceVertexUvs.length; ++j){
+
+			for(k = 0; k < this.mesh.geometry.faceVertexUvs[j].length; ++k){
+
+				for(l = 0; l < this.mesh.geometry.faceVertexUvs[j][k].length; ++l){
+
+					/*
+
+					var vector3 = new THREE.Vector3( countryGeometry.faceVertexUvs[j][k][l].x, countryGeometry.faceVertexUvs[j][k][l].y, 0 );
+					
+
+					var matrix = new THREE.Matrix4();
+
+
+					matrix.makeScale( 1/2, 1/2, 1/2 );
+
+					matrix.makeTranslation( -this.flagcenter.x, -this.flagcenter.y, -this.flagcenter.z )
+
+
+					vector3.applyMatrix4( matrix );
+
+
+					countryGeometry.faceVertexUvs[j][k][l].set( vector3.x, vector3.y );
+					
+					*/
+
+
+					//alt
+
+					this.mesh.geometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
+
+
+					if(this.flagaspectratio > this.boundingBoxaspectratio){ // match heights
+
+						this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.y );
+
+						//this.mesh.geometry.faceVertexUvs[j][k][l].x /= this.boundingBoxdimensions.y;
+
+
+					} else { // match widths
+
+						//this.mesh.geometry.faceVertexUvs[j][k][l].add( new THREE.Vector2( 1 - this.flagaspectratio, 0) );
+
+
+						this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.x );
+
+						//this.mesh.geometry.faceVertexUvs[j][k][l].y = this.boundingBoxdimensions.y/this.mesh.geometry.faceVertexUvs[j][k][l].y;
+
+					}
+
+
+
+					//flag scaling (WIP; TODO)
+					//countryGeometry.faceVertexUvs[j][k][l].multiplyScalar(1/2);
+					//countryGeometry.faceVertexUvs[j][k][l].add( new THREE.Vector2( this.flagaspectratio * countryGeometry.faceVertexUvs[j][k][l].x, 0 ) );
+
+				}
+
+			}
+
+		}
 }
 
 
@@ -193,61 +279,16 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-		//console.log(this.textureaspectratio);
-
-		for(j = 0; j < countryGeometry.faceVertexUvs.length; ++j){
-
-			for(k = 0; k < countryGeometry.faceVertexUvs[j].length; ++k){
-
-				for(l = 0; l < countryGeometry.faceVertexUvs[j][k].length; ++l){
-
-					/*
-
-					var vector3 = new THREE.Vector3( countryGeometry.faceVertexUvs[j][k][l].x, countryGeometry.faceVertexUvs[j][k][l].y, 0 );
-					
-
-					var matrix = new THREE.Matrix4();
-
-
-					matrix.makeScale( 1/2, 1/2, 1/2 );
-
-					matrix.makeTranslation( -this.flagcenter.x, -this.flagcenter.y, -this.flagcenter.z )
-
-
-					vector3.applyMatrix4( matrix );
-
-
-					countryGeometry.faceVertexUvs[j][k][l].set( vector3.x, vector3.y );
-					
-					*/
-
-
-
-					//alt
-
-					countryGeometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
-
-					//flag scaling (WIP; TODO)
-					//countryGeometry.faceVertexUvs[j][k][l].multiplyScalar(1/2);
-					//countryGeometry.faceVertexUvs[j][k][l].add( new THREE.Vector2( this.flagaspectratio * countryGeometry.faceVertexUvs[j][k][l].x, 0 ) );
-
-				}
-
-			}
-
-		}
-
-
-
 		if( !this.flagtexture ) countryMaterial = new THREE.MeshLambertMaterial();
 		else countryMaterial = new THREE.MeshLambertMaterial( { map: this.flagtexture } );
 
 
-		//countryMaterial = new THREE.MeshNormalMaterial();
-
-
 
 		this.mesh = new THREE.Mesh(countryGeometry, countryMaterial);
+
+
+
+		this.adjustuvs();
 
 	}
 
