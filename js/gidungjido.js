@@ -4,10 +4,22 @@ var CLEAR_COLOR = 0xDDDDDD;
 
 
 
+
+
+//
+/*
+var FLOOR_WIDTH = 500;
+var FLOOR_HEIGHT = 300;
+*/
+
+
+
+
 var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
 var CAMERA_MOVEMENT_SPEED = 0.5;
+
 
 
 
@@ -20,8 +32,19 @@ var NORMALIZED_MOUSE = new THREE.Vector2(); //for use with the raycaster
 
 
 
+
 var PRESSED_KEYS = []; //keys that are currently pressed
 
+
+
+
+
+//DOM CONSTANTS
+
+var MATERIAL_INDICIES = [
+	"MeshNormalMaterial",
+	"flags"
+];
 
 
 
@@ -32,53 +55,71 @@ var PRELOADED_DATA_INDICIES = [
 ];
 
 
-var preloadeddata = { countries: [], maximums: [] }; //the data that will be shown
 
-function DATA_MAXIMUM(){ //a function that pretends to be a variable
-
-	return preloadeddata.maximums[DATA_INDEX];
-
-}
-
-
-//DOM CONSTANTS
 
 var SLIDER_RESOLUTION = 10;
 
 
+
 var MAXIMUM_COUNTRY_HEIGHT_MINIMUM = 1;
 var MAXIMUM_COUNTRY_HEIGHT_MAXIMUM = 10;
+
 
 var CONTRAST_MINIMUM = 1;
 var CONTRAST_MAXIMUM = 5;
 
 
 
+  
 
 //DEFAULT VALUES
 
 var DEFAULT_MAXIMUM_COUNTRY_HEIGHT = 4;
 
+
 var DEFAULT_CONTRAST = 3;
 
 
 
+var DEFAULT_MATERIAL = 1;
 
-//varibales that can be changed with user interaction through the GUI
+
+
+
+
+//settings
 
 var SHOW_INFO = true;
 
 
+
+
 var MAXIMUM_COUNTRY_HEIGHT = DEFAULT_MAXIMUM_COUNTRY_HEIGHT;
 
+
 var CONTRAST = DEFAULT_CONTRAST;
+
+
 
 
 var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 
 
 
+var MATERIAL = 1;
 
+
+
+
+var SHADOWS = false;
+
+
+
+
+
+
+
+//initialization
 
 var scene = new THREE.Scene();
 
@@ -88,6 +129,7 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
 
 camera.rotation.order = "ZXY";
+
 
 
 var intendedcamera = {
@@ -100,8 +142,7 @@ intendedcamera.position.copy(camera.position);
 intendedcamera.rotation.copy(camera.rotation);
 
 
-
-//SUGGESTION: random starting position
+//TODO: random starting position
 
 intendedcamera.position.z = camera.position.z = 30;
 
@@ -117,8 +158,12 @@ camera.rotation.z = intendedcamera.rotation.z = Math.random() * Math.PI*2;
 var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false, preserveDrawingBuffer: true } );
 
 renderer.setClearColor(CLEAR_COLOR, 1);
-
 renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+
+//var MAX_ANISOTROPY = renderer.getMaxAnisotropy();
+
 
 
 document.body.appendChild(renderer.domElement);
@@ -131,10 +176,62 @@ var raycaster = new THREE.Raycaster();
 
 
 
-//country "captions" on mouse over
+
+
+
+//frequently accessed DOM elements
 
 var countryinfo = document.getElementById("countryinfo");
 
+
+
+
+
+
+//disable the floor code until shadows work
+
+/*
+
+var floorGeometry = new THREE.BoxGeometry( FLOOR_WIDTH, FLOOR_HEIGHT, DEFAULT_MAXIMUM_COUNTRY_HEIGHT );
+
+var floorMaterial = new THREE.MeshLambertMaterial( { color: CLEAR_COLOR } );
+//var floorMaterial = new THREE.MeshPhongMaterial( { color: CLEAR_COLOR, shininess: 100 } );
+
+
+var floor = new THREE.Mesh( floorGeometry, floorMaterial );
+
+floor.position.set( 0, 0, -DEFAULT_MAXIMUM_COUNTRY_HEIGHT/2 );
+
+
+if(SHADOWS) floor.recieveShadow = true;
+
+
+
+scene.add( floor );
+
+*/
+
+
+
+
+
+
+
+//data
+
+var flagTextures = [];
+
+
+
+
+var preloadeddata = { countries: [], maximums: [] }; //the data that will be shown
+
+
+function DATA_MAXIMUM(){ //a function that pretends to be a variable
+
+	return preloadeddata.maximums[DATA_INDEX];
+
+}
 
 
 
@@ -144,7 +241,62 @@ var countries = [];
 
 
 
+
+
+var loadingmanager = new THREE.LoadingManager();
+
+
+loadingmanager.onProgress = function ( item, loaded, total ) {
+
+	console.log( item, loaded, total );
+
+};
+
+
+
+var textureloader = new THREE.TextureLoader( loadingmanager );
+
+
+
+/*
+loadingmanager.onLoad = function(){
+
+	document.getElementById("loading").style.display = "none";
+	document.getElementById("loaded").style.display = "block";
+
+	render();
+
+};
+*/
+
+
+
+
+
+
+
+//add the countries
+
 loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ //'JSONObject' is a very large GeoJSON-formatted object
+
+
+
+
+	loadingmanager.onLoad = function(){
+
+		mamuri();
+
+
+		document.getElementById("loading").style.display = "none";
+		document.getElementById("loaded").style.display = "block";
+
+		render();
+
+	}
+
+
+
+
 
 	var data = JSONObject;
 
@@ -161,18 +313,88 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-	for(i = 0; i < data.features.length; ++i){ //first, load the data
+
+
+	for(i = 0; i < data.features.length; ++i){
+
+		//skipping
+
+		if(data.features[i].properties.TYPE === "Indeterminate") continue; //ignore 'Indeterminate' countries
+
+
+		if(data.features[i].properties.ISO_A2 === "-99"
+		|| data.features[i].properties.ISO_A2 === "XK"
+		|| data.features[i].properties.ISO_A2 === "SS") continue; // delete this later
+
+
+
+
+
+		//textures
+
+		var flagTexture = {
+
+			"name": data.features[i].properties.SOVEREIGNT,
+
+			"ISO_3166-1": data.features[i].properties.ISO_A2, // ISO 3166-1: the default identification method for countries in this project
+
+			"texture": undefined,
+			"aspectratio": undefined
+
+		}
+
+		flagTextures.push(flagTexture);
+
+
+
+
+		textureloader.load(
+
+			"assets/flags-normal/" + data.features[i].properties.ISO_A2 + ".png",
+
+			function(texture){
+
+				//TODO: optimize
+
+				var flagTexture = flagTextures.filter( function(aflagTexture){
+
+					var splitpath = texture.image.src.split("/");
+					var filename = splitpath[ splitpath.length - 1 ];
+
+					return aflagTexture["ISO_3166-1"] === filename.split(".")[0];
+
+				} )[0];
+
+
+				flagTexture.texture = texture;
+				flagTexture.aspectratio = texture.image.width/texture.image.height;	
+
+			}
+
+		);
+
+
+		
+
+
+		//data
 
 		var countrydata = {
+
 			"name": data.features[i].properties.SOVEREIGNT,
+
+			"ISO_3166-1": data.features[i].properties.ISO_A2, // ISO 3166-1: the default identification method for countries in this project
+
 			"data": [
 				data.features[i].properties.GDP_MD_EST,
 				data.features[i].properties.POP_EST,
 				//data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
 			]
+
 		};
 
 		preloadeddata.countries.push(countrydata);
+
 
 
 
@@ -189,42 +411,44 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST;
 		*/
 
-	}
-
-	preloadeddata.maximums = maximums; //save the maximum data
-
-	//console.log(preloadeddata);
 
 
 
-	for(i = 0; i < data.features.length; ++i){ //then, show the data. (ugh TWO FOR LOOPS?!?)
 
-
-		if(data.features[i].properties.SOVEREIGNT == "Antarctica") continue; //ignore Antarctica (even if there are stats for that barren ice continent)
-
-
-
+		//shapes
 
 		var countryShapes = []; //this will be a THREE.Shape or an Array of THREE.Shape
 
+		var exteriorRing = []; //an array of Vector2s
 
 
-		if(!data.features[i].geometry) continue; //skip if null
+
+		if(!data.features[i].geometry) continue; //skip if there is no geometry
+
 
 
 		switch(data.features[i].geometry.type){
 
 			case "Polygon": //http://geojson.org/geojson-spec.html#id4
 
-				Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates) );
+				var parseddata = parsePolygon(data.features[i].geometry.coordinates);
+
+				Array.prototype.push.apply( countryShapes, parseddata.countryShapes );
+				Array.prototype.push.apply( exteriorRing, parseddata.exteriorRing );
 
 				break;
 
 
-			case "MultiPolygon": //an array of "Polygon"s
+			case "MultiPolygon": //an array of 'Polygon's
 
-				for(l = 0; l < data.features[i].geometry.coordinates.length; ++l)
-					Array.prototype.push.apply( countryShapes, parsePolygon(data.features[i].geometry.coordinates[l]) );
+				for(l = 0; l < data.features[i].geometry.coordinates.length; ++l){
+				
+					var parseddata = parsePolygon(data.features[i].geometry.coordinates[l]);
+
+					Array.prototype.push.apply( countryShapes, parseddata.countryShapes );
+					Array.prototype.push.apply( exteriorRing, parseddata.exteriorRing );
+
+				}
 
 				break;
 
@@ -232,12 +456,16 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-		var country = new Country(data.features[i].properties.SOVEREIGNT);
-
-		country.setFromShapesAndData( countryShapes, preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] )
 
 
-		scene.add(country.mesh);
+		//creating 'Country' objects
+
+		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, countryShapes, exteriorRing );
+
+		if(SHADOWS){
+			country.mesh.castShadow = true;
+			country.mesh.recieveShadow = true;
+		}
 
 
 		countries.push(country);
@@ -247,21 +475,37 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
+	preloadeddata.maximums = maximums; //save the maximum data
+
+
+
+
+
 	function parsePolygon(coordinates){
 
 		var countryShapes;
+
+		var exteriorRing = [];
 
 
 		var paths = [];
 
 
-		for(j = 0; j < coordinates.length; ++j){ //each seperate 'part' of a country (islands, exclaves, etc)
+		for(j = 0; j < coordinates.length; ++j){ //the lines that define the country (or a part of a country)
 
 			var points = [];
 
-			for(k = 0; k < coordinates[j].length; ++k){ //the points of that 'part'
+
+			for(k = 0; k < coordinates[j].length; ++k){ //the points of that line
 				
-				points.push(new THREE.Vector2( coordinates[j][k][0], coordinates[j][k][1] ));
+				points.push( new THREE.Vector2( coordinates[j][k][0], coordinates[j][k][1] ) );
+
+
+				if(j === 0){
+
+					exteriorRing.push( new THREE.Vector2( coordinates[j][k][0], coordinates[j][k][1] ) );
+
+				}
 
 			}
 
@@ -273,16 +517,40 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-		countryShapes = paths[0].toShapes(); //initialize the shape (toShapes() will only return ONE THREE.Shape)
+
+		countryShapes = paths[0].toShapes(); //initialize the shape (toShapes() will only return ONE THREE.Shape; it won't be an array)
 
 
-		paths.splice(0, 1); //remove the first path (check GeoJSON specs for more information)
 
+		paths.splice(0, 1); //remove the first path to add holes (check GeoJSON specs for more information)
 
 		Array.prototype.push.apply(countryShapes[0].holes, paths); //add the holes
 
 
-		return countryShapes; //returns a THREE.Shape Array
+
+		return { countryShapes, exteriorRing }; //returns a THREE.Shape array
+
+	}
+
+
+
+
+
+	//mamuri
+
+	function mamuri(){
+
+		for(i = 0; i < countries.length; ++i){
+
+			countries[i].setTexture(flagTextures[i]);
+
+
+			countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
+
+
+			scene.add(countries[i].mesh);
+
+		}
 
 	}
 
@@ -292,26 +560,34 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
+
+
 //add misc stuff to the scene
 
-//scene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshPhongMaterial( { color: 0xFF0000 } ))); //debug
+var directionallight = new THREE.DirectionalLight( 0xFFFFFF, 0.2 );
+
+directionallight.position.set( 1, 1, Math.sqrt(3) );
+
+
+//TODO: shadows
+
+if(SHADOWS){
+
+	directionallight.castShadow = true;
+
+	directionallight.shadow.camera.position.set( 1, 1, Math.sqrt(3) );
+
+}
+
+
+scene.add(directionallight);
 
 
 
-/*
-var spotlight = new THREE.SpotLight(0xFFFFD0, 1);
 
-spotlight.position.set( -100, 100, 100 );
-
-scene.add(spotlight);
-*/
+scene.add(new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 0.7 ));
 
 
-scene.add(new THREE.HemisphereLight( 0x444444, 0x444444 ));
-
-
-
-//scene.fog = new THREE.FogExp2( CLEAR_COLOR, 0.0035 );
 
 
 
@@ -333,25 +609,59 @@ function updatecountryheights(){
 
 
 
-function setHeightDataSource(which){ //'which' should be chosen from PRELOADED_DATA_INDICIES
+
+function setheightdatasource(which){ //'which' should be chosen from PRELOADED_DATA_INDICIES
 	
 	DATA_INDEX = which;
+
 
 	for(i = 0; i < countries.length; ++i){
 
 		countries[i].setHeightData(
 
 			preloadeddata.countries.filter(
-				function(datacountry){ return datacountry.name === countries[i].name } //select the country by name
+
+				function(datacountry){ //select the country by name
+					return datacountry.name === countries[i].name
+				}
+
 			)[0].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX]
 
 		); //TODO: make this more efficient
 
-		//console.log(countries[i].name, preloadeddata.countries[i].name)
+	}
+
+}
+
+
+
+
+function setMaterial(which){
+
+	MATERIAL = parseInt(which);
+
+
+	switch(MATERIAL){
+
+		case 0: // "MeshNormalMaterial"
+
+			for( i = 0; i < countries.length; ++i )
+				countries[i].setMaterial(MATERIAL);
+
+			break;
+
+		case 1: // "flags"
+
+			for( i = 0; i < countries.length; ++i )
+				countries[i].setMaterial(MATERIAL);
+
+			break;
 
 	}
 
 }
+
+
 
 
 
@@ -363,7 +673,10 @@ function render(time){
 
 	
 
+
+
 	//camera 조작
+
 	//zooming
 
 	camera.zoom += (intendedcamera.zoom - camera.zoom) * 0.1;
@@ -371,6 +684,7 @@ function render(time){
 
 	
 	//rotating the camera with euler angles
+
 	//pitch and yaw
 
 	if(!menuvisible){
@@ -387,6 +701,7 @@ function render(time){
 	
 	camera.rotation.x += (intendedcamera.rotation.x - camera.rotation.x) * 0.1;
 	camera.rotation.z += (intendedcamera.rotation.z - camera.rotation.z) * 0.1;
+
 
 
 	//moving
@@ -422,13 +737,10 @@ function render(time){
 	}
 
 
+
 	camera.position.x += (intendedcamera.position.x - camera.position.x) * 0.05;
 	camera.position.y += (intendedcamera.position.y - camera.position.y) * 0.05;
 	camera.position.z += (intendedcamera.position.z - camera.position.z) * 0.05;
-
-
-	//spotlight.position.copy(camera.position);
-
 
 
 	camera.updateProjectionMatrix();
@@ -441,14 +753,14 @@ function render(time){
 		raycaster.setFromCamera( NORMALIZED_MOUSE, camera );
 	
 	
+
 		//the code that follows might, in a worst case, execute two for loops - it needs optimization
 	
-		var intersections = raycaster.intersectObjects(scene.children);
+		var intersections = raycaster.intersectObjects( countries.map( function(country){ return country.mesh; } ) );
 	
 
+
 		if(intersections.length > 0){
-	
-			//console.log(intersections[0]);
 	
 			var pointedCountry;
 		
@@ -461,24 +773,20 @@ function render(time){
 					break;
 
 				}
+
 			}
+	
 		
-			//console.log(pointedCountry);
-	
-	
-			
+
 			showinfo();
 	
-
 			countryinfo.style.left = MOUSE.x+"px";
 			countryinfo.style.top = MOUSE.y+"px";
 	
-
 			countryinfo.innerHTML =
 				"<h3>"+pointedCountry.name+"</h3>"
 			+	""+PRELOADED_DATA_INDICIES[DATA_INDEX]+":<br>"
-			+	""+Math.round(pointedCountry.data * DATA_MAXIMUM()).toLocaleString()+""
-			;
+			+	""+Math.round(pointedCountry.data * DATA_MAXIMUM()).toLocaleString()+"";
 	
 		} else {
 	
@@ -491,7 +799,9 @@ function render(time){
 
 
 
+
 	TWEEN.update(time);
+
 
 
 	renderer.render(scene, camera);
@@ -499,7 +809,6 @@ function render(time){
 }
 
 
-render();
 
 
 
@@ -507,8 +816,7 @@ render();
 
 //events
 
-window.addEventListener( "resize", function(e){
-
+window.addEventListener("resize", function(e){
 
 	if(menuvisible) stopcameramotion(); //stop any motion if the menu is visible
 
@@ -527,12 +835,14 @@ window.addEventListener( "resize", function(e){
 
 
 
-window.addEventListener( "mousewheel", function(e){ //zooming
+window.addEventListener("mousewheel", function(e){ //zooming
 
-	/* //don't uncomment
-	if(menuvisible
-	)
+	/*
+	//don't uncomment
+
+	if(menuvisible)
 		return;
+
 	*/
 
 
@@ -540,6 +850,7 @@ window.addEventListener( "mousewheel", function(e){ //zooming
 	intendedcamera.zoom += (e.wheelDelta || e.detail) * 0.005;
 
 	//clip value
+
 	if(intendedcamera.zoom < CAMERA_MINIMUM_ZOOM) intendedcamera.zoom = CAMERA_MINIMUM_ZOOM;
 	else if(intendedcamera.zoom > CAMERA_MAXIMUM_ZOOM) intendedcamera.zoom = CAMERA_MAXIMUM_ZOOM;
 
@@ -551,11 +862,9 @@ window.addEventListener( "mousewheel", function(e){ //zooming
 
 
 
-window.addEventListener( "mousemove", function(e){
+window.addEventListener("mousemove", function(e){
 
-
-	if(menuvisible //ignore when you have something better to do with the mouse than moving it around without a visible cursor on the monitor
-	)
+	if(menuvisible) //ignore when you have something better to do with the mouse than moving it around without a visible cursor on the monitor
 		return;
 
 
@@ -579,10 +888,10 @@ window.addEventListener( "mousemove", function(e){
 
 
 
+
 //specifically key events
 
 function keyPressed(key){ //check if the key is currently pressed
-
 
 	if(PRESSED_KEYS.indexOf(key) != -1) return true;
 
@@ -598,9 +907,9 @@ window.addEventListener("keydown", function(e){
 	//console.log(e.which);
 
 
-	if(e.which == 9 //ignore the tab key
-	)
+	if(e.which == 9) //ignore the tab key
 		return;
+
 
 
 	if(e.which == 27){ //escape key
@@ -608,6 +917,7 @@ window.addEventListener("keydown", function(e){
 		togglemenu();
 
 		return;
+
 	}
 
 
@@ -636,7 +946,6 @@ window.addEventListener("keydown", function(e){
 
 
 
-
 	if(!keyPressed(e.which))
 		PRESSED_KEYS.push(e.which);
 
@@ -646,7 +955,6 @@ window.addEventListener("keydown", function(e){
 
 
 window.addEventListener("keyup", function(e){
-
 
 	if(keyPressed(e.which))
 		PRESSED_KEYS.splice( PRESSED_KEYS.indexOf(e.which), 1 );
@@ -671,29 +979,35 @@ function stopcameramotion(){
 
 
 
+
 //DOM interaction
 
 var menuvisible = true;
 
 
-function togglemenu(){
 
+function togglemenu(){
 
 	if(menuvisible){
 
 		new TWEEN.Tween( { opacity: 1 } )
+
 			.to( { opacity: 0 }, 100 )
+
 			.onUpdate( function(){
 				document.getElementById("menu").style.opacity = ""+this.opacity+"";
 			})
+
 			.onComplete( function(){
 				document.getElementById("menu").style.display = "none";
 			})
+
 			.easing(TWEEN.Easing.Quadratic.Out)
+
 			.start();
 
-	} else {
 
+	} else {
 
 		stopcameramotion(); //stop any motion
 
@@ -701,25 +1015,34 @@ function togglemenu(){
 		document.getElementById("menu").style.display = "block";
 
 		new TWEEN.Tween( { opacity: 0 } )
+
 			.to( { opacity: 1 }, 100 )
-			.onUpdate( function(){
+
+			.onUpdate(function(){
 				document.getElementById("menu").style.opacity = ""+this.opacity+"";
 			})
+
 			.easing(TWEEN.Easing.Quadratic.Out)
+
 			.start();
 
+
 	}
+
 
 
 	menuvisible = !menuvisible;
 
 
+
 	document.getElementById("source").blur();
+
 
 
 	revalidateinfo();
 
 }
+
 
 
 
@@ -732,15 +1055,22 @@ function toggleinfo(){
 	document.getElementById("countryinfocheckbox").checked = SHOW_INFO;
 
 
+
 	/*
+
 	if(countryinfo.style.display === "none" && SHOW_INFO) showinfo();
 	else if(countryinfo.style.display === "block" || !SHOW_INFO) hideinfo();
+
 	*/
+
 
 
 	revalidateinfo();
 
 }
+
+
+
 
 
 function revalidateinfo(){
@@ -749,6 +1079,7 @@ function revalidateinfo(){
 	else if(!SHOW_INFO || menuvisible) hideinfo();
 
 }
+
 
 function hideinfo(){
 
@@ -765,9 +1096,10 @@ function showinfo(){
 
 
 
+
 function screenshot(){
 
-	window.open( renderer.domElement.toDataURL("image/png"), "Final");
+	window.open(renderer.domElement.toDataURL("image/png"), "Final");
 
 	togglemenu();
 
@@ -777,8 +1109,9 @@ function screenshot(){
 
 
 
-//misc. functions
 
+
+//other functions
 
 //a modified version of http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
 
@@ -789,15 +1122,17 @@ function loadJSON(url, callback){
 	xobj.overrideMimeType("application/json");
 
 
+
 	xobj.open('GET', url, true);
+
 
 
 	xobj.onreadystatechange = function(){
 
-
 		if(xobj.readyState == 4 && xobj.status == "200"){
 
 			//Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+			
 			callback(JSON.parse(xobj.responseText));
 
 		}
