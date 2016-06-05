@@ -180,68 +180,66 @@ Country.prototype.setTexture = function( flagTextureObject ){
 
 Country.prototype.adjustuvs = function(){
 
-		if(!this.mesh) return;
+	if(!this.mesh) return;
 
 
-		if(this.flagaspectratio >= this.boundingBoxaspectratio){ // match heights
+	if(this.flagaspectratio >= this.boundingBoxaspectratio){ // match heights
 
-			for(j = 0; j < this.mesh.geometry.faceVertexUvs.length; ++j){
+		for(j = 0; j < this.mesh.geometry.faceVertexUvs.length; ++j){
 
-				for(k = 0; k < this.mesh.geometry.faceVertexUvs[j].length; ++k){
+			for(k = 0; k < this.mesh.geometry.faceVertexUvs[j].length; ++k){
 
-					for(l = 0; l < this.mesh.geometry.faceVertexUvs[j][k].length; ++l){
+				for(l = 0; l < this.mesh.geometry.faceVertexUvs[j][k].length; ++l){
 
-						/*
+					/*
 
-						var vector3 = new THREE.Vector3( countryGeometry.faceVertexUvs[j][k][l].x, countryGeometry.faceVertexUvs[j][k][l].y, 0 );
-						
+					var vector3 = new THREE.Vector3( countryGeometry.faceVertexUvs[j][k][l].x, countryGeometry.faceVertexUvs[j][k][l].y, 0 );
+					
 
-						var matrix = new THREE.Matrix4();
-
-
-						matrix.makeScale( 1/2, 1/2, 1/2 );
-
-						matrix.makeTranslation( -this.flagcenter.x, -this.flagcenter.y, -this.flagcenter.z )
+					var matrix = new THREE.Matrix4();
 
 
-						vector3.applyMatrix4( matrix );
+					matrix.makeScale( 1/2, 1/2, 1/2 );
+
+					matrix.makeTranslation( -this.flagcenter.x, -this.flagcenter.y, -this.flagcenter.z )
 
 
-						countryGeometry.faceVertexUvs[j][k][l].set( vector3.x, vector3.y );
-						
-						*/
+					vector3.applyMatrix4( matrix );
 
 
-						//alt
+					countryGeometry.faceVertexUvs[j][k][l].set( vector3.x, vector3.y );
+					
+					*/
 
-						this.mesh.geometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
+
+					//alt
+
+					this.mesh.geometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
 
 
-						this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.y );
+					this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.y );
 
-						this.mesh.geometry.faceVertexUvs[j][k][l].x *= 1/this.flagaspectratio;
-
-					}
+					this.mesh.geometry.faceVertexUvs[j][k][l].x *= 1/this.flagaspectratio;
 
 				}
+
 			}
+		}
 
-		} else { // match widths
+	} else { // match widths
 
-			for(j = 0; j < this.mesh.geometry.faceVertexUvs.length; ++j){
+		for(j = 0; j < this.mesh.geometry.faceVertexUvs.length; ++j){
 
-				for(k = 0; k < this.mesh.geometry.faceVertexUvs[j].length; ++k){
+			for(k = 0; k < this.mesh.geometry.faceVertexUvs[j].length; ++k){
 
-					for(l = 0; l < this.mesh.geometry.faceVertexUvs[j][k].length; ++l){
+				for(l = 0; l < this.mesh.geometry.faceVertexUvs[j][k].length; ++l){
 
-						this.mesh.geometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
+					this.mesh.geometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
 
 
-						this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.x );
+					this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.x );
 
-						this.mesh.geometry.faceVertexUvs[j][k][l].y *= this.flagaspectratio;
-
-					}
+					this.mesh.geometry.faceVertexUvs[j][k][l].y *= this.flagaspectratio;
 
 				}
 
