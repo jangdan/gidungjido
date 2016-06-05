@@ -350,7 +350,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		textureloader.load(
 
-			"assets/flags-normal/" + data.features[i].properties.ISO_A2 + ".png",
+			"assets/flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png",
 
 			function(texture){
 
@@ -361,7 +361,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 					var splitpath = texture.image.src.split("/");
 					var filename = splitpath[ splitpath.length - 1 ];
 
-					return aflagTexture["ISO_3166-1"] === filename.split(".")[0];
+					return aflagTexture["ISO_3166-1"].toLowerCase() === filename.split(".")[0];
 
 				} )[0];
 
