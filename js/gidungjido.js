@@ -183,6 +183,7 @@ var raycaster = new THREE.Raycaster();
 
 var countryinfo = document.getElementById("countryinfo");
 
+var loadingmenu = document.getElementById("loading");
 
 
 
@@ -249,6 +250,8 @@ var loadingmanager = new THREE.LoadingManager();
 loadingmanager.onProgress = function ( item, loaded, total ) {
 
 	console.log( item, loaded, total );
+
+	//loadingmenu.innerHTML = "";
 
 };
 
