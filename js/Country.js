@@ -185,11 +185,14 @@ Country.prototype.adjustuvs = function(){
 
 	if(this.flagaspectratio >= this.boundingBoxaspectratio){ // match heights
 
-		for(j = 0; j < this.mesh.geometry.faceVertexUvs.length; ++j){
+		//console.log(this.mesh.geometry.faces, this.mesh.geometry.faceVertexUvs);
 
-			for(k = 0; k < this.mesh.geometry.faceVertexUvs[j].length; ++k){
+		for(j = 0; j < this.mesh.geometry.faceVertexUvs[0].length; ++j){
 
-				for(l = 0; l < this.mesh.geometry.faceVertexUvs[j][k].length; ++l){
+			for(k = 0; k < this.mesh.geometry.faceVertexUvs[0][j].length; ++k){
+
+				if(this.mesh.geometry.faces[j].normal.x + this.mesh.geometry.faces[j].normal.y === 0
+				|| this.mesh.geometry.faces[j].normal.x + this.mesh.geometry.faces[j].normal.y === -0){ // the faces
 
 					/*
 
@@ -211,20 +214,74 @@ Country.prototype.adjustuvs = function(){
 					
 					*/
 
-
 					//alt
 
-					this.mesh.geometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
+					this.mesh.geometry.faceVertexUvs[0][j][k].sub( this.flagcenter );
 
 
-					this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.y );
+					this.mesh.geometry.faceVertexUvs[0][j][k].divideScalar( this.boundingBoxdimensions.y );
 
-					this.mesh.geometry.faceVertexUvs[j][k][l].x *= 1/this.flagaspectratio;
+					this.mesh.geometry.faceVertexUvs[0][j][k].x *= 1/this.flagaspectratio;
+
+				} else { //the sides
+
+					this.mesh.geometry.faceVertexUvs[0][j][k].set(0, 0);
+					
+				}
+
+			}
+		}
+
+		/*
+		for(j = 0; j < this.mesh.geometry.faceVertexUvs.length; ++j){
+
+			for(k = 0; k < this.mesh.geometry.faceVertexUvs[j].length; ++k){
+
+				if( this.mesh.geometry.faceVertexUvs[j][k].length === 3 ){ //the shapes that consist the sides of the countries
+
+
+
+				} else { //the other shpa
+
+					for(l = 0; l < this.mesh.geometry.faceVertexUvs[j][k].length; ++l){
+
+						/*
+
+						var vector3 = new THREE.Vector3( countryGeometry.faceVertexUvs[j][k][l].x, countryGeometry.faceVertexUvs[j][k][l].y, 0 );
+						
+
+						var matrix = new THREE.Matrix4();
+
+
+						matrix.makeScale( 1/2, 1/2, 1/2 );
+
+						matrix.makeTranslation( -this.flagcenter.x, -this.flagcenter.y, -this.flagcenter.z )
+
+
+						vector3.applyMatrix4( matrix );
+
+
+						countryGeometry.faceVertexUvs[j][k][l].set( vector3.x, vector3.y );
+						
+						*/
+
+						/*
+						//alt
+
+						this.mesh.geometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
+
+
+						this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.y );
+
+						this.mesh.geometry.faceVertexUvs[j][k][l].x *= 1/this.flagaspectratio;
+						
+					}
 
 				}
 
 			}
 		}
+		*/
 
 	} else { // match widths
 
