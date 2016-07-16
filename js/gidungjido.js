@@ -225,14 +225,9 @@ var flagTextures = [];
 
 
 
-var preloadeddata = { countries: [], maximums: [] }; //the data that will be shown
+var datasets = []; //preloaded data + cached external API data
 
 
-function DATA_MAXIMUM(){ //a function that pretends to be a variable
-
-	return preloadeddata.maximums[DATA_INDEX];
-
-}
 
 
 
@@ -308,6 +303,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
+	var preloadeddatasets = [ new Dataset("Gross Domestic Product"), new Dataset("Population") ];
 	var maximums = [];
 
 	maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] = 0;
@@ -377,44 +373,6 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		);
 
 
-		
-
-
-		//data
-
-		var countrydata = {
-
-			"name": data.features[i].properties.SOVEREIGNT,
-
-			"ISO_3166-1": data.features[i].properties.ISO_A2, // ISO 3166-1: the default identification method for countries in this project
-
-			"data": [
-				data.features[i].properties.GDP_MD_EST,
-				data.features[i].properties.POP_EST,
-				//data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST,
-			]
-
-		};
-
-		preloadeddata.countries.push(countrydata);
-
-
-
-
-		//validate & update maximum values (for later use)
-
-		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] < data.features[i].properties.GDP_MD_EST )
-			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] = data.features[i].properties.GDP_MD_EST;
-
-		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] < data.features[i].properties.POP_EST )
-			maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] = data.features[i].properties.POP_EST;
-
-		/*
-		if( maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] < data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST )
-			maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = data.features[i].properties.GDP_MD_EST/data.features[i].properties.POP_EST;
-		*/
-
-
 
 
 
@@ -473,14 +431,24 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 		countries.push(country);
 
+
+		
+
+
+		//stats
+
+		preloadeddatasets[0].feeddata( country, data.features[i].properties.GDP_MD_EST ); //preloaded "Gross Domestic Product"
+		preloadeddatasets[1].feeddata( country, data.features[i].properties.POP_EST ); //preloaded "Population"
+
 	}
 
 
 
+	preloadeddatasets[0].calculatemaximum();
+	preloadeddatasets[1].calculatemaximum();
 
-	preloadeddata.maximums = maximums; //save the maximum data
 
-
+	Array.prototype.push.apply( datasets, preloadeddatasets );
 
 
 
@@ -548,7 +516,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 			countries[i].setTexture(flagTextures[i]);
 
 
-			countries[i].setHeightData( preloadeddata.countries[i].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX] );
+			countries[i].setHeightData( datasets[DATA_INDEX].data[i].value / datasets[DATA_INDEX].maximum );
 
 
 			scene.add(countries[i].mesh);
@@ -617,22 +585,7 @@ function setheightdatasource(which){ //'which' should be chosen from PRELOADED_D
 	
 	DATA_INDEX = which;
 
-
-	for(i = 0; i < countries.length; ++i){
-
-		countries[i].setHeightData(
-
-			preloadeddata.countries.filter(
-
-				function(datacountry){ //select the country by name
-					return datacountry.name === countries[i].name
-				}
-
-			)[0].data[DATA_INDEX] / preloadeddata.maximums[DATA_INDEX]
-
-		); //TODO: make this more efficient
-
-	}
+	datasets[which].apply();
 
 }
 
@@ -788,8 +741,8 @@ function render(time){
 	
 			countryinfo.innerHTML =
 				"<h3>"+pointedCountry.name+"</h3>"
-			+	""+PRELOADED_DATA_INDICIES[DATA_INDEX]+":<br>"
-			+	""+Math.round(pointedCountry.data * DATA_MAXIMUM()).toLocaleString()+"";
+			+	""+datasets[DATA_INDEX].name+":<br>"
+			+	""+Math.round(pointedCountry.data * datasets[DATA_INDEX].maximum).toLocaleString()+"";
 	
 		} else {
 	
