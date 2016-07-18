@@ -57,6 +57,7 @@ var PRELOADED_DATA_INDICIES = [
 
 
 
+
 var SLIDER_RESOLUTION = 10;
 
 
@@ -225,6 +226,31 @@ var flagTextures = [];
 
 
 
+
+var LOADABLE_DATASETS = [
+
+	{ name: "preloaded",
+
+		datasets: [
+			{ name: "Gross Domestic Product", index: 0 },
+			{ name: "Population", index: 1 }
+		]
+
+	},
+
+	{ name: "The World Bank",
+
+		datasets: [
+			{ name: "GDP (current US$)", indicatorid: "NY.GDP.MKTP.CD", date: "2015" }
+		]
+
+	}
+
+];
+
+
+
+
 var datasets = []; //preloaded data + cached external API data
 
 
@@ -244,7 +270,7 @@ var loadingmanager = new THREE.LoadingManager();
 
 loadingmanager.onProgress = function ( item, loaded, total ) {
 
-	console.log( item, loaded, total );
+	//console.log( item, loaded, total );
 
 	//loadingmenu.innerHTML = item;
 

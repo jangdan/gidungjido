@@ -23,6 +23,7 @@
 
 
 
+		<script src = "libraries/jsonp.js" type = "text/javascript"></script>
 		<script src = "libraries/three.min.js" type = "text/javascript"></script>
 		<script src = "libraries/Tween.js" type = "text/javascript"></script>
 
@@ -167,33 +168,30 @@
 			sourceselect.innerHTML = "";
 
 
-			sourceselect.innerHTML +=
-				"<optgroup label = 'preloaded'>\n"
-			;
+			var counter = 0; //count the available datasets
 
-			for(i = 0; i < PRELOADED_DATA_INDICIES.length; ++i){
+			for(i = 0; i < LOADABLE_DATASETS.length; ++i){
+
 				sourceselect.innerHTML +=
-					"<option value = '"+i+"'>"+PRELOADED_DATA_INDICIES[i]+"</option>\n"
+					"<optgroup label = '"+LOADABLE_DATASETS[i].name+"'>\n"
 				;
+
+				for(j = 0; j < LOADABLE_DATASETS[i].datasets.length; ++j){
+
+					sourceselect.innerHTML +=
+						"<option value = '"+i+","+j+"'>"+LOADABLE_DATASETS[i].datasets[j].name+"</option>\n"
+					;
+
+					++counter;
+
+				}
+
+				sourceselect.innerHTML +=
+					"</optgroup>"
+				;
+
 			}
 
-
-			sourceselect.innerHTML +=
-				"<optgroup label = 'The World Bank'>\n"
-			;
-
-			/*
-			for(i = 0; i < PRELOADED_DATA_INDICIES.length; ++i){
-				sourceselect.innerHTML +=
-					"<option value = '"+i+"'>"+PRELOADED_DATA_INDICIES[i]+"</option>\n"
-				;
-			}
-			*/
-
-
-			sourceselect.innerHTML +=
-				"</optgroup>"
-			;
 
 
 
@@ -228,7 +226,7 @@
 
 
 
-			//events
+			//events – WARNING: SPAGHETTI CODE AHEAD
 
 			function maximumheightinput(){
 
@@ -283,7 +281,96 @@
 
 
 			function sourcechange(){
-				setheightdatasource( sourceselect.value );
+
+				var selection = sourceselect.value.split(",");
+
+				var selectedDataset = LOADABLE_DATASETS[selection[0]].datasets[selection[1]];
+
+
+
+				//console.log(selection, selectedDataset.index);
+
+
+				if(selectedDataset.index === undefined){ //if first time loading; must call API
+
+					selectedDataset.index = datasets.length;
+
+
+					var dataset = new Dataset(selectedDataset.name);
+
+					datasets.push(dataset);
+
+
+
+					//API call ...
+
+					switch(LOADABLE_DATASETS[selection[0]].name){
+
+						case "The World Bank":
+
+							for(i = 0; i < countries.length; ++i){
+
+								$jsonp.send(
+
+									"http://api.worldbank.org/countries/"+countries[i].iso1366+"/indicators/"+selectedDataset.indicatorid+"?format=jsonP&date="+selectedDataset.date+"?callback=handleStuff",
+
+									{
+										callbackName: 'handleStuff',
+
+										onSuccess: function(json){
+
+											console.log('success!', json);
+
+										},
+
+										onTimeout: function(){
+
+											console.warn('timeout!');
+
+										}
+
+									}
+
+								);
+
+								/*
+								loadJSON(
+
+									"http://api.worldbank.org/countries/"+countries[i].iso1366+"/indicators/"+selectedDataset.indicatorid+"?format=jsonP&date="+selectedDataset.date,
+
+									//later when we support time series data we should want to call the whole time series (ex. http://api.worldbank.org/countries/KR/indicators/NY.GDP.MKTP.CD?format=json; without the ?date parameter
+
+									function(datum){
+
+										dataset.feeddata(
+
+											countries.filter(
+												function(country){ return datum[1][0].country.id === country.iso1366; }
+											)[0],
+
+											datum[1][0].value
+
+										);
+
+										dataset.calculatemaximum();
+					
+									}
+
+								);
+								*/
+
+							}
+
+							break;
+
+					}
+
+				} else { //if we've already loaded the dataset and it's cached or it's preloaded
+
+				}
+
+				setheightdatasource( selectedDataset.index );
+
 			}
 
 

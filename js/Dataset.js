@@ -3,6 +3,8 @@ var Dataset = function( name, data, maximum ){
 
 	this.name = name;
 
+
+
 	if(!data) this.data = [];
 	else this.data = data; //an Array; each element takes the form of { country}
 
