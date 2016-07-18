@@ -280,7 +280,7 @@ loadingmanager.onLoad = function(){
 
 //add the countries
 
-loadJSON("../data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ //'JSONObject' is a very large GeoJSON-formatted object
+loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ //'JSONObject' is a very large GeoJSON-formatted object
 
 
 
@@ -353,7 +353,7 @@ loadJSON("../data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject
 
 		textureloader.load(
 
-			"../assets/flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png",
+			"assets/flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png",
 
 			function(texture){
 
