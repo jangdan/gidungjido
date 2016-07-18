@@ -379,6 +379,13 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 			function(texture){
 
+
+				texture.generateMipmaps = false;
+
+				texture.magFilter = THREE.LinearFilter;
+				texture.minFilter = THREE.LinearFilter;
+
+
 				//TODO: optimize
 
 				var flagTexture = flagTextures.filter( function(aflagTexture){
