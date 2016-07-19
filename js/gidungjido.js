@@ -240,8 +240,24 @@ var LOADABLE_DATASETS = [
 
 	{ name: "The World Bank",
 
-		datasets: [
-			{ name: "GDP (current US$)", indicatorid: "NY.GDP.MKTP.CD", date: "2015" }
+		datasets: [ //from http://data.worldbank.org/indicator
+
+			{ name: "GDP (current US$)", indicatorid: "NY.GDP.MKTP.CD", date: "2015" },
+			{ name: "GDP per capita (current US$)", indicatorid: "NY.GDP.PCAP.CD", date: "2015" },
+			{ name: "GDP growth (annual %)", indicatorid: "NY.GDP.MKTP.KD.ZG", date: "2015" },
+			{ name: "GDP per capita growth (annual %)", indicatorid: "NY.GDP.PCAP.KD.ZG", date: "2015" },
+			{ name: "Expense (% of GDP)", indicatorid: "GC.XPN.TOTL.GD.ZS", date: "2013" },
+
+			/*
+
+			//copy and fill in
+			
+			{ name: "GDP", indicatorid: "asdf", date: "2015" },
+
+			//...
+
+			*/
+
 		]
 
 	}
