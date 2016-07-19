@@ -791,7 +791,7 @@ function render(time){
 			countryinfo.innerHTML =
 				"<h3>"+pointedCountry.name+"</h3>"
 			+	""+datasets[DATA_INDEX].name+":<br>"
-			+	""+Math.round(pointedCountry.data * datasets[DATA_INDEX].maximum).toLocaleString()+"";
+			+	""+/*Math.round*/(pointedCountry.data * datasets[DATA_INDEX].maximum).toLocaleString()+"";
 	
 		} else {
 	
