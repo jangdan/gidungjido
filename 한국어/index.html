@@ -6,8 +6,8 @@
 
 		<meta charset = "utf-8">
 
-		<meta name = "description" content = "a 3D bar graph of the world">
-		<meta name = "keywords" content = "gidungjido, 3D, bar graph, world, WebGl, three.js, GDP, population, visualization">
+		<meta name = "description" content = "3D 막대그래프 지도">
+		<meta name = "keywords" content = "기둥지도, 기둥, 지도, 3D, 막대그래프, 세계, 통계">
 
         <meta name = "viewport" content = "width = device-width, initial-scale = 1, maximum-scale = 1, minimum-scale = 1, user-scalable = no">
 
@@ -56,48 +56,48 @@
 				<h1 lang = "ko">기둥<ruby><rb>地</rb><rt>지</rt><rb>圖</rb><rt>도</rt></ruby></h1>
 
 
-				<h2>controls</h2>
+				<h2>사용</h2>
 
 				<p>
 
-					move around with the <span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span> keys, <span class = "roundedborder">shift</span> to go up, <span class = "roundedborder">space</span> to go down. scroll to zoom in and out.<br>
+					<span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span>키로 앞, 뒤, 양 옆으로 움직일 수 있습니다. 그리고 <span class = "roundedborder">space</span>를 누르면 위로 뜨고, <span class = "roundedborder">shift</span>를 누르면 밑으로 내려갈 수 있습니다. 마지막으로 마우스 스크롤을 해서 확대와 축소를 할 수 있습니다.<br>
 
-					press <span class = "roundedborder">p</span> to save the current frame as an image.<br>
+					<span class = "roundedborder">p</span>를 누르면 스크린샽을 찍을 수 있습니다.<br>
 
-					press <span class = "roundedborder">i</span> to hide/show country information.<br>
+					<span class = "roundedborder">i</span>를 누르면 마우스를 따라가며 나라에 대한 정보를 보여주는 창을 숨기고 다시 보이게 할 수 있습니다.<br>
 
 					<!--<span class = "roundedborder">l</span>: lock camera rotation<br>-->
 
 
-					press <span class = "roundedborder">esc</span> to toggle this menu<br>
+					마지막으로 <span class = "roundedborder">esc</span>를 누르면서 이 메뉴를 가렸다 보이게 할 수 있습니다.<br>
 
 				</p>
 
 
-				<h2>settings</h2>
+				<h2>설정</h2>
 
 				<p>
 
-					overall height: <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightinput()"><br>
+					기둥들의 높이 <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightinput()"><br>
 
 
 					높이 대비(contrast) <input type = "range" id = "contrast" min = "50" value = "30" max = "10" oninput = "contrastinput()"><br>
 
 
 
-					<input type = "checkbox" id = "countryinfocheckbox" checked = "checked" onclick = "countryinfocheckboxclicked()"> show country information (keyboard shortcut <span class = "roundedborder">i</span>)<br>
+					<input type = "checkbox" id = "countryinfocheckbox" checked = "checked" onclick = "countryinfocheckboxclicked()"> 나라 정보 보이거나 숨기기 (키보드 단축키 <span class = "roundedborder">i</span>)<br>
 
 					<!--<input type = "checkbox" checked = "checked"> continuous mouse movement (keyboard shortcut <span class = "roundedborder">l</span>)<br>-->
 
 
 
-					material/texture: <select id = "material" onchange = "materialchange()">
+					스킨: <select id = "material" onchange = "materialchange()">
 						<!--javascript will add stuff here-->
 					</select><br>
 
 
 
-					<!--<input type = "checkbox" id = "shadowcheckbox" checked = "checked" onclick = "shadowcheckboxclicked()"> cast shadows (requires more computing power)<br>-->
+					<!--<input type = "checkbox" id = "shadowcheckbox" checked = "checked" onclick = "shadowcheckboxclicked()"> 그림자<br>-->
 
 
 
@@ -105,10 +105,10 @@
 
 
 
-					<button type = "button" onclick = "defaultsettings()">default settings</button><br>
+					<button type = "button" onclick = "defaultsettings()">설정 초기화</button><br>
 
 
-					source data: <select id = "source" onchange = "sourcechange()">
+					보여줄 통계: <select id = "source" onchange = "sourcechange()">
 						<!--javascript will add stuff here-->
 					</select>
 
@@ -118,9 +118,9 @@
 
 				<p>
 
-					note: this website uses <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>, which seems to work best on <a href = "https://www.google.com/chrome/">Google Chrome</a>.<br>
+					기둥지도는 <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>이라는 요즘 뜨는 기술을 사용하는데 제 경험상 <a href = "https://www.google.com/chrome/">구글 크롬(Google Chrome)</a> 브라우저에서 가장 잘 돌아갑니다. 잘 안된다면 크롬을 사용해보세요. 여기 뿐 아니라 다른 사이트도 더 잘 될겁니다.<br>
 
-					you also need a keyboard, sorry mobile users
+					또 기둥지도를 제대로 사용하려면 키보드가 필요합니다. 모바일에서 만끽하시기 어려울 것입니다. 죄송합니다.
 
 				</p>
 
