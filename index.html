@@ -310,33 +310,10 @@
 
 							for(i = 0; i < countries.length; ++i){
 
-								$jsonp.send(
 
-									"http://api.worldbank.org/countries/"+countries[i].iso1366+"/indicators/"+selectedDataset.indicatorid+"?format=jsonP&date="+selectedDataset.date+"?callback=handleStuff",
-
-									{
-										callbackName: 'handleStuff',
-
-										onSuccess: function(json){
-
-											console.log('success!', json);
-
-										},
-
-										onTimeout: function(){
-
-											console.warn('timeout!');
-
-										}
-
-									}
-
-								);
-
-								/*
 								loadJSON(
 
-									"http://api.worldbank.org/countries/"+countries[i].iso1366+"/indicators/"+selectedDataset.indicatorid+"?format=jsonP&date="+selectedDataset.date,
+									"http://cors.io/?u=http://api.worldbank.org/countries/"+countries[i].iso1366+"/indicators/"+selectedDataset.indicatorid+"?format=json&date="+selectedDataset.date,
 
 									//later when we support time series data we should want to call the whole time series (ex. http://api.worldbank.org/countries/KR/indicators/NY.GDP.MKTP.CD?format=json; without the ?date parameter
 
@@ -357,7 +334,6 @@
 									}
 
 								);
-								*/
 
 							}
 
