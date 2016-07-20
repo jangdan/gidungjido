@@ -325,8 +325,8 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 	
 		if(applyContrast){ //process data for more contrast
 
-			if(this.data >= 0) this.data = Math.pow(this.data, 1/CONTRAST);
-			else this.data = -Math.pow(-this.data, 1/CONTRAST);
+			if(data >= 0) data = Math.pow(data, 1/CONTRAST);
+			else data = -Math.pow(-data, 1/CONTRAST);
 
 		}
 
