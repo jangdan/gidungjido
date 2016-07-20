@@ -318,24 +318,30 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-	this.data = data;
+	if(!data) this.data = "no data";
+	else {
+
+		this.data = data;
+	
+		if(applyContrast){ //process data for more contrast
+
+			if(data >= 0) data = Math.pow(data, 1/CONTRAST);
+			else data = -Math.pow(-data, 1/CONTRAST);
+
+		}
+
+	}
 
 
-	if(applyContrast) data = Math.pow(data, 1/CONTRAST); //process data for more contrast
 
-
-
-	if( !this.mesh ){ //if 'this.mesh' is null
+	if( !this.mesh ){ //if 'this.mesh' is null, 즉 first time loading
 
 		var countryGeometry, countryMaterial;
 
 
 
-		if( !this.data || this.data === 0)
-			countryGeometry = new THREE.ShapeGeometry( this.shapes );
-
-		else
-			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
+		if( this.data === "no data" ) countryGeometry = new THREE.ShapeGeometry( this.shapes );
+		else countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
 
 
 
@@ -350,11 +356,21 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 		this.adjustuvs();
 
+	} else {
+
+		if( this.data === "no data" && this.mesh.geometry instanceof THREE.ExtrudeGeometry )
+			countryGeometry = new THREE.ShapeGeometry( this.shapes );
+
+		else if( this.data !== "no data" && this.mesh.geometry instanceof THREE.ShapeGeometry ){ //not an else if, just an else then an if (unless i'm mistaken)
+
+			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
+		
+		}
 	}
 
 
 
-	if( !( this.mesh.geometry instanceof THREE.ShapeGeometry ) ){
+	if( this.data !== "no data" ){
 
 		//this.mesh.scale.set( 1, 1, data * MAXIMUM_COUNTRY_HEIGHT );
 
@@ -364,6 +380,7 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 			.start();
 
 	}
+
 
 
 
