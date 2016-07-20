@@ -8,6 +8,5 @@ var MATERIAL_INDICIES = [
 
 var PRELOADED_DATA_INDICIES = [
 	"Gross Domestic Product",
-	"Population"/*,
-	"Gross Domestic Product per Capita"*/
+	"Population"
 ];

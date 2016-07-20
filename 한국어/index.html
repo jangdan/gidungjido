@@ -6,10 +6,11 @@
 
 		<meta charset = "utf-8">
 
+        <meta name = "viewport" content = "width = device-width, initial-scale = 1, maximum-scale = 1, minimum-scale = 1, user-scalable = no">
+
+
 		<meta name = "description" content = "3D 막대그래프 지도">
 		<meta name = "keywords" content = "기둥지도, 기둥, 지도, 3D, 막대그래프, 세계, 통계">
-
-        <meta name = "viewport" content = "width = device-width, initial-scale = 1, maximum-scale = 1, minimum-scale = 1, user-scalable = no">
 
 
 
@@ -56,7 +57,10 @@
 
 			<div id = "loaded" style = "display: none">
 
+
 				<h1 lang = "ko">기둥<ruby><rb>地</rb><rt>지</rt><rb>圖</rb><rt>도</rt></ruby></h1>
+
+
 
 
 				<h2>사용</h2>
@@ -77,15 +81,14 @@
 				</p>
 
 
+
 				<h2>설정</h2>
 
 				<p>
 
 					기둥들의 높이 <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightinput()"><br>
 
-
 					높이 대비(contrast) <input type = "range" id = "contrast" min = "50" value = "30" max = "10" oninput = "contrastinput()"><br>
-
 
 
 					<input type = "checkbox" id = "countryinfocheckbox" checked = "checked" onclick = "countryinfocheckboxclicked()"> 나라 정보 보이거나 숨기기 (키보드 단축키 <span class = "roundedborder">i</span>)<br>
@@ -93,19 +96,15 @@
 					<!--<input type = "checkbox" checked = "checked"> continuous mouse movement (keyboard shortcut <span class = "roundedborder">l</span>)<br>-->
 
 
-
 					스킨: <select id = "material" onchange = "materialchange()">
 						<!--javascript will add stuff here-->
 					</select><br>
 
 
-
 					<!--<input type = "checkbox" id = "shadowcheckbox" checked = "checked" onclick = "shadowcheckboxclicked()"> 그림자<br>-->
 
 
-
 					<br>
-
 
 
 					<button type = "button" onclick = "defaultsettings()">설정 초기화</button><br>
@@ -117,7 +116,9 @@
 
 				</p>
 
+
 				<br>
+
 
 				<p>
 
@@ -130,6 +131,7 @@
 			</div>
 
 		</div>
+
 
 
 
