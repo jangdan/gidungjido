@@ -23,7 +23,13 @@
 
 
 
-		<script src = "libraries/jsonp.js" type = "text/javascript"></script>
+		<link id = "country shapes" href = "data/ne_10m_admin_0_sovereignty_moderate.json"> <!-- relative url to the shape data file–will be used in gidungjido.js -->
+		<link id = "flags" href = "assets/flags-normal/"/>
+
+		<script src = "english.js" type = "text/javascript"></script> <!-- javacript CONSTANTS that are language specific; every localized index.html will have one of these -->
+
+
+
 		<script src = "libraries/three.min.js" type = "text/javascript"></script>
 		<script src = "libraries/Tween.js" type = "text/javascript"></script>
 
@@ -76,7 +82,7 @@
 					overall height: <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightinput()"><br>
 
 
-					height contrast: <input type = "range" id = "contrast" min = "10" value = "30" max = "50" oninput = "contrastinput()"><br>
+					height contrast: <input type = "range" id = "contrast" min = "50" value = "30" max = "10" oninput = "contrastinput()"><br>
 
 
 
