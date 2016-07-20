@@ -364,8 +364,7 @@ loadJSON( document.getElementById("country shapes").href, function(JSONObject){ 
 
 
 		if(data.features[i].properties.ISO_A2 === "-99"
-		|| data.features[i].properties.ISO_A2 === "XK"
-		|| data.features[i].properties.ISO_A2 === "SS") continue; // delete this later
+		|| data.features[i].properties.ISO_A2 === "XK") continue; // delete this later
 
 
 
@@ -389,12 +388,17 @@ loadJSON( document.getElementById("country shapes").href, function(JSONObject){ 
 
 
 
+		var textureurl;
+
+		if(data.features[i].properties.ISO_A2 === "SS") textureurl = document.getElementById("flags").href + "otherflags/SS.png";
+		else textureurl = document.getElementById("flags").href + "flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
+
+
 		textureloader.load(
 
-			document.getElementById("flags").href + data.features[i].properties.ISO_A2.toLowerCase() + ".png",
+			textureurl,
 
 			function(texture){
-
 
 				texture.generateMipmaps = false;
 
@@ -408,11 +412,10 @@ loadJSON( document.getElementById("country shapes").href, function(JSONObject){ 
 
 					var splitpath = texture.image.src.split("/");
 					var filename = splitpath[ splitpath.length - 1 ];
-
-					return aflagTexture["ISO_3166-1"].toLowerCase() === filename.split(".")[0];
+					
+					return aflagTexture["ISO_3166-1"].toLowerCase() === filename.split(".")[0].toLowerCase();
 
 				} )[0];
-
 
 				flagTexture.texture = texture;
 				flagTexture.aspectratio = texture.image.width/texture.image.height;	
