@@ -390,7 +390,7 @@ loadJSON( document.getElementById("country shapes").href, function(JSONObject){ 
 
 		var textureurl;
 
-		if(data.features[i].properties.ISO_A2 === "SS") textureurl = document.getElementById("flags").href + "otherflags/SS.png";
+		if(data.features[i].properties.ISO_A2 === "SS") textureurl = document.getElementById("flags").href + "other flags/SS.png";
 		else textureurl = document.getElementById("flags").href + "flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
 
 
@@ -412,7 +412,7 @@ loadJSON( document.getElementById("country shapes").href, function(JSONObject){ 
 
 					var splitpath = texture.image.src.split("/");
 					var filename = splitpath[ splitpath.length - 1 ];
-					
+
 					return aflagTexture["ISO_3166-1"].toLowerCase() === filename.split(".")[0].toLowerCase();
 
 				} )[0];
