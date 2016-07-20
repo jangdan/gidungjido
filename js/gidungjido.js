@@ -788,7 +788,13 @@ function render(time){
 			countryinfo.style.left = MOUSE.x+"px";
 			countryinfo.style.top = MOUSE.y+"px";
 	
-			countryinfo.innerHTML =
+	
+			if(pointedCountry.data === "no data") countryinfo.innerHTML =
+				"<h3>"+pointedCountry.name+"</h3>"
+			+	""+datasets[DATA_INDEX].name+":<br>"
+			+	"no data";
+
+			else countryinfo.innerHTML =
 				"<h3>"+pointedCountry.name+"</h3>"
 			+	""+datasets[DATA_INDEX].name+":<br>"
 			+	""+/*Math.round*/(pointedCountry.data * datasets[DATA_INDEX].maximum).toLocaleString()+"";
