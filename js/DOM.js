@@ -1,6 +1,36 @@
 
 //DOM-related
 
+var SLIDER_RESOLUTION = 10;
+
+
+
+
+var MAXIMUM_COUNTRY_HEIGHT_MINIMUM = 1;
+var MAXIMUM_COUNTRY_HEIGHT_MAXIMUM = 10;
+
+
+var CONTRAST_MINIMUM = 1;
+var CONTRAST_MAXIMUM = 5;
+
+
+
+
+
+//DEFAULT VALUES
+
+var DEFAULT_MAXIMUM_COUNTRY_HEIGHT = 4;
+
+var DEFAULT_CONTRAST = 3;
+
+
+var DEFAULT_MATERIAL = 1;
+
+
+
+
+
+
 
 //set min, max, value attributes for the sliders
 
