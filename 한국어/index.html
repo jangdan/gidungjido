@@ -1,0 +1,153 @@
+<!doctype html>
+
+<html lang = "ko">
+
+	<head>
+
+		<meta charset = "utf-8">
+
+        <meta name = "viewport" content = "width = device-width, initial-scale = 1, maximum-scale = 1, minimum-scale = 1, user-scalable = no">
+
+
+		<meta name = "description" content = "3D 막대그래프 지도">
+		<meta name = "keywords" content = "기둥지도, 기둥, 지도, 3D, 막대그래프, 세계, 통계">
+
+
+
+		<link rel = "stylesheet" href = "../css/gidungjido.css">
+
+
+
+
+		<title>기둥地圖</title>
+
+
+
+
+
+		<link id = "country shapes" href = "../data/ne_10m_admin_0_sovereignty_moderate.json"> <!-- relative url to the shape data file–will be used in gidungjido.js -->
+		<link id = "flags" href = "../assets/flags/"/>
+
+		<script src = "한국어.js" type = "text/javascript"></script> <!-- 한국어 자바스크립트 변수 -->
+
+
+
+
+		<script src = "../libraries/three.min.js" type = "text/javascript"></script>
+		<script src = "../libraries/Tween.js" type = "text/javascript"></script>
+
+	</head>
+
+
+	<body>
+
+		<div id = "menu" class = "overlay crt">
+
+
+
+
+			<div id = "loading">
+				
+				loading...
+
+			</div>
+
+
+
+
+			<div id = "loaded" style = "display: none">
+
+
+				<h1 lang = "ko">기둥<ruby><rb>地</rb><rt>지</rt><rb>圖</rb><rt>도</rt></ruby></h1>
+
+
+
+
+				<h2>사용</h2>
+
+				<p>
+
+					<span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span>키로 앞, 뒤, 양 옆으로 움직일 수 있습니다. 그리고 <span class = "roundedborder">space</span>를 누르면 위로 뜨고, <span class = "roundedborder">shift</span>를 누르면 밑으로 내려갈 수 있습니다. 마지막으로 마우스 스크롤을 해서 확대와 축소를 할 수 있습니다.<br>
+
+					<span class = "roundedborder">p</span>를 누르면 스크린샽을 찍을 수 있습니다.<br>
+
+					<span class = "roundedborder">i</span>를 누르면 마우스를 따라가며 나라에 대한 정보를 보여주는 창을 숨기고 다시 보이게 할 수 있습니다.<br>
+
+					<!--<span class = "roundedborder">l</span>: lock camera rotation<br>-->
+
+
+					마지막으로 <span class = "roundedborder">esc</span>를 누르면서 이 메뉴를 가렸다 보이게 할 수 있습니다.<br>
+
+				</p>
+
+
+
+				<h2>설정</h2>
+
+				<p>
+
+					기둥들의 높이 <input type = "range" id = "maximumheight" min = "10" value = "40" max = "100" oninput = "maximumheightinput()"><br>
+
+					높이 대비(contrast) <input type = "range" id = "contrast" min = "50" value = "30" max = "10" oninput = "contrastinput()"><br>
+
+
+					<input type = "checkbox" id = "countryinfocheckbox" checked = "checked" onclick = "countryinfocheckboxclicked()"> 나라 정보 보이거나 숨기기 (키보드 단축키 <span class = "roundedborder">i</span>)<br>
+
+					<!--<input type = "checkbox" checked = "checked"> continuous mouse movement (keyboard shortcut <span class = "roundedborder">l</span>)<br>-->
+
+
+					스킨: <select id = "material" onchange = "materialchange()">
+						<!--javascript will add stuff here-->
+					</select><br>
+
+
+					<!--<input type = "checkbox" id = "shadowcheckbox" checked = "checked" onclick = "shadowcheckboxclicked()"> 그림자<br>-->
+
+
+					<br>
+
+
+					<button type = "button" onclick = "defaultsettings()">설정 초기화</button><br>
+
+
+					보여줄 통계: <select id = "source" onchange = "sourcechange()">
+						<!--javascript will add stuff here-->
+					</select>
+
+				</p>
+
+
+				<br>
+
+
+				<p>
+
+					기둥지도는 <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>이라는 요즘 뜨는 기술을 사용하는데 제 경험상 <a href = "https://www.google.com/chrome/">구글 크롬(Google Chrome)</a> 브라우저에서 가장 잘 돌아갑니다. 잘 안된다면 크롬을 사용해보세요. 여기 뿐 아니라 다른 사이트도 더 잘 될겁니다.<br>
+
+					또 기둥지도를 제대로 사용하려면 키보드가 필요합니다. 모바일에서 만끽하시기 어려울 것입니다. 죄송합니다.
+
+				</p>
+
+			</div>
+
+		</div>
+
+
+
+
+
+		<div id = "countryinfo" class = "crt" style = "display: none"> <!-- initially hidden -->
+			<!-- javascript will add stuff here -->
+		</div>
+
+
+
+
+		<script src = "../js/Dataset.js" type = "text/javascript"></script>
+		<script src = "../js/Country.js" type = "text/javascript"></script>
+		<script src = "../js/gidungjido.js" type = "text/javascript"></script>
+		<script src = "../js/DOM.js" type = "text/javascript"></script>
+
+	</body>
+
+</html>

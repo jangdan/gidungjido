@@ -1,3 +1,4 @@
+
 //CONSTANTS
 
 var CLEAR_COLOR = 0xDDDDDD;
@@ -7,6 +8,7 @@ var CLEAR_COLOR = 0xDDDDDD;
 
 
 //
+
 /*
 var FLOOR_WIDTH = 500;
 var FLOOR_HEIGHT = 300;
@@ -15,10 +17,12 @@ var FLOOR_HEIGHT = 300;
 
 
 
+
 var CAMERA_MINIMUM_ZOOM = 1;
 var CAMERA_MAXIMUM_ZOOM = 15;
 
 var CAMERA_MOVEMENT_SPEED = 0.5;
+
 
 
 
@@ -32,57 +36,7 @@ var NORMALIZED_MOUSE = new THREE.Vector2(); //for use with the raycaster
 
 
 
-
 var PRESSED_KEYS = []; //keys that are currently pressed
-
-
-
-
-
-//DOM CONSTANTS
-
-var MATERIAL_INDICIES = [
-	"MeshNormalMaterial",
-	"flags"
-];
-
-
-
-var PRELOADED_DATA_INDICIES = [
-	"Gross Domestic Product",
-	"Population"/*,
-	"Gross Domestic Product per Capita"*/
-];
-
-
-
-
-
-var SLIDER_RESOLUTION = 10;
-
-
-
-var MAXIMUM_COUNTRY_HEIGHT_MINIMUM = 1;
-var MAXIMUM_COUNTRY_HEIGHT_MAXIMUM = 10;
-
-
-var CONTRAST_MINIMUM = 1;
-var CONTRAST_MAXIMUM = 5;
-
-
-
-  
-
-//DEFAULT VALUES
-
-var DEFAULT_MAXIMUM_COUNTRY_HEIGHT = 4;
-
-
-var DEFAULT_CONTRAST = 3;
-
-
-
-var DEFAULT_MATERIAL = 1;
 
 
 
@@ -95,20 +49,15 @@ var SHOW_INFO = true;
 
 
 
-var MAXIMUM_COUNTRY_HEIGHT = DEFAULT_MAXIMUM_COUNTRY_HEIGHT;
+//var MAXIMUM_COUNTRY_HEIGHT = DEFAULT_MAXIMUM_COUNTRY_HEIGHT;
 
-
-var CONTRAST = DEFAULT_CONTRAST;
-
-
+//var CONTRAST = DEFAULT_CONTRAST;
 
 
 var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 
 
-
 var MATERIAL = 1;
-
 
 
 
@@ -156,18 +105,17 @@ camera.rotation.z = intendedcamera.rotation.z = Math.random() * Math.PI*2;
 
 
 
+
 var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false, preserveDrawingBuffer: true } );
 
-renderer.setClearColor(CLEAR_COLOR, 1);
-renderer.setSize(window.innerWidth, window.innerHeight);
-
+renderer.setClearColor( CLEAR_COLOR, 1 );
+renderer.setSize( window.innerWidth, window.innerHeight );
 
 
 //var MAX_ANISOTROPY = renderer.getMaxAnisotropy();
 
 
-
-document.body.appendChild(renderer.domElement);
+document.body.appendChild( renderer.domElement );
 
 
 
@@ -184,7 +132,9 @@ var raycaster = new THREE.Raycaster();
 
 var countryinfo = document.getElementById("countryinfo");
 
+
 var loadingmenu = document.getElementById("loading");
+
 
 
 
@@ -201,6 +151,7 @@ var floorMaterial = new THREE.MeshLambertMaterial( { color: CLEAR_COLOR } );
 
 
 var floor = new THREE.Mesh( floorGeometry, floorMaterial );
+
 
 floor.position.set( 0, 0, -DEFAULT_MAXIMUM_COUNTRY_HEIGHT/2 );
 
@@ -220,12 +171,6 @@ scene.add( floor );
 
 
 //data
-
-var flagTextures = [];
-
-
-
-
 
 var LOADABLE_DATASETS = [
 
@@ -250,11 +195,9 @@ var LOADABLE_DATASETS = [
 
 			/*
 
-			//copy and fill in
+			//copy and fill in below for new World Bank datasets:
 			
 			{ name: "GDP", indicatorid: "asdf", date: "2015" },
-
-			//...
 
 			*/
 
@@ -265,12 +208,11 @@ var LOADABLE_DATASETS = [
 ];
 
 
-
-
 var datasets = []; //preloaded data + cached external API data
 
 
 
+var flagTextures = [];
 
 
 
@@ -281,10 +223,11 @@ var countries = [];
 
 
 
+
 var loadingmanager = new THREE.LoadingManager();
 
 
-loadingmanager.onProgress = function ( item, loaded, total ) {
+loadingmanager.onProgress = function( item, loaded, total ) {
 
 	//console.log( item, loaded, total );
 
@@ -294,21 +237,7 @@ loadingmanager.onProgress = function ( item, loaded, total ) {
 
 
 
-var textureloader = new THREE.TextureLoader( loadingmanager );
-
-
-
-/*
-loadingmanager.onLoad = function(){
-
-	document.getElementById("loading").style.display = "none";
-	document.getElementById("loaded").style.display = "block";
-
-	render();
-
-};
-*/
-
+var textureloader = new THREE.TextureLoader(loadingmanager);
 
 
 
@@ -317,7 +246,7 @@ loadingmanager.onLoad = function(){
 
 //add the countries
 
-loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ //'JSONObject' is a very large GeoJSON-formatted object
+loadJSON( document.getElementById("country shapes").href, function(data){ //'JSONObject' is a very large GeoJSON-formatted object
 
 
 
@@ -330,6 +259,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		document.getElementById("loading").style.display = "none";
 		document.getElementById("loaded").style.display = "block";
 
+
 		render();
 
 	}
@@ -338,7 +268,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-	var data = JSONObject;
+	//var data = JSONObject;
 
 	//console.log(data.features.length);
 
@@ -346,13 +276,6 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 	var preloadeddatasets = [ new Dataset("Gross Domestic Product"), new Dataset("Population") ];
-	var maximums = [];
-
-	maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product") ] = 0;
-	maximums[ PRELOADED_DATA_INDICIES.indexOf("Population") ] = 0;
-	//maximums[ PRELOADED_DATA_INDICIES.indexOf("Gross Domestic Product per Capita") ] = 0;
-
-
 
 
 
@@ -364,8 +287,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 		if(data.features[i].properties.ISO_A2 === "-99"
-		|| data.features[i].properties.ISO_A2 === "XK"
-		|| data.features[i].properties.ISO_A2 === "SS") continue; // delete this later
+		|| data.features[i].properties.ISO_A2 === "XK") continue; // delete this later
 
 
 
@@ -379,6 +301,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 			"ISO_3166-1": data.features[i].properties.ISO_A2, // ISO 3166-1: the default identification method for countries in this project
 
+
 			"texture": undefined,
 			"aspectratio": undefined
 
@@ -388,13 +311,21 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
+		var textureurl;
+
+
+		if(data.features[i].properties.ISO_A2 === "SS")
+			textureurl = document.getElementById("flags").href + "other flags/SS.png";
+
+		else
+			textureurl = document.getElementById("flags").href + "flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
+
 
 		textureloader.load(
 
-			"assets/flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png",
+			textureurl,
 
 			function(texture){
-
 
 				texture.generateMipmaps = false;
 
@@ -409,10 +340,9 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 					var splitpath = texture.image.src.split("/");
 					var filename = splitpath[ splitpath.length - 1 ];
 
-					return aflagTexture["ISO_3166-1"].toLowerCase() === filename.split(".")[0];
+					return aflagTexture["ISO_3166-1"].toLowerCase() === filename.split(".")[0].toLowerCase();
 
 				} )[0];
-
 
 				flagTexture.texture = texture;
 				flagTexture.aspectratio = texture.image.width/texture.image.height;	
@@ -428,6 +358,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 		//shapes
 
 		var countryShapes = []; //this will be a THREE.Shape or an Array of THREE.Shape
+
 
 		var exteriorRing = []; //an array of Vector2s
 
@@ -453,7 +384,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 				for(l = 0; l < data.features[i].geometry.coordinates.length; ++l){
 				
-					var parseddata = parsePolygon(data.features[i].geometry.coordinates[l]);
+					var parseddata = parsePolygon( data.features[i].geometry.coordinates[l] );
 
 					Array.prototype.push.apply( countryShapes, parseddata.countryShapes );
 					Array.prototype.push.apply( exteriorRing, parseddata.exteriorRing );
@@ -467,15 +398,18 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-
 		//creating 'Country' objects
 
 		var country = new Country( data.features[i].properties.SOVEREIGNT, data.features[i].properties.ISO_A2, countryShapes, exteriorRing );
 
+
 		if(SHADOWS){
+
 			country.mesh.castShadow = true;
 			country.mesh.recieveShadow = true;
+
 		}
+
 
 
 		countries.push(country);
@@ -498,6 +432,9 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 	Array.prototype.push.apply( datasets, preloadeddatasets );
+
+
+
 
 
 
@@ -529,7 +466,10 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 			}
 
+
+
 			var path = new THREE.Path(points);
+
 
 			paths.push(path);
 
@@ -537,9 +477,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
-
 		countryShapes = paths[0].toShapes(); //initialize the shape (toShapes() will only return ONE THREE.Shape; it won't be an array)
-
 
 
 		paths.splice(0, 1); //remove the first path to add holes (check GeoJSON specs for more information)
@@ -556,6 +494,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 
+
 	//mamuri
 
 	function mamuri(){
@@ -566,6 +505,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 
 			countries[i].setHeightData( datasets[DATA_INDEX].data[i].value / datasets[DATA_INDEX].maximum );
+
 
 
 			scene.add(countries[i].mesh);
@@ -586,6 +526,7 @@ loadJSON("data/ne_10m_admin_0_sovereignty_moderate.json", function(JSONObject){ 
 
 var directionallight = new THREE.DirectionalLight( 0xFFFFFF, 0.2 );
 
+
 directionallight.position.set( 1, 1, Math.sqrt(3) );
 
 
@@ -598,6 +539,7 @@ if(SHADOWS){
 	directionallight.shadow.camera.position.set( 1, 1, Math.sqrt(3) );
 
 }
+
 
 
 scene.add(directionallight);
@@ -615,7 +557,7 @@ scene.add(new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 0.7 ));
 
 //global functions that apply on all countries & their data
 
-function updatecountryheights(){
+function updatecountryheights(){ //TODO: find a better name for this
 
 	for(i = 0; i < countries.length; ++i){
 
@@ -626,6 +568,7 @@ function updatecountryheights(){
 	}
 
 }
+
 
 
 
@@ -641,10 +584,10 @@ function setheightdatasource(which){ //'which' should be chosen from PRELOADED_D
 
 
 
+
 function setMaterial(which){
 
 	MATERIAL = parseInt(which);
-
 
 	switch(MATERIAL){
 
@@ -688,14 +631,18 @@ function render(time){
 
 
 	
+
 	//rotating the camera with euler angles
 
 	//pitch and yaw
 
 	if(!menuvisible){
+
 		intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
 		intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
+
 	}
+
 
 
 	//limit the camera pitch
@@ -703,9 +650,11 @@ function render(time){
 	if(0 > intendedcamera.rotation.x) intendedcamera.rotation.x = 0;
 	if(intendedcamera.rotation.x > Math.PI) intendedcamera.rotation.x = Math.PI;
 	
-	
+
+
 	camera.rotation.x += (intendedcamera.rotation.x - camera.rotation.x) * 0.1;
 	camera.rotation.z += (intendedcamera.rotation.z - camera.rotation.z) * 0.1;
+
 
 
 
@@ -748,7 +697,9 @@ function render(time){
 	camera.position.z += (intendedcamera.position.z - camera.position.z) * 0.05;
 
 
+
 	camera.updateProjectionMatrix();
+
 
 
 
@@ -757,8 +708,8 @@ function render(time){
 
 		raycaster.setFromCamera( NORMALIZED_MOUSE, camera );
 	
-	
 
+	
 		//the code that follows might, in a worst case, execute two for loops - it needs optimization
 	
 		var intersections = raycaster.intersectObjects( countries.map( function(country){ return country.mesh; } ) );
@@ -782,9 +733,9 @@ function render(time){
 			}
 	
 		
-
 			showinfo();
 	
+
 			countryinfo.style.left = MOUSE.x+"px";
 			countryinfo.style.top = MOUSE.y+"px";
 	
@@ -815,6 +766,8 @@ function render(time){
 
 
 
+
+
 	renderer.render(scene, camera);
 
 }
@@ -836,6 +789,7 @@ window.addEventListener("resize", function(e){
 	camera.aspect = window.innerWidth/window.innerHeight;
 
 	camera.updateProjectionMatrix();
+
 
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -860,10 +814,12 @@ window.addEventListener("mousewheel", function(e){ //zooming
 
 	intendedcamera.zoom += (e.wheelDelta || e.detail) * 0.005;
 
+
 	//clip value
 
 	if(intendedcamera.zoom < CAMERA_MINIMUM_ZOOM) intendedcamera.zoom = CAMERA_MINIMUM_ZOOM;
 	else if(intendedcamera.zoom > CAMERA_MAXIMUM_ZOOM) intendedcamera.zoom = CAMERA_MAXIMUM_ZOOM;
+
 
 
 	return false;
@@ -885,11 +841,13 @@ window.addEventListener("mousemove", function(e){
 
 
 
+
 	//from a three.js example
 	//for the raycaster
 
 	NORMALIZED_MOUSE.x =  (e.clientX/window.innerWidth)*2 - 1;
 	NORMALIZED_MOUSE.y = -(e.clientY/window.innerHeight)*2 + 1;
+
 
 
 	return false;
@@ -923,6 +881,7 @@ window.addEventListener("keydown", function(e){
 
 
 
+
 	if(e.which == 27){ //escape key
 
 		togglemenu();
@@ -930,6 +889,7 @@ window.addEventListener("keydown", function(e){
 		return;
 
 	}
+
 
 
 	if(e.which == 73){ //'i'
@@ -941,6 +901,7 @@ window.addEventListener("keydown", function(e){
 	}
 
 
+
 	if(e.which == 80){ //'p'
 
 		screenshot();
@@ -948,6 +909,7 @@ window.addEventListener("keydown", function(e){
 		return;
 
 	}
+
 
 
 
@@ -996,7 +958,6 @@ function stopcameramotion(){
 var menuvisible = true;
 
 
-
 function togglemenu(){
 
 	if(menuvisible){
@@ -1004,6 +965,7 @@ function togglemenu(){
 		new TWEEN.Tween( { opacity: 1 } )
 
 			.to( { opacity: 0 }, 100 )
+
 
 			.onUpdate( function(){
 				document.getElementById("menu").style.opacity = ""+this.opacity+"";
@@ -1013,7 +975,10 @@ function togglemenu(){
 				document.getElementById("menu").style.display = "none";
 			})
 
+
 			.easing(TWEEN.Easing.Quadratic.Out)
+
+
 
 			.start();
 
@@ -1029,11 +994,17 @@ function togglemenu(){
 
 			.to( { opacity: 1 }, 100 )
 
+
+
 			.onUpdate(function(){
 				document.getElementById("menu").style.opacity = ""+this.opacity+"";
 			})
 
+
+
 			.easing(TWEEN.Easing.Quadratic.Out)
+
+
 
 			.start();
 
@@ -1063,8 +1034,8 @@ function toggleinfo(){
 	SHOW_INFO = !SHOW_INFO;	
 
 
-	document.getElementById("countryinfocheckbox").checked = SHOW_INFO;
 
+	document.getElementById("countryinfocheckbox").checked = SHOW_INFO;
 
 
 	/*
@@ -1133,9 +1104,7 @@ function loadJSON(url, callback){
 	xobj.overrideMimeType("application/json");
 
 
-
 	xobj.open('GET', url, true);
-
 
 
 	xobj.onreadystatechange = function(){
@@ -1149,6 +1118,7 @@ function loadJSON(url, callback){
 		}
 
 	};
+
 
 	xobj.send(null);  
 
