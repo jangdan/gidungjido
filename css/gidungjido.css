@@ -181,7 +181,7 @@ p {
 
 
 
-#loading {
+.loading {
 
 	margin-top: 64px; /* fallback */
 	margin-top: 33vh;
@@ -190,27 +190,25 @@ p {
 }
 
 
-/*
-
-#loadingbar {
+.loadingbar {
 
 	padding: 0;
 	margin: 0;
 
 
 	display: inline-block;
+	
+	text-align: left;
 
 
 
 	background: #FFF;
 
 
-	width: 200px;
+	width: 0px;
 	height: 1px;
 
 }
-
-*/
 
 
 

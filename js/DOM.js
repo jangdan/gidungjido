@@ -170,6 +170,11 @@ function defaultsettings(){
 
 
 
+var datasetloading = document.getElementById("datasetloading");
+var datasetloadingbar = document.getElementById("datasetloadingbar");
+var datasetloadingtext = document.getElementById("datasetloadingtext");
+
+
 function sourcechange(){
 
 	var selection = sourceselect.value.split(",");
@@ -180,8 +185,11 @@ function sourcechange(){
 
 	//console.log(selection, selectedDataset.index);
 
-
 	if(selectedDataset.index === undefined){ //if first time loading; must call API
+
+		document.getElementById("loaded").style.display = "none";
+		datasetloading.style.display = "block";
+
 
 		selectedDataset.index = datasets.length;
 
@@ -191,15 +199,16 @@ function sourcechange(){
 		datasets.push(dataset);
 
 
-
 		//API call ...
 
 		switch(LOADABLE_DATASETS[selection[0]].name){
 
 			case "The World Bank":
 
-				for(i = 0; i < countries.length; ++i){
+				var loadedcount = 0;
 
+
+				for(i = 0; i < countries.length; ++i){
 
 					loadJSON(
 
@@ -207,19 +216,64 @@ function sourcechange(){
 
 						//later when we support time series data we should want to call the whole time series (ex. http://api.worldbank.org/countries/KR/indicators/NY.GDP.MKTP.CD?format=json; without the ?date parameter
 
-						function(datum){
 
-							dataset.feeddata(
+						function(datum, url){
 
-								countries.filter(
+							var country = countries.filter(
+								function(country){ return country.iso1366 === url.split("/")[7]; }
+							)[0];
+
+
+							if(datum[1]){
+
+								/*
+								
+								//the proper way
+
+								var country = countries.filter(
 									function(country){ return datum[1][0].country.id === country.iso1366; }
-								)[0],
+								)[0];
 
-								datum[1][0].value
+								*/
 
-							);
 
-							dataset.calculatemaximum();
+								dataset.feeddata( country, datum[1][0].value );
+
+							} else {
+
+								dataset.feeddata( country, "no data" );
+
+							}
+
+
+
+
+							loadedcount++;
+
+
+							datasetloadingbar.style.width = (loadedcount/countries.length) * 200 + "px";
+							datasetloadingtext.innerHTML = country.name;
+
+
+
+							if(loadedcount === countries.length){ //finalize
+
+								dataset.calculatemaximum();
+
+
+
+								datasetloadingbar.style.width = "0px";
+								datasetloadingtext.innerHTML = "loading...";
+
+
+								datasetloading.style.display = "none";
+								document.getElementById("loaded").style.display = "block";
+
+
+
+								setheightdatasource( selectedDataset.index );
+
+							}
 		
 						}
 
@@ -233,9 +287,9 @@ function sourcechange(){
 
 	} else { //if we've already loaded the dataset and it's cached or it's preloaded
 
-	}
+		setheightdatasource( selectedDataset.index );
 
-	setheightdatasource( selectedDataset.index );
+	}
 
 }
 

@@ -318,7 +318,8 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
-	if(!data) this.data = "no data";
+	if(!data || data === "no data") this.data = "no data";
+	
 	else {
 
 		this.data = data;
