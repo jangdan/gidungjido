@@ -1,3 +1,3 @@
-#data
+#other flags
 
-the data files here are originally from [http://www.naturalearthdata.com/](http://www.naturalearthdata.com/). thay have been altered slightly; a few "holes" in the data have been patched.
+thie flags in this directory are flags that weren't included in [flagpedia.net](http://flagpedia.net/download)'s set of flags, thus added seperately, from Wikimedia.
