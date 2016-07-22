@@ -133,7 +133,7 @@ var raycaster = new THREE.Raycaster();
 var countryinfo = document.getElementById("countryinfo");
 
 
-var loadingmenu = document.getElementById("loading");
+//var loadingbar = document.getElementById("loadingbar");
 
 
 
@@ -229,9 +229,11 @@ var loadingmanager = new THREE.LoadingManager();
 
 loadingmanager.onProgress = function( item, loaded, total ) {
 
-	//console.log( item, loaded, total );
+	console.log( item, loaded, total );
 
 	//loadingmenu.innerHTML = item;
+
+	//loadingbar.style.width = (loaded/total)*200 + "px";
 
 };
 
