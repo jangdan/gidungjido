@@ -133,7 +133,7 @@ var raycaster = new THREE.Raycaster();
 var countryinfo = document.getElementById("countryinfo");
 
 
-var loadingmenu = document.getElementById("loading");
+//var loadingbar = document.getElementById("loadingbar");
 
 
 
@@ -229,9 +229,11 @@ var loadingmanager = new THREE.LoadingManager();
 
 loadingmanager.onProgress = function( item, loaded, total ) {
 
-	//console.log( item, loaded, total );
+	console.log( item, loaded, total );
 
 	//loadingmenu.innerHTML = item;
+
+	//loadingbar.style.width = (loaded/total)*200 + "px";
 
 };
 
@@ -286,8 +288,7 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 		if(data.features[i].properties.TYPE === "Indeterminate") continue; //ignore 'Indeterminate' countries
 
 
-		if(data.features[i].properties.ISO_A2 === "-99"
-		|| data.features[i].properties.ISO_A2 === "XK") continue; // delete this later
+		if(data.features[i].properties.ISO_A2 === "-99") continue; // delete this later
 
 
 
@@ -316,6 +317,14 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 		if(data.features[i].properties.ISO_A2 === "SS")
 			textureurl = document.getElementById("flags").href + "other flags/SS.png";
+
+		else if(data.features[i].properties.ISO_A2 === "XK")
+			textureurl = document.getElementById("flags").href + "other flags/XK.png";
+
+		/*
+		else if(data.features[i].properties.ISO_A2 === "EH")
+			textureurl = document.getElementById("flags").href + "other flags/EH.png";
+		*/
 
 		else
 			textureurl = document.getElementById("flags").href + "flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
