@@ -29,7 +29,13 @@ Dataset.prototype.calculatemaximum = function(){
 
 	var maximum = this.maximum;
 
-	for(i = 0; i < this.data.length; ++i) maximum = Math.max( this.data[i].value , maximum );
+	for(i = 0; i < this.data.length; ++i){
+
+		if(this.data[i].value === "no data") continue;
+
+		maximum = Math.max( this.data[i].value , maximum );
+
+	}
 
 
 	this.maximum = maximum;

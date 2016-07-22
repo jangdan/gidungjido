@@ -258,7 +258,7 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 		mamuri();
 
 
-		document.getElementById("loading").style.display = "none";
+		document.getElementById("initialization").style.display = "none";
 		document.getElementById("loaded").style.display = "block";
 
 
@@ -1122,7 +1122,7 @@ function loadJSON(url, callback){
 
 			//Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
 			
-			callback(JSON.parse(xobj.responseText));
+			callback(JSON.parse(xobj.responseText), url);
 
 		}
 
