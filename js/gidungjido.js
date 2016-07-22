@@ -319,6 +319,11 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 		else if(data.features[i].properties.ISO_A2 === "XK")
 			textureurl = document.getElementById("flags").href + "other flags/xk.png";
 
+		/*
+		else if(data.features[i].properties.ISO_A2 === "EH")
+			textureurl = document.getElementById("flags").href + "other flags/EH.png";
+		*/
+
 		else
 			textureurl = document.getElementById("flags").href + "flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
 
