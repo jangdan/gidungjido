@@ -170,6 +170,11 @@ function defaultsettings(){
 
 
 
+var datasetloading = document.getElementById("datasetloading");
+var datasetloadingbar = document.getElementById("datasetloadingbar");
+var datasetloadingtext = document.getElementById("datasetloadingtext");
+
+
 function sourcechange(){
 
 	var selection = sourceselect.value.split(",");
@@ -183,7 +188,7 @@ function sourcechange(){
 	if(selectedDataset.index === undefined){ //if first time loading; must call API
 
 		document.getElementById("loaded").style.display = "none";
-		document.getElementById("datasetloading").style.display = "block";
+		datasetloading.style.display = "block";
 
 
 		selectedDataset.index = datasets.length;
@@ -211,6 +216,7 @@ function sourcechange(){
 
 						//later when we support time series data we should want to call the whole time series (ex. http://api.worldbank.org/countries/KR/indicators/NY.GDP.MKTP.CD?format=json; without the ?date parameter
 
+
 						function(datum, url){
 
 							var country = countries.filter(
@@ -231,7 +237,6 @@ function sourcechange(){
 								*/
 
 
-
 								dataset.feeddata( country, datum[1][0].value );
 
 							} else {
@@ -243,11 +248,11 @@ function sourcechange(){
 
 
 
-
 							loadedcount++;
 
-							document.getElementById("datasetloadingbar").style.width = (loadedcount/countries.length) * 200 + "px";
-							document.getElementById("datasetloadingtext").innerHTML = country.name;
+
+							datasetloadingbar.style.width = (loadedcount/countries.length) * 200 + "px";
+							datasetloadingtext.innerHTML = country.name;
 
 
 
@@ -256,11 +261,12 @@ function sourcechange(){
 								dataset.calculatemaximum();
 
 
-								document.getElementById("datasetloading").style.display = "none";
-								document.getElementById("datasetloadingbar").style.width = "0px";
 
-								document.getElementById("datasetloadingtext").innerHTML = "loading";
+								datasetloadingbar.style.width = "0px";
+								datasetloadingtext.innerHTML = "loading...";
 
+
+								datasetloading.style.display = "none";
 								document.getElementById("loaded").style.display = "block";
 
 
