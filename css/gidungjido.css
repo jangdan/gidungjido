@@ -186,14 +186,32 @@ p {
 	margin-top: 64px; /* fallback */
 	margin-top: 33vh;
 
+	text-align: center;
 }
 
+
+/*
 
 #loadingbar {
 
+	padding: 0;
+	margin: 0;
 
+
+	display: inline-block;
+
+
+
+	background: #FFF;
+
+
+	width: 200px;
+	height: 1px;
 
 }
+
+*/
+
 
 
 
