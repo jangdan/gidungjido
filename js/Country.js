@@ -272,6 +272,16 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
+		var matrix = new THREE.Matrix4();
+
+		matrix.makeTranslation(this.flagcenter.x, this.flagcenter.y, 0);
+		matrix.makeScale(1.0001, 1.0001, 1.0001);
+
+		countryhoverGeometry.applyMatrix( matrix );
+
+
+
+
 	
 		if( !this.flagtexture ) countryMaterial = new THREE.MeshLambertMaterial();
 		else countryMaterial = new THREE.MeshLambertMaterial( { map: this.flagtexture, transparent: true } );
@@ -284,8 +294,6 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 		this.hovermesh = new THREE.Mesh(countryhoverGeometry, crtMaterial);
-
-		//this.hovermesh.scale.set(1.01, 1.01, 1.01); //TODO: scaling so that the sides arent ugly
 
 		this.hovermesh.visible = false;
 
@@ -316,6 +324,11 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 			.easing( TWEEN.Easing.Quadratic.Out )
 			.start();
 
+		this.tween = new TWEEN.Tween( this.hovermesh.scale )
+			.to( { z: data * (MAXIMUM_COUNTRY_HEIGHT + 0.1) }, 700 )
+			.easing( TWEEN.Easing.Quadratic.Out )
+			.start();
+
 	}
 
 
@@ -327,11 +340,13 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 	/*
+
 	if(this.mesh.material instanceof THREE.MeshLambertMaterial || this.mesh.material instanceof THREE.MeshPhongMaterial){
 
 		this.mesh.material.color.copy( colorfromdata(data) );
 
 	}
+
 	*/
 
 }
