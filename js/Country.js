@@ -272,6 +272,8 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 
 
+		//temporary fix
+		
 		var matrix = new THREE.Matrix4();
 
 		matrix.makeTranslation(this.flagcenter.x, this.flagcenter.y, 0);
