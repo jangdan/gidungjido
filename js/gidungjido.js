@@ -73,6 +73,12 @@ var SHADOWS = false;
 
 
 
+var HOVER_TEXTURE_CRT_DENSITY = 30;
+
+
+
+
+
 
 
 //initialization
@@ -249,10 +255,26 @@ var textureloader = new THREE.TextureLoader(loadingmanager);
 
 
 
-var crt = textureloader.load( document.getElementById("assets").href + "crt.png" );
+var crtMaterial;
+
+textureloader.load( document.getElementById("assets").href + "crt.png", function(texture){
+
+	texture.generateMipmaps = false;
+
+	texture.magFilter = THREE.LinearFilter;
+	texture.minFilter = THREE.LinearFilter;
 
 
-crt.repeat.set(100, 100);
+
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+
+
+	crtMaterial = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
+
+} );
+
+
 
 
 
@@ -532,6 +554,8 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 			scene.add(countries[i].mesh);
 
+			scene.add(countries[i].hovermesh);
+
 		}
 
 	}
@@ -755,17 +779,23 @@ function render(time){
 		
 			for(i = 0; i < countries.length; ++i){
 		
+				countries[i].hovermesh.visible = false;
+
+
 				if(countries[i].mesh === intersections[0].object){
 		
 					pointedCountry = countries[i];
 		
-					break;
-
 				}
 
 			}
+
+
+
+			pointedCountry.hovermesh.visible = true;
 	
 		
+
 			showinfo();
 	
 

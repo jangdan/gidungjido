@@ -105,6 +105,10 @@ var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, cent
 
 
 
+	this.hovermesh;
+
+
+
 
 	this.tween;
 
@@ -138,7 +142,7 @@ Country.prototype.adjustuvs = function(){
 
 		//console.log(this.mesh.geometry.faces, this.mesh.geometry.faceVertexUvs);
 
-		for(j = 0; j < this.mesh.geometry.faceVertexUvs[0].length; ++j){
+		for(j = 0; j < this.mesh.geometry.faceVertexUvs[0].length; ++j){ // i presume the indicies are the same for this.hovermesh
 
 			for(k = 0; k < this.mesh.geometry.faceVertexUvs[0][j].length; ++k){
 
@@ -151,6 +155,10 @@ Country.prototype.adjustuvs = function(){
 					this.mesh.geometry.faceVertexUvs[0][j][k].divideScalar( this.boundingBoxdimensions.y );
 
 					this.mesh.geometry.faceVertexUvs[0][j][k].x *= 1/this.flagaspectratio;
+
+
+
+					this.hovermesh.geometry.faceVertexUvs[0][j][k].multiplyScalar( HOVER_TEXTURE_CRT_DENSITY );
 
 
 
@@ -182,6 +190,8 @@ Country.prototype.adjustuvs = function(){
 				} else { //the sides
 
 					this.mesh.geometry.faceVertexUvs[0][j][k].set(0, 0);
+
+					this.hovermesh.geometry.faceVertexUvs[0][j][k].set(0, 0);
 					
 				}
 
@@ -190,20 +200,20 @@ Country.prototype.adjustuvs = function(){
 
 	} else { // match widths
 
-		for(j = 0; j < this.mesh.geometry.faceVertexUvs.length; ++j){
+		for(j = 0; j < this.mesh.geometry.faceVertexUvs[0].length; ++j){
 
-			for(k = 0; k < this.mesh.geometry.faceVertexUvs[j].length; ++k){
+			for(k = 0; k < this.mesh.geometry.faceVertexUvs[0][j].length; ++k){
 
-				for(l = 0; l < this.mesh.geometry.faceVertexUvs[j][k].length; ++l){
-
-					this.mesh.geometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
+				this.mesh.geometry.faceVertexUvs[0][j][k].sub( this.flagcenter );
 
 
-					this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.x );
+				this.mesh.geometry.faceVertexUvs[0][j][k].divideScalar( this.boundingBoxdimensions.x );
 
-					this.mesh.geometry.faceVertexUvs[j][k][l].y *= this.flagaspectratio;
+				this.mesh.geometry.faceVertexUvs[0][j][k].y *= this.flagaspectratio;
 
-				}
+
+
+				this.hovermesh.geometry.faceVertexUvs[0][j][k].multiplyScalar( HOVER_TEXTURE_CRT_DENSITY );
 
 			}
 
@@ -242,19 +252,42 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 		var countryGeometry, countryMaterial;
 
-
-
-		if( this.data === "no data" ) countryGeometry = new THREE.ShapeGeometry( this.shapes );
-		else countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
+		var countryhoverGeometry;
 
 
 
+		if( this.data === "no data" ){
+
+			countryGeometry = new THREE.ShapeGeometry( this.shapes );
+
+			countryhoverGeometry = new THREE.ShapeGeometry( this.shapes );
+
+		} else {
+
+			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
+
+			countryhoverGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
+
+		}
+
+
+
+	
 		if( !this.flagtexture ) countryMaterial = new THREE.MeshLambertMaterial();
-		else countryMaterial = new THREE.MeshLambertMaterial( { map: this.flagtexture } );
+		else countryMaterial = new THREE.MeshLambertMaterial( { map: this.flagtexture, transparent: true } );
+
 
 
 
 		this.mesh = new THREE.Mesh(countryGeometry, countryMaterial);
+
+
+
+		this.hovermesh = new THREE.Mesh(countryhoverGeometry, crtMaterial);
+
+		//this.hovermesh.scale.set(1.01, 1.01, 1.01); //TODO: scaling so that the sides arent ugly
+
+		this.hovermesh.visible = false;
 
 
 
@@ -265,7 +298,7 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 		if( this.data === "no data" && this.mesh.geometry instanceof THREE.ExtrudeGeometry )
 			countryGeometry = new THREE.ShapeGeometry( this.shapes );
 
-		else if( this.data !== "no data" && this.mesh.geometry instanceof THREE.ShapeGeometry ){ //not an else if, just an else then an if (unless i'm mistaken)
+		else if( this.data !== "no data" && this.mesh.geometry instanceof THREE.ShapeGeometry ){
 
 			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
 		
