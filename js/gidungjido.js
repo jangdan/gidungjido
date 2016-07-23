@@ -249,6 +249,13 @@ var textureloader = new THREE.TextureLoader(loadingmanager);
 
 
 
+var crt = textureloader.load( document.getElementById("assets").href + "crt.png" );
+
+
+crt.repeat.set(100, 100);
+
+
+
 
 
 
@@ -322,10 +329,10 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 
 		if(data.features[i].properties.ISO_A2 === "SS")
-			textureurl = document.getElementById("flags").href + "other flags/SS.png";
+			textureurl = document.getElementById("assets").href + "flags/other flags/SS.png";
 
 		else if(data.features[i].properties.ISO_A2 === "XK")
-			textureurl = document.getElementById("flags").href + "other flags/XK.png";
+			textureurl = document.getElementById("assets").href + "flags/other flags/XK.png";
 
 		/*
 		else if(data.features[i].properties.ISO_A2 === "EH")
@@ -333,7 +340,7 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 		*/
 
 		else
-			textureurl = document.getElementById("flags").href + "flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
+			textureurl = document.getElementById("assets").href + "flags/flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
 
 
 		textureloader.load(
@@ -510,7 +517,7 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 
 
-	//mamuri
+	//마무리
 
 	function mamuri(){
 
