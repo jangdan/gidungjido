@@ -1,12 +1,6 @@
 
 //CONSTANTS
 
-var CLEAR_COLOR = 0x99CCFF;
-
-
-
-
-
 //
 
 /*
@@ -59,12 +53,17 @@ var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 
 var MATERIAL = 1; //themes
 
+
 var THEME_BACKGROUND_COLORS = [
 	
 	0xDDDDDD, //"MeshNormalMaterial"
 	0x99CCFF  //"flags"
 
 ];
+
+var CLEAR_COLOR = THEME_BACKGROUND_COLORS[MATERIAL];
+
+
 
 
 
