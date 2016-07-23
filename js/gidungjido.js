@@ -1,7 +1,7 @@
 
 //CONSTANTS
 
-var CLEAR_COLOR = 0xDDDDDD;
+var CLEAR_COLOR = 0x99CCFF;
 
 
 
@@ -57,7 +57,14 @@ var SHOW_INFO = true;
 var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 
 
-var MATERIAL = 1;
+var MATERIAL = 1; //themes
+
+var THEME_BACKGROUND_COLORS = [
+	
+	0xDDDDDD, //"MeshNormalMaterial"
+	0x99CCFF  //"flags"
+
+];
 
 
 
@@ -598,6 +605,9 @@ function setMaterial(which){
 
 	MATERIAL = parseInt(which);
 
+
+	/*
+
 	switch(MATERIAL){
 
 		case 0: // "MeshNormalMaterial"
@@ -615,6 +625,14 @@ function setMaterial(which){
 			break;
 
 	}
+
+	*/
+
+
+	renderer.setClearColor(THEME_BACKGROUND_COLORS[MATERIAL]);
+
+
+	for( i = 0; i < countries.length; ++i ) countries[i].setMaterial(MATERIAL);
 
 }
 
