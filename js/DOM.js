@@ -166,6 +166,16 @@ function countryinfocheckboxclicked(){
 
 
 
+function lockcameracheckboxclicked(){
+
+	LOCK_CAMERA = document.getElementById("cameralockcheckbox").checked;
+
+}
+
+
+
+
+
 function materialchange(){
 
 	setMaterial( materialselect.value );

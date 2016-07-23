@@ -684,6 +684,8 @@ function render(time){
 
 
 
+	MOUSE_MOVING = false;
+
 	//camera 조작
 
 	//zooming
@@ -693,14 +695,18 @@ function render(time){
 
 	
 
-	//rotating the camera with euler angles
+	if(!LOCK_CAMERA){
 
-	//pitch and yaw
+		//rotating the camera with euler angles
 
-	if(!menuvisible){
+		//pitch and yaw
 
-		intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
-		intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
+		if(!menuvisible){
+
+			intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
+			intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
+
+		}
 
 	}
 
@@ -906,13 +912,16 @@ window.addEventListener("mousewheel", function(e){ //zooming
 
 
 
+var PREVIOUS_MOUSE = new THREE.Vector2();
+
 window.addEventListener("mousemove", function(e){
 
 	if(menuvisible) //ignore when you have something better to do with the mouse than moving it around without a visible cursor on the monitor
 		return;
 
 
-	
+
+
 	MOUSE.x = e.clientX;
 	MOUSE.y = e.clientY;
 
@@ -927,9 +936,54 @@ window.addEventListener("mousemove", function(e){
 
 
 
+	if(LOCK_CAMERA){
+
+		if(MOUSE_DOWN){
+
+			var deltamouse = new THREE.Vector2().subVectors(MOUSE, PREVIOUS_MOUSE);
+
+
+			console.log( e.clientX, e.clientY, PREVIOUS_MOUSE, MOUSE )
+
+			intendedcamera.rotation.z += deltamouse.x / window.innerWidth * (camera.fov * camera.aspect) / 180 * Math.PI;
+			intendedcamera.rotation.x += deltamouse.y / window.innerHeight * camera.fov / 180 * Math.PI;
+
+		}
+
+	}
+
+
+	PREVIOUS_MOUSE.copy(MOUSE);
+
+
 	return false;
 
+
 }, false);
+
+
+
+
+var MOUSE_DOWN = false;
+
+//var MOUSE_DOWN_POINT = new THREE.Vector2();
+
+
+window.addEventListener("mousedown", function(e){
+
+	MOUSE_DOWN = true;
+
+	//MOUSE_DOWN_POINT.set(e.clientX, e.clientY);
+
+});
+
+
+
+window.addEventListener("mouseup", function(e){
+
+	MOUSE_DOWN = false;
+
+});
 
 
 
@@ -982,6 +1036,16 @@ window.addEventListener("keydown", function(e){
 	if(e.which == 80){ //'p'
 
 		screenshot();
+
+		return;
+
+	}
+
+
+
+	if(e.which == 76){
+
+		togglecameralock();
 
 		return;
 
@@ -1161,6 +1225,21 @@ function screenshot(){
 	window.open(renderer.domElement.toDataURL("image/png"), "Final");
 
 	togglemenu();
+
+}
+
+
+
+
+
+var LOCK_CAMERA = true;
+
+
+function togglecameralock(){
+
+	LOCK_CAMERA = !LOCK_CAMERA;
+
+	document.getElementById("cameralockcheckbox").checked = LOCK_CAMERA;
 
 }
 
