@@ -46,15 +46,26 @@
 
 
 
-			<div id = "loading">
+			<div id = "initialization" class = "loading">
 				
-				loading...
+				준비하는 중입니다.<br>
+
+				로딩 바가 없습니다. 너무 오래걸린다 싶으면 자바스크립트 콘솔에서 로딩 정보를 확인하실 수 있습니다.
+
+				<!--
+
+				<div id = "loadingbar">
+
+				</div>
+
+				-->
 
 			</div>
 
 
 
 
+			
 			<div id = "loaded" style = "display: none">
 
 
@@ -62,16 +73,23 @@
 
 
 
+				보여줄 통계: <select id = "source" onchange = "sourcechange()">
+					<!--javascript will add stuff here-->
+				</select>
+
+
 
 				<h2>사용</h2>
 
 				<p>
 
-					<span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span>키로 앞, 뒤, 양 옆으로 움직일 수 있습니다. 그리고 <span class = "roundedborder">space</span>를 누르면 위로 뜨고, <span class = "roundedborder">shift</span>를 누르면 밑으로 내려갈 수 있습니다. 마지막으로 마우스 스크롤을 해서 확대와 축소를 할 수 있습니다.<br>
+					<span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span>키로 앞, 뒤, 양 옆으로 움직일 수 있습니다. 그리고 <span class = "roundedborder">space</span>를 누르면 올라가고, <span class = "roundedborder">shift</span>를 누르면 내려갈 수 있습니다.<br>
 
-					<span class = "roundedborder">p</span>를 누르면 스크린샽을 찍을 수 있습니다.<br>
+					마우스를 움직여서 보고싶은 곳을 볼 수 있습니다. 그리고 확대와 축소는 마우스 스크롤을 통해서 합니다.<br>
 
-					<span class = "roundedborder">i</span>를 누르면 마우스를 따라가며 나라에 대한 정보를 보여주는 창을 숨기고 다시 보이게 할 수 있습니다.<br>
+					<span class = "roundedborder">p</span>를 누르면 스크린샽을 찍을 수 있습니다. 스크린샽이 있는 별도의 페이지가 열리면, 그 스크린샽에 오른쪽 마우스 클릭을 하고 "다른 이름으로 저장"과 비슷한 문구를 누르면 이미지로 저장됩니다.<br>
+
+					<span class = "roundedborder">i</span>를 누르면 마우스 커를 따라가며 나라에 대한 정보를 보여주는 창을 숨기고 다시 보이게 할 수 있습니다.<br>
 
 					<!--<span class = "roundedborder">l</span>: lock camera rotation<br>-->
 
@@ -96,7 +114,7 @@
 					<!--<input type = "checkbox" checked = "checked"> continuous mouse movement (keyboard shortcut <span class = "roundedborder">l</span>)<br>-->
 
 
-					스킨: <select id = "material" onchange = "materialchange()">
+					테마: <select id = "material" onchange = "materialchange()">
 						<!--javascript will add stuff here-->
 					</select><br>
 
@@ -109,11 +127,6 @@
 
 					<button type = "button" onclick = "defaultsettings()">설정 초기화</button><br>
 
-
-					보여줄 통계: <select id = "source" onchange = "sourcechange()">
-						<!--javascript will add stuff here-->
-					</select>
-
 				</p>
 
 
@@ -122,11 +135,23 @@
 
 				<p>
 
-					기둥지도는 <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>이라는 요즘 뜨는 기술을 사용하는데 제 경험상 <a href = "https://www.google.com/chrome/">구글 크롬(Google Chrome)</a> 브라우저에서 가장 잘 돌아갑니다. 잘 안된다면 크롬을 사용해보세요. 여기 뿐 아니라 다른 사이트도 더 잘 될겁니다.<br>
+					기둥지도는 <a href = "https://en.wikipedia.org/wiki/WebGL">WebGL</a>이라는 요즘 뜨는 기술을 사용하는데 제 경험상 <a href = "https://www.google.com/chrome/">구글 크롬(Google Chrome)</a> 브라우저에서 가장 잘 돌아갑니다. 잘 안된다면 크롬으로 접속해 보세요.<br>
 
-					또 기둥지도를 제대로 사용하려면 키보드가 필요합니다. 모바일에서 만끽하시기 어려울 것입니다. 죄송합니다.
+					또 기둥지도를 제대로 사용하려면 키보드가 필요합니다. 모바일에서 만끽하기 어렵겠죠. 죄송합니다.
 
 				</p>
+
+			</div>
+
+
+
+			<div id = "datasetloading" class = "loading" style = "display: none">
+				
+				<span id = "datasetloadingtext">준비하는 중입니다.</span><br>
+
+				<div id = "datasetloadingbar" class = "loadingbar">
+
+				</div>
 
 			</div>
 
