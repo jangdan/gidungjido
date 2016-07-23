@@ -1,12 +1,6 @@
 
 //CONSTANTS
 
-var CLEAR_COLOR = 0x99CCFF;
-
-
-
-
-
 //
 
 /*
@@ -59,6 +53,7 @@ var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 
 var MATERIAL = 1; //themes
 
+
 var THEME_BACKGROUND_COLORS = [
 	
 	0xDDDDDD, //"MeshNormalMaterial"
@@ -66,9 +61,19 @@ var THEME_BACKGROUND_COLORS = [
 
 ];
 
+var CLEAR_COLOR = THEME_BACKGROUND_COLORS[MATERIAL];
+
+
+
 
 
 var SHADOWS = false;
+
+
+
+
+
+var HOVER_TEXTURE_CRT_DENSITY = 30;
 
 
 
@@ -250,6 +255,29 @@ var textureloader = new THREE.TextureLoader(loadingmanager);
 
 
 
+var crtMaterial;
+
+textureloader.load( document.getElementById("assets").href + "crt.png", function(texture){
+
+	texture.generateMipmaps = false;
+
+	texture.magFilter = THREE.LinearFilter;
+	texture.minFilter = THREE.LinearFilter;
+
+
+
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+
+
+	crtMaterial = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
+
+} );
+
+
+
+
+
 
 
 
@@ -323,10 +351,10 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 
 		if(data.features[i].properties.ISO_A2 === "SS")
-			textureurl = document.getElementById("flags").href + "other flags/SS.png";
+			textureurl = document.getElementById("assets").href + "flags/other flags/SS.png";
 
 		else if(data.features[i].properties.ISO_A2 === "XK")
-			textureurl = document.getElementById("flags").href + "other flags/XK.png";
+			textureurl = document.getElementById("assets").href + "flags/other flags/XK.png";
 
 		/*
 		else if(data.features[i].properties.ISO_A2 === "EH")
@@ -334,7 +362,7 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 		*/
 
 		else
-			textureurl = document.getElementById("flags").href + "flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
+			textureurl = document.getElementById("assets").href + "flags/flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
 
 
 		textureloader.load(
@@ -511,7 +539,7 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 
 
-	//mamuri
+	//마무리
 
 	function mamuri(){
 
@@ -525,6 +553,8 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 
 			scene.add(countries[i].mesh);
+
+			scene.add(countries[i].hovermesh);
 
 		}
 
@@ -642,6 +672,10 @@ function setMaterial(which){
 
 
 
+
+var pointedCountry;
+
+
 function render(time){
 
 	requestAnimationFrame(render);
@@ -744,22 +778,35 @@ function render(time){
 
 
 		if(intersections.length > 0){
-	
-			var pointedCountry;
 		
 			for(i = 0; i < countries.length; ++i){
-		
-				if(countries[i].mesh === intersections[0].object){
-		
-					pointedCountry = countries[i];
-		
-					break;
 
+				if(countries[i].mesh === intersections[0].object){
+
+					if(pointedCountry){
+
+						if(pointedCountry !== intersections[0].object){
+
+							pointedCountry.hovermesh.visible = false;
+
+						}
+
+					}
+
+					pointedCountry = countries[i];
+
+					break;
+		
 				}
 
 			}
+
+
+
+			pointedCountry.hovermesh.visible = true;
 	
 		
+
 			showinfo();
 	
 
@@ -780,6 +827,9 @@ function render(time){
 		} else {
 	
 			hideinfo();
+
+
+			if(pointedCountry) pointedCountry.hovermesh.visible = false;
 	
 		}
 
