@@ -1,8 +1,4 @@
 
-//create an extension of THREE.Mesh to store statistics data efficiently
-
-
-
 var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, center, boundingBoxes, centers */){
 
 	this.name = name;
@@ -13,6 +9,8 @@ var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, cent
 
 
 	this.shapes = shapes;
+
+
 
 
 	/*
@@ -27,6 +25,7 @@ var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, cent
 		for(j = 0; j < shapes.length; ++j){
 
 			/*
+
 			//center of mass
 
 			this.centers.push( new THREE.Vector2(0, 0) );
@@ -60,8 +59,10 @@ var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, cent
 
 
 			/*
+
 			if(!boundingBox) this.boundingBoxes.push( boundingBox );
 			else this.boundingBoxes = boundingBoxes;
+
 			*
 
 
@@ -69,26 +70,17 @@ var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, cent
 
 		}
 
-	} else this.centers = centers; */
+	} else this.centers = centers;
+
+	*/
 
 	
 
+
 	var boundingBox = new THREE.Box2();
-
-	/*
-	var centerofgravity = new THREE.Vector2(0, 0);
-
-
-	for( j = 0; j < exteriorRing.length; ++j ){
-
-		centerofgravity.add( exteriorRing[j] );
-
-	}
-	*/
 
 
 	boundingBox.setFromPoints( exteriorRing );
-
 
 
 	this.boundingBoxdimensions = new THREE.Vector2( boundingBox.max.x - boundingBox.min.x, boundingBox.max.y - boundingBox.min.y);
@@ -97,49 +89,9 @@ var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, cent
 
 
 
-	/*
-	centerofgravity.divideScalar( exteriorRing.length );
-	*/
-
-
 
 	this.flagcenter = boundingBox.center();
 
-
-
-
-
-	/*
-	this.flagtexture = textureObject.texture;
-
-	this.flagtextureaspectratio = textureObject.aspectratio;
-	*/
-
-	/*
-	this.flagurl = flagurl;
-
-
-	if( !( !this.flagurl ) && (this.iso1366 !== "-99" && this.iso1366 !== "SS" && this.iso1366 !== "XK") ){ //excude South Sudan & Kosovo because I can't find a flag that fits the dimensions (sorry! really really sorry!), but wait–I might be able to do something
-
-		this.flagtexture = textureloader.load(
-	
-			flagurl, //"assets/flags-ultra/" + countrydata.ISO_A2 + ".png"
-	
-			function(texture){
-	
-				this.textureaspectratio = texture.image.width/texture.image.height;
-	
-			}
-	
-		); 
-	
-		
-		this.flagtexture.offset = new THREE.Vector2(0.5, 0.5);
-	
-		//this.flagtexture.anisotropy = MAX_ANISOTROPY;
-	
-	}
-	*/
 
 
 
@@ -160,16 +112,15 @@ var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, cent
 
 
 
-
-
-
-
 Country.prototype.setTexture = function( flagTextureObject ){
 
 	this.flagtexture = flagTextureObject.texture;
+
+
 	this.flagtexture.offset.set(0.5, 0.5);
 
 	this.flagaspectratio = flagTextureObject.aspectratio;
+
 
 
 	this.adjustuvs();
@@ -194,7 +145,19 @@ Country.prototype.adjustuvs = function(){
 				if(this.mesh.geometry.faces[j].normal.x + this.mesh.geometry.faces[j].normal.y === 0
 				|| this.mesh.geometry.faces[j].normal.x + this.mesh.geometry.faces[j].normal.y === -0){ // the faces
 
-					/*
+					this.mesh.geometry.faceVertexUvs[0][j][k].sub( this.flagcenter );
+
+
+					this.mesh.geometry.faceVertexUvs[0][j][k].divideScalar( this.boundingBoxdimensions.y );
+
+					this.mesh.geometry.faceVertexUvs[0][j][k].x *= 1/this.flagaspectratio;
+
+
+
+
+					/* 
+
+					//alternative method, using transformations (doesn't work)
 
 					var vector3 = new THREE.Vector3( countryGeometry.faceVertexUvs[j][k][l].x, countryGeometry.faceVertexUvs[j][k][l].y, 0 );
 					
@@ -207,21 +170,14 @@ Country.prototype.adjustuvs = function(){
 					matrix.makeTranslation( -this.flagcenter.x, -this.flagcenter.y, -this.flagcenter.z )
 
 
+
 					vector3.applyMatrix4( matrix );
+
 
 
 					countryGeometry.faceVertexUvs[j][k][l].set( vector3.x, vector3.y );
 					
 					*/
-
-					//alt
-
-					this.mesh.geometry.faceVertexUvs[0][j][k].sub( this.flagcenter );
-
-
-					this.mesh.geometry.faceVertexUvs[0][j][k].divideScalar( this.boundingBoxdimensions.y );
-
-					this.mesh.geometry.faceVertexUvs[0][j][k].x *= 1/this.flagaspectratio;
 
 				} else { //the sides
 
@@ -231,57 +187,6 @@ Country.prototype.adjustuvs = function(){
 
 			}
 		}
-
-		/*
-		for(j = 0; j < this.mesh.geometry.faceVertexUvs.length; ++j){
-
-			for(k = 0; k < this.mesh.geometry.faceVertexUvs[j].length; ++k){
-
-				if( this.mesh.geometry.faceVertexUvs[j][k].length === 3 ){ //the shapes that consist the sides of the countries
-
-
-
-				} else { //the other shpa
-
-					for(l = 0; l < this.mesh.geometry.faceVertexUvs[j][k].length; ++l){
-
-						/*
-
-						var vector3 = new THREE.Vector3( countryGeometry.faceVertexUvs[j][k][l].x, countryGeometry.faceVertexUvs[j][k][l].y, 0 );
-						
-
-						var matrix = new THREE.Matrix4();
-
-
-						matrix.makeScale( 1/2, 1/2, 1/2 );
-
-						matrix.makeTranslation( -this.flagcenter.x, -this.flagcenter.y, -this.flagcenter.z )
-
-
-						vector3.applyMatrix4( matrix );
-
-
-						countryGeometry.faceVertexUvs[j][k][l].set( vector3.x, vector3.y );
-						
-						*/
-
-						/*
-						//alt
-
-						this.mesh.geometry.faceVertexUvs[j][k][l].sub( this.flagcenter );
-
-
-						this.mesh.geometry.faceVertexUvs[j][k][l].divideScalar( this.boundingBoxdimensions.y );
-
-						this.mesh.geometry.faceVertexUvs[j][k][l].x *= 1/this.flagaspectratio;
-						
-					}
-
-				}
-
-			}
-		}
-		*/
 
 	} else { // match widths
 
@@ -307,8 +212,6 @@ Country.prototype.adjustuvs = function(){
 	}
 
 }
-
-
 
 
 
@@ -423,45 +326,3 @@ Country.prototype.setMaterial = function(which){
 	}
 
 }
-
-
-
-
-
-
-
-/*
-
-//WIP static color functions
-
-function colorfromdata(data){
-
-	var from = new THREE.Color(0xFFFFFF);
-	var to = new THREE.Color(0xFFFFFF);
-
-	var lerp = advancedLerp( from, to, data, function(r){ return r }, function(g){ return g }, function(b){ return b } );
-
-	return lerp;
-
-}
-
-
-
-function advancedLerp( from, to, alpha, r, g, b ){
-
-	var result = new THREE.Color(
-		from.r + (to.r - from.r)*alpha,
-		from.g + (to.g - from.g)*alpha,
-		from.b + (to.b - from.b)*alpha
-	);
-
-	result.r = r(result.r);
-	result.g = g(result.g);
-	result.b = b(result.b);
-
-
-	return result;
-
-}
-
-*/

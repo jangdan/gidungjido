@@ -1,6 +1,9 @@
 
 //DOM-related
 
+
+//
+
 var SLIDER_RESOLUTION = 10;
 
 
@@ -36,6 +39,7 @@ var DEFAULT_MATERIAL = 1;
 
 var maximumheight = document.getElementById("maximumheight");
 
+
 maximumheight.min = MAXIMUM_COUNTRY_HEIGHT_MINIMUM * SLIDER_RESOLUTION;
 maximumheight.max = MAXIMUM_COUNTRY_HEIGHT_MAXIMUM * SLIDER_RESOLUTION;
 
@@ -45,6 +49,7 @@ maximumheight.value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * SLIDER_RESOLUTION;
 
 var contrast = document.getElementById("contrast");
 
+
 contrast.min = CONTRAST_MINIMUM * SLIDER_RESOLUTION;
 contrast.max = CONTRAST_MAXIMUM * SLIDER_RESOLUTION;
 
@@ -53,7 +58,9 @@ contrast.value = DEFAULT_CONTRAST * SLIDER_RESOLUTION;
 
 
 
+
 var sourceselect = document.getElementById("source");
+
 
 sourceselect.innerHTML = "";
 
@@ -76,9 +83,7 @@ for(i = 0; i < LOADABLE_DATASETS.length; ++i){
 
 	}
 
-	sourceselect.innerHTML +=
-		"</optgroup>"
-	;
+	sourceselect.innerHTML +="</optgroup>";
 
 }
 
@@ -86,15 +91,18 @@ for(i = 0; i < LOADABLE_DATASETS.length; ++i){
 
 
 
+
 var materialselect = document.getElementById("material");
+
 
 materialselect.innerHTML = "";
 
-
 /*
+
 materialselect.innerHTML +=
 	"<optgroup label = ''>\n"
 ;
+
 */
 
 for(i = 0; i < MATERIAL_INDICIES.length; ++i){
@@ -104,13 +112,18 @@ for(i = 0; i < MATERIAL_INDICIES.length; ++i){
 }
 
 /*
+
 materialselect.innerHTML +=
 	"</optgroup>"
 ;
+
 */
 
 
+
 materialselect.value = DEFAULT_MATERIAL;
+
+
 
 
 
@@ -122,18 +135,22 @@ function maximumheightinput(){
 
 	MAXIMUM_COUNTRY_HEIGHT = maximumheight.value / SLIDER_RESOLUTION;
 
+
 	updatecountryheights();
 
 }
+
 
 
 function contrastinput(){
 
 	CONTRAST = contrast.value / SLIDER_RESOLUTION;
 
+
 	updatecountryheights();
 
 }
+
 
 
 
@@ -141,14 +158,18 @@ function countryinfocheckboxclicked(){
 
 	SHOW_INFO = document.getElementById("countryinfocheckbox").checked;
 
+
 	revalidateinfo();
 
 }
 
 
 
+
 function materialchange(){
+
 	setMaterial( materialselect.value );
+
 }
 
 
@@ -158,15 +179,18 @@ function defaultsettings(){
 
 	maximumheight.value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * SLIDER_RESOLUTION;
 
+
 	maximumheightinput();
 
 
 
 	contrast.value = DEFAULT_CONTRAST * SLIDER_RESOLUTION;
 
+
 	contrastinput();
 
 }
+
 
 
 
@@ -182,13 +206,13 @@ function sourcechange(){
 	var selectedDataset = LOADABLE_DATASETS[selection[0]].datasets[selection[1]];
 
 
-
 	//console.log(selection, selectedDataset.index);
 
 	if(selectedDataset.index === undefined){ //if first time loading; must call API
 
 		document.getElementById("loaded").style.display = "none";
 		datasetloading.style.display = "block";
+
 
 
 		selectedDataset.index = datasets.length;
@@ -292,6 +316,7 @@ function sourcechange(){
 	}
 
 }
+
 
 
 defaultsettings();

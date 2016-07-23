@@ -4,7 +4,6 @@ var Dataset = function( name, data, maximum ){
 	this.name = name;
 
 
-
 	if(!data) this.data = [];
 	else this.data = data; //an Array; each element takes the form of { country}
 
@@ -12,8 +11,6 @@ var Dataset = function( name, data, maximum ){
 	else this.maximum = maximum;
 
 }
-
-
 
 
 
@@ -38,8 +35,8 @@ Dataset.prototype.calculatemaximum = function(){
 	}
 
 
-	this.maximum = maximum;
 
+	this.maximum = maximum;
 
 	return maximum; //optional
 
