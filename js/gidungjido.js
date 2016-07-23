@@ -672,6 +672,10 @@ function setMaterial(which){
 
 
 
+
+var pointedCountry;
+
+
 function render(time){
 
 	requestAnimationFrame(render);
@@ -774,17 +778,24 @@ function render(time){
 
 
 		if(intersections.length > 0){
-	
-			var pointedCountry;
 		
 			for(i = 0; i < countries.length; ++i){
-		
-				countries[i].hovermesh.visible = false;
-
 
 				if(countries[i].mesh === intersections[0].object){
-		
+
+					if(pointedCountry){
+
+						if(pointedCountry !== intersections[0].object){
+
+							pointedCountry.hovermesh.visible = false;
+
+						}
+
+					}
+
 					pointedCountry = countries[i];
+
+					break;
 		
 				}
 
@@ -816,6 +827,9 @@ function render(time){
 		} else {
 	
 			hideinfo();
+
+
+			if(pointedCountry) pointedCountry.hovermesh.visible = false;
 	
 		}
 
