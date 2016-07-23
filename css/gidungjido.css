@@ -26,6 +26,7 @@ canvas {
 
 
 
+
 body {
 
 	font-size: 16px;
@@ -59,7 +60,9 @@ body {
 
 
 
+
 /*
+
 button {
 
 	padding: 0;
@@ -91,7 +94,9 @@ button {
 	border-radius: 3px;
 
 }
+
 */
+
 
 
 
@@ -103,6 +108,7 @@ span.underline {
 	text-decoration: underline;
 
 }
+
 
 
 
@@ -125,11 +131,14 @@ span.roundedborder {
 
 
 
+
+
 .crt {
 
 	background: transparent url("../assets/crt.png") !important;
 
 }
+
 
 
 
@@ -145,11 +154,13 @@ ruby rp {
 
 
 
+
 p {
 	
 	padding: 0 1em 1em 1em;
 
 }
+
 
 
 
@@ -168,12 +179,39 @@ p {
 
 
 
-#loading {
+
+
+.loading {
 
 	margin-top: 64px; /* fallback */
 	margin-top: 33vh;
 
+	text-align: center;
 }
+
+
+.loadingbar {
+
+	padding: 0;
+	margin: 0;
+
+
+	display: inline-block;
+	
+	text-align: left;
+
+
+
+	background: #FFF;
+
+
+	width: 0px;
+	height: 1px;
+
+}
+
+
+
 
 
 
@@ -209,6 +247,7 @@ p {
 
 
 
+
 h1 {
 
 	padding: 1em;
@@ -224,6 +263,8 @@ h1 {
 
 
 
+
+
 h2 {
 	padding: 1em;
 	
@@ -233,6 +274,8 @@ h2 {
 	font-size: 24px;
 
 }
+
+
 
 
 

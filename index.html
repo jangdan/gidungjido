@@ -45,9 +45,19 @@
 
 
 
-			<div id = "loading">
+			<div id = "initialization" class = "loading">
 				
-				loading...
+				loading... <br>
+
+				(the loading bar is broken, please check the console for loading information)
+
+				<!--
+
+				<div id = "loadingbar">
+
+				</div>
+
+				-->
 
 			</div>
 
@@ -66,16 +76,18 @@
 
 				<p>
 
-					move around with the <span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span> keys, <span class = "roundedborder">shift</span> to go up, <span class = "roundedborder">space</span> to go down. scroll to zoom in and out.<br>
+					move around with the <span class = "roundedborder">w</span> <span class = "roundedborder">a</span> <span class = "roundedborder">s</span> <span class = "roundedborder">d</span> keys, <span class = "roundedborder">shift</span> to go up, <span class = "roundedborder">space</span> to go down.<br>
 
-					press <span class = "roundedborder">p</span> to save the current frame as an image.<br>
+					move the mouse to look around, and scroll to zoom in and out.<br>
+
+					press <span class = "roundedborder">p</span> to take a screenshot. you will be redirected to a seperate page with the screenshot. right click on it and select "Save Image As..."<br>
 
 					press <span class = "roundedborder">i</span> to hide/show country information.<br>
 
 					<!--<span class = "roundedborder">l</span>: lock camera rotation<br>-->
 
 
-					press <span class = "roundedborder">esc</span> to toggle this menu<br>
+					press <span class = "roundedborder">esc</span> to toggle this menu.<br>
 
 				</p>
 
@@ -95,7 +107,7 @@
 					<!--<input type = "checkbox" checked = "checked"> continuous mouse movement (keyboard shortcut <span class = "roundedborder">l</span>)<br>-->
 
 
-					material/texture: <select id = "material" onchange = "materialchange()">
+					theme: <select id = "material" onchange = "materialchange()">
 						<!--javascript will add stuff here-->
 					</select><br>
 
@@ -126,6 +138,18 @@
 					you also need a keyboard, sorry mobile users
 
 				</p>
+
+			</div>
+
+
+
+			<div id = "datasetloading" class = "loading" style = "display: none">
+				
+				<span id = "datasetloadingtext">loading...</span><br>
+
+				<div id = "datasetloadingbar" class = "loadingbar">
+
+				</div>
 
 			</div>
 
