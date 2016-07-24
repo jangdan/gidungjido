@@ -1,12 +1,6 @@
 
 //CONSTANTS
 
-var CLEAR_COLOR = 0x99CCFF;
-
-
-
-
-
 //
 
 /*
@@ -59,6 +53,7 @@ var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 
 var MATERIAL = 1; //themes
 
+
 var THEME_BACKGROUND_COLORS = [
 	
 	0xDDDDDD, //"MeshNormalMaterial"
@@ -66,9 +61,19 @@ var THEME_BACKGROUND_COLORS = [
 
 ];
 
+var CLEAR_COLOR = THEME_BACKGROUND_COLORS[MATERIAL];
+
+
+
 
 
 var SHADOWS = false;
+
+
+
+
+
+var HOVER_TEXTURE_CRT_DENSITY = 30;
 
 
 
@@ -179,41 +184,6 @@ scene.add( floor );
 
 //data
 
-var LOADABLE_DATASETS = [
-
-	{ name: "preloaded",
-
-		datasets: [
-			{ name: "Gross Domestic Product", index: 0 },
-			{ name: "Population", index: 1 }
-		]
-
-	},
-
-	{ name: "The World Bank",
-
-		datasets: [ //from http://data.worldbank.org/indicator
-
-			{ name: "GDP (current US$)", indicatorid: "NY.GDP.MKTP.CD", date: "2015" },
-			{ name: "GDP per capita (current US$)", indicatorid: "NY.GDP.PCAP.CD", date: "2015" },
-			{ name: "GDP growth (annual %)", indicatorid: "NY.GDP.MKTP.KD.ZG", date: "2015" },
-			{ name: "GDP per capita growth (annual %)", indicatorid: "NY.GDP.PCAP.KD.ZG", date: "2015" },
-			{ name: "Expense (% of GDP)", indicatorid: "GC.XPN.TOTL.GD.ZS", date: "2013" },
-
-			/*
-
-			//copy and fill in below for new World Bank datasets:
-			
-			{ name: "GDP", indicatorid: "asdf", date: "2015" },
-
-			*/
-
-		]
-
-	}
-
-];
-
 
 var datasets = []; //preloaded data + cached external API data
 
@@ -247,6 +217,29 @@ loadingmanager.onProgress = function( item, loaded, total ) {
 
 
 var textureloader = new THREE.TextureLoader(loadingmanager);
+
+
+
+var crtMaterial;
+
+textureloader.load( document.getElementById("assets").href + "crt.png", function(texture){
+
+	texture.generateMipmaps = false;
+
+	texture.magFilter = THREE.LinearFilter;
+	texture.minFilter = THREE.LinearFilter;
+
+
+
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+
+
+	crtMaterial = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
+
+} );
+
+
 
 
 
@@ -323,10 +316,10 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 
 		if(data.features[i].properties.ISO_A2 === "SS")
-			textureurl = document.getElementById("flags").href + "other flags/SS.png";
+			textureurl = document.getElementById("assets").href + "flags/other flags/SS.png";
 
 		else if(data.features[i].properties.ISO_A2 === "XK")
-			textureurl = document.getElementById("flags").href + "other flags/XK.png";
+			textureurl = document.getElementById("assets").href + "flags/other flags/XK.png";
 
 		/*
 		else if(data.features[i].properties.ISO_A2 === "EH")
@@ -334,7 +327,7 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 		*/
 
 		else
-			textureurl = document.getElementById("flags").href + "flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
+			textureurl = document.getElementById("assets").href + "flags/flags-normal/" + data.features[i].properties.ISO_A2.toLowerCase() + ".png";
 
 
 		textureloader.load(
@@ -511,7 +504,7 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 
 
-	//mamuri
+	//마무리
 
 	function mamuri(){
 
@@ -525,6 +518,8 @@ loadJSON( document.getElementById("country shapes").href, function(data){ //'JSO
 
 
 			scene.add(countries[i].mesh);
+
+			scene.add(countries[i].hovermesh);
 
 		}
 
@@ -642,6 +637,10 @@ function setMaterial(which){
 
 
 
+
+var pointedCountry;
+
+
 function render(time){
 
 	requestAnimationFrame(render);
@@ -649,6 +648,8 @@ function render(time){
 	
 
 
+
+	MOUSE_MOVING = false;
 
 	//camera 조작
 
@@ -659,14 +660,18 @@ function render(time){
 
 	
 
-	//rotating the camera with euler angles
+	if(!LOCK_CAMERA){
 
-	//pitch and yaw
+		//rotating the camera with euler angles
 
-	if(!menuvisible){
+		//pitch and yaw
 
-		intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
-		intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
+		if(!menuvisible){
+
+			intendedcamera.rotation.x += (window.innerHeight/2 - MOUSE.y) * 0.00005; //mouse's up-down y axis motion maps to the camera's x rotation
+			intendedcamera.rotation.z += (window.innerWidth/2 - MOUSE.x) * 0.00005; //mouse's left-right x axis motion maps to the camera's z rotation
+
+		}
 
 	}
 
@@ -744,22 +749,35 @@ function render(time){
 
 
 		if(intersections.length > 0){
-	
-			var pointedCountry;
 		
 			for(i = 0; i < countries.length; ++i){
-		
-				if(countries[i].mesh === intersections[0].object){
-		
-					pointedCountry = countries[i];
-		
-					break;
 
+				if(countries[i].mesh === intersections[0].object){
+
+					if(pointedCountry){
+
+						if(pointedCountry !== intersections[0].object){
+
+							pointedCountry.hovermesh.visible = false;
+
+						}
+
+					}
+
+					pointedCountry = countries[i];
+
+					break;
+		
 				}
 
 			}
+
+
+
+			pointedCountry.hovermesh.visible = true;
 	
 		
+
 			showinfo();
 	
 
@@ -780,6 +798,9 @@ function render(time){
 		} else {
 	
 			hideinfo();
+
+
+			if(pointedCountry) pointedCountry.hovermesh.visible = false;
 	
 		}
 
@@ -856,13 +877,16 @@ window.addEventListener("mousewheel", function(e){ //zooming
 
 
 
+var PREVIOUS_MOUSE = new THREE.Vector2();
+
 window.addEventListener("mousemove", function(e){
 
 	if(menuvisible) //ignore when you have something better to do with the mouse than moving it around without a visible cursor on the monitor
 		return;
 
 
-	
+
+
 	MOUSE.x = e.clientX;
 	MOUSE.y = e.clientY;
 
@@ -877,9 +901,54 @@ window.addEventListener("mousemove", function(e){
 
 
 
+	if(LOCK_CAMERA){
+
+		if(MOUSE_DOWN){
+
+			var deltamouse = new THREE.Vector2().subVectors(MOUSE, PREVIOUS_MOUSE);
+
+
+			console.log( e.clientX, e.clientY, PREVIOUS_MOUSE, MOUSE )
+
+			intendedcamera.rotation.z += deltamouse.x / window.innerWidth * (camera.fov * camera.aspect) / 180 * Math.PI;
+			intendedcamera.rotation.x += deltamouse.y / window.innerHeight * camera.fov / 180 * Math.PI;
+
+		}
+
+	}
+
+
+	PREVIOUS_MOUSE.copy(MOUSE);
+
+
 	return false;
 
+
 }, false);
+
+
+
+
+var MOUSE_DOWN = false;
+
+//var MOUSE_DOWN_POINT = new THREE.Vector2();
+
+
+window.addEventListener("mousedown", function(e){
+
+	MOUSE_DOWN = true;
+
+	//MOUSE_DOWN_POINT.set(e.clientX, e.clientY);
+
+});
+
+
+
+window.addEventListener("mouseup", function(e){
+
+	MOUSE_DOWN = false;
+
+});
 
 
 
@@ -932,6 +1001,16 @@ window.addEventListener("keydown", function(e){
 	if(e.which == 80){ //'p'
 
 		screenshot();
+
+		return;
+
+	}
+
+
+
+	if(e.which == 76){
+
+		togglecameralock();
 
 		return;
 
@@ -1111,6 +1190,21 @@ function screenshot(){
 	window.open(renderer.domElement.toDataURL("image/png"), "Final");
 
 	togglemenu();
+
+}
+
+
+
+
+
+var LOCK_CAMERA = true;
+
+
+function togglecameralock(){
+
+	LOCK_CAMERA = !LOCK_CAMERA;
+
+	document.getElementById("cameralockcheckbox").checked = LOCK_CAMERA;
 
 }
 
