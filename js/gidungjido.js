@@ -20,6 +20,26 @@ var CAMERA_MOVEMENT_SPEED = 0.5;
 
 
 
+var MAXIMUM_COUNTRY_HEIGHT_MINIMUM = 1;
+var MAXIMUM_COUNTRY_HEIGHT_MAXIMUM = 10;
+
+
+var CONTRAST_MINIMUM = 1;
+var CONTRAST_MAXIMUM = 5;
+
+
+
+
+
+//DEFAULT VALUES
+
+var DEFAULT_MAXIMUM_COUNTRY_HEIGHT = 4;
+
+var DEFAULT_CONTRAST = 3;
+
+
+
+
 
 var MOUSE = new THREE.Vector2();
 
@@ -43,9 +63,13 @@ var SHOW_INFO = true;
 
 
 
-//var MAXIMUM_COUNTRY_HEIGHT = DEFAULT_MAXIMUM_COUNTRY_HEIGHT;
 
-//var CONTRAST = DEFAULT_CONTRAST;
+var MAXIMUM_COUNTRY_HEIGHT = DEFAULT_MAXIMUM_COUNTRY_HEIGHT;
+
+
+var CONTRAST = DEFAULT_CONTRAST;
+
+
 
 
 var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
@@ -908,7 +932,7 @@ window.addEventListener("mousemove", function(e){
 			var deltamouse = new THREE.Vector2().subVectors(MOUSE, PREVIOUS_MOUSE);
 
 
-			console.log( e.clientX, e.clientY, PREVIOUS_MOUSE, MOUSE )
+			//console.log( e.clientX, e.clientY, PREVIOUS_MOUSE, MOUSE )
 
 			intendedcamera.rotation.z += deltamouse.x / window.innerWidth * (camera.fov * camera.aspect) / 180 * Math.PI;
 			intendedcamera.rotation.x += deltamouse.y / window.innerHeight * camera.fov / 180 * Math.PI;
