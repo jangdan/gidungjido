@@ -91,7 +91,7 @@
 
 					<span class = "roundedborder">i</span>를 누르면 마우스 커를 따라가며 나라에 대한 정보를 보여주는 창을 숨기고 다시 보이게 할 수 있습니다.<br>
 
-					<!--<span class = "roundedborder">l</span>: lock camera rotation<br>-->
+					<span class = "roundedborder">l</span> 키는 카메라 고정 (마우스 드래그로 움직이게 하기)를 설정하고 해제하는 기능을 합니다.
 
 
 					마지막으로 <span class = "roundedborder">esc</span>를 누르면서 이 메뉴를 가렸다 보이게 할 수 있습니다.<br>
@@ -109,9 +109,9 @@
 					높이 대비(contrast) <input type = "range" id = "contrast" min = "50" value = "30" max = "10" oninput = "contrastinput()"><br>
 
 
-					<input type = "checkbox" id = "countryinfocheckbox" checked = "checked" onclick = "countryinfocheckboxclicked()"> 나라 정보 보이거나 숨기기 (키보드 단축키 <span class = "roundedborder">i</span>)<br>
+					<input type = "checkbox" id = "countryinfocheckbox" checked = "checked" onclick = "countryinfocheckboxclicked()"> 나라 정보 보이거나 숨기기 (단축키 <span class = "roundedborder">i</span>)<br>
 
-					<!--<input type = "checkbox" checked = "checked"> continuous mouse movement (keyboard shortcut <span class = "roundedborder">l</span>)<br>-->
+					<input type = "checkbox" id = "cameralockcheckbox" checked = "checked" onclick = "lockcameracheckboxclicked()"> 카메라 고정 (마우스 드래그로 움직이게 하기) (단축키 <span class = "roundedborder">l</span>)<br>
 
 
 					테마: <select id = "material" onchange = "materialchange()">
