@@ -247,7 +247,6 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 	}
 
 
-
 	if( !this.mesh ){ //if 'this.mesh' is null, 즉 first time loading
 
 		var countryGeometry, countryMaterial;
@@ -305,12 +304,17 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 	} else {
 
-		if( this.data === "no data" && this.mesh.geometry instanceof THREE.ExtrudeGeometry )
-			countryGeometry = new THREE.ShapeGeometry( this.shapes );
+		if( this.data === "no data" && this.mesh.geometry instanceof THREE.ExtrudeGeometry ){
 
-		else if( this.data !== "no data" && this.mesh.geometry instanceof THREE.ShapeGeometry ){
+			this.mesh.geometry = new THREE.ShapeGeometry( this.shapes );
 
-			countryGeometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
+			this.hovermesh.geometry = new THREE.ShapeGeometry( this.shapes );
+
+		} else if( this.data !== "no data" && this.mesh.geometry instanceof THREE.ShapeGeometry){
+
+			this.mesh.geometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
+
+			this.hovermesh.geometry = new THREE.ExtrudeGeometry( this.shapes, { amount: 1, bevelEnabled: false } );
 		
 		}
 	}
