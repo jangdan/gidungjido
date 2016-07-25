@@ -77,9 +77,6 @@ var LOADABLE_DATASETS = [
 			{ name: "Total greenhouse gas emissions (kt of CO2 equivalent)", indicatorid: "EN.ATM.GHGT.KT.CE", date: "2012" },
 
 
-			{ name: "Ease of doing business index (1=most business-friendly regulations)", indicatorid: "IC.BUS.EASE.XQ", date: "2015" },
-
-
 			{ name: "Forest area (% of land area)", indicatorid: "AG.LND.FRST.ZS", date: "2015" },
 			{ name: "Forest area (sq. km)", indicatorid: "AG.LND.FRST.K2", date: "2015" }
 

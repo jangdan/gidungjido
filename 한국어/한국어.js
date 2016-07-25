@@ -24,64 +24,61 @@ var LOADABLE_DATASETS = [
 			{ name: "도시 인구 비율 (%)", indicatorid: "SP.URB.TOTL.IN.ZS", date: "2015" },
 			
 
-			{ name: "0-14세 인구 비율 (%)", indicatorid: "SP.POP.0014.TO.ZS", date: "2015" },
-			{ name: "15-64세 인구 비율 (%)", indicatorid: "SP.POP.1564.TO.ZS", date: "2015" },
-			{ name: "65세 이상 인구 비율 (%)", indicatorid: "SP.POP.65UP.TO.ZS", date: "2015" },
+			{ name: "전체 인구 중 0-14세 인구 비율 (%)", indicatorid: "SP.POP.0014.TO.ZS", date: "2015" },
+			{ name: "전체 인구 중 15-64세 인구 비율 (%)", indicatorid: "SP.POP.1564.TO.ZS", date: "2015" },
+			{ name: "전체 인구 중 65세 이상 인구 비율 (%)", indicatorid: "SP.POP.65UP.TO.ZS", date: "2015" },
 
 
-			{ name: "Net migration", indicatorid: "SM.POP.NETM", date: "2012" },
+			{ name: "순 인구 이동", indicatorid: "SM.POP.NETM", date: "2012" },
 
 
 
-			{ name: "GDP (current US$)", indicatorid: "NY.GDP.MKTP.CD", date: "2015" },
-			{ name: "GDP per capita (current US$)", indicatorid: "NY.GDP.PCAP.CD", date: "2015" },
+			{ name: "GDP (미국 달러)", indicatorid: "NY.GDP.MKTP.CD", date: "2015" },
+			{ name: "1인당 GDP (미국 달러)", indicatorid: "NY.GDP.PCAP.CD", date: "2015" },
 
-			{ name: "GDP growth (annual %)", indicatorid: "NY.GDP.MKTP.KD.ZG", date: "2015" },
-			{ name: "GDP per capita growth (annual %)", indicatorid: "NY.GDP.PCAP.KD.ZG", date: "2015" },
+			{ name: "GDP 성장률 (전년 대비 %)", indicatorid: "NY.GDP.MKTP.KD.ZG", date: "2015" },
+			{ name: "1인당 GDP 성장률 (전년 대비 %)", indicatorid: "NY.GDP.PCAP.KD.ZG", date: "2015" },
 			
-			{ name: "Expense (% of GDP)", indicatorid: "GC.XPN.TOTL.GD.ZS", date: "2013" },
+			{ name: "GDP 대비 지출 (%)", indicatorid: "GC.XPN.TOTL.GD.ZS", date: "2013" },
 
 
-			{ name: "Inflation, consumer prices (annual %)", indicatorid: "FP.CPI.TOTL.ZG", date: "2015" },
+			{ name: "소비자 물가 지수로 측정한 인플레이션 (%)", indicatorid: "FP.CPI.TOTL.ZG", date: "2015" },
 
 
-			{ name: "Labor force, total", indicatorid: "SL.TLF.TOTL.IN", date: "2015" },
+			{ name: "경제 활동 인구", indicatorid: "SL.TLF.TOTL.IN", date: "2015" },
 
 			//(sectors)
 
-			{ name: "Agriculture, value added (% of GDP)", indicatorid: "NV.AGR.TOTL.ZS", date: "2014" },
-			{ name: "Industry, value added (% of GDP)", indicatorid: "NV.IND.TOTL.ZS", date: "2014" },
-			{ name: "Services, etc., value added (% of GDP)", indicatorid: "NV.SRV.TETC.ZS", date: "2014" },
+			{ name: "1차 산업(농업 등)의 비중 (%) Agriculture, value added (% of GDP)", indicatorid: "NV.AGR.TOTL.ZS", date: "2014" },
+			{ name: "2차 산업(공업)의 비중 (%) Industry, value added (% of GDP)", indicatorid: "NV.IND.TOTL.ZS", date: "2014" },
+			{ name: "3차 산업(서비스업)의 비중 (%) Services, etc., value added (% of GDP)", indicatorid: "NV.SRV.TETC.ZS", date: "2014" },
 
 
 			//Aid Effectiveness
 
-			{ name: "Mortality rate, under-5 (per 1,000 live births)", indicatorid: "SH.DYN.MORT", date: "2015" },
-			{ name: "Maternal mortality ratio (modeled estimate, per 100,000 live births)", indicatorid: "SH.STA.MMRT", date: "2015" },
+			{ name: "출생아 1000명 당 5세 이하 사망아", indicatorid: "SH.DYN.MORT", date: "2015" },
+			{ name: "모성사망률 (출산 100000건 당)", indicatorid: "SH.STA.MMRT", date: "2015" },
 
 
 			//Climate Change
 
-			{ name: "Access to electricity (% of population)", indicatorid: "EG.ELC.ACCS.ZS", date: "2012" },
-			{ name: "Electric power consumption (kWh per capita)", indicatorid: "EG.USE.ELEC.KH.PC", date: "2013" },
+			{ name: "전체 인구 중 전기 사용 가능 인구 (%)", indicatorid: "EG.ELC.ACCS.ZS", date: "2012" },
+			{ name: "1인당 전력 소비량 (kWh)", indicatorid: "EG.USE.ELEC.KH.PC", date: "2013" },
 
 
-			{ name: "Energy imports, net (% of energy use)", indicatorid: "EG.IMP.CONS.ZS", date: "2015" },
+			{ name: "에너지 수입 의존도 (%)", indicatorid: "EG.IMP.CONS.ZS", date: "2015" },
 
-			{ name: "Renewable electricity output (% of total electricity output)", indicatorid: "EG.ELC.RNEW.ZS", date: "2012" },
-
-
-			{ name: "CO2 emissions (metric tons per capita)", indicatorid: "EN.ATM.CO2E.PC", date: "2011" },
-			{ name: "CO2 emissions (kt)", indicatorid: "EN.ATM.CO2E.KT", date: "2011" },
-
-			{ name: "Total greenhouse gas emissions (kt of CO2 equivalent)", indicatorid: "EN.ATM.GHGT.KT.CE", date: "2012" },
+			{ name: "발전량 중 신재생 에너지 비율 (%)", indicatorid: "EG.ELC.RNEW.ZS", date: "2012" },
 
 
-			{ name: "Ease of doing business index (1=most business-friendly regulations)", indicatorid: "IC.BUS.EASE.XQ", date: "2015" },
+			{ name: "1인당 이산화탄소 배출량 (톤)", indicatorid: "EN.ATM.CO2E.PC", date: "2011" },
+			{ name: "이산화탄소 배출량 (kt(킬로톤))", indicatorid: "EN.ATM.CO2E.KT", date: "2011" },
+
+			{ name: "온실가스 총 배출량 (이산화탄소 kt(킬로톤))", indicatorid: "EN.ATM.GHGT.KT.CE", date: "2012" },
 
 
-			{ name: "Forest area (% of land area)", indicatorid: "AG.LND.FRST.ZS", date: "2015" },
-			{ name: "Forest area (sq. km)", indicatorid: "AG.LND.FRST.K2", date: "2015" }
+			{ name: "전체 영토 중 숲 면적 (%)", indicatorid: "AG.LND.FRST.ZS", date: "2015" },
+			{ name: "숲 면적 (km²)", indicatorid: "AG.LND.FRST.K2", date: "2015" }
 
 
 
