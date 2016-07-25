@@ -29,6 +29,7 @@ maximumheight.value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * SLIDER_RESOLUTION;
 
 
 
+
 var contrast = document.getElementById("contrast");
 
 
@@ -68,7 +69,6 @@ for(i = 0; i < LOADABLE_DATASETS.length; ++i){
 	sourceselect.innerHTML +="</optgroup>";
 
 }
-
 
 
 
@@ -124,6 +124,7 @@ function maximumheightinput(){
 
 
 
+
 function contrastinput(){
 
 	CONTRAST = contrast.value / SLIDER_RESOLUTION;
@@ -136,6 +137,7 @@ function contrastinput(){
 
 
 
+
 function countryinfocheckboxclicked(){
 
 	SHOW_INFO = document.getElementById("countryinfocheckbox").checked;
@@ -144,6 +146,7 @@ function countryinfocheckboxclicked(){
 	revalidateinfo();
 
 }
+
 
 
 
@@ -167,6 +170,7 @@ function materialchange(){
 
 
 
+
 function defaultsettings(){
 
 	maximumheight.value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * SLIDER_RESOLUTION;
@@ -182,6 +186,7 @@ function defaultsettings(){
 	contrastinput();
 
 }
+
 
 
 
@@ -228,7 +233,7 @@ function sourcechange(){
 
 					loadJSON(
 
-						"http://cors.io/?u=http://api.worldbank.org/countries/"+countries[i].iso1366+"/indicators/"+selectedDataset.indicatorid+"?format=json&date="+selectedDataset.date,
+						"https://crossorigin.me/http://api.worldbank.org/countries/"+countries[i].iso1366+"/indicators/"+selectedDataset.indicatorid+"?format=json&date="+selectedDataset.date,
 
 						//later when we support time series data we should want to call the whole time series (ex. http://api.worldbank.org/countries/KR/indicators/NY.GDP.MKTP.CD?format=json; without the ?date parameter
 

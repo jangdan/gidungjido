@@ -1,4 +1,10 @@
 
+var HOVER_TEXTURE_CRT_DENSITY = 30;
+
+
+
+
+
 var Country = function( name, iso1366, shapes, exteriorRing /* boundingBox, center, boundingBoxes, centers */){
 
 	this.name = name;
@@ -273,16 +279,16 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 		//temporary fix
 		
-		/*
-
-		var matrix = new THREE.Matrix4();
-
-		matrix.makeTranslation(this.flagcenter.x, this.flagcenter.y, 0);
-		matrix.makeScale(1.0001, 1.0001, 1.0001);
-
-		countryhoverGeometry.applyMatrix( matrix );
-
-		*/
+		if(PRETTIER_COUNTRY_SIDES_ON_HOVER){
+		
+			var matrix = new THREE.Matrix4();
+	
+			matrix.makeTranslation(this.flagcenter.x, this.flagcenter.y, 0);
+			matrix.makeScale(1.0001, 1.0001, 1.0001);
+	
+			countryhoverGeometry.applyMatrix( matrix );
+		
+		}
 
 
 

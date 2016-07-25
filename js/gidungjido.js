@@ -67,6 +67,7 @@ var SHOW_INFO = true;
 var MAXIMUM_COUNTRY_HEIGHT = DEFAULT_MAXIMUM_COUNTRY_HEIGHT;
 
 
+
 var CONTRAST = DEFAULT_CONTRAST;
 
 
@@ -75,7 +76,10 @@ var CONTRAST = DEFAULT_CONTRAST;
 var DATA_INDEX = 0; //choose from PRELOADED_DATA_INDICIES
 
 
+
+
 var MATERIAL = 1; //themes
+
 
 
 var THEME_BACKGROUND_COLORS = [
@@ -85,6 +89,7 @@ var THEME_BACKGROUND_COLORS = [
 	0x222222 //"dark"
 
 ];
+
 
 var CLEAR_COLOR = THEME_BACKGROUND_COLORS[MATERIAL];
 
@@ -98,7 +103,7 @@ var SHADOWS = false;
 
 
 
-var HOVER_TEXTURE_CRT_DENSITY = 30;
+var PRETTIER_COUNTRY_SIDES_ON_HOVER = false; //temporarily manual
 
 
 
@@ -245,7 +250,9 @@ var textureloader = new THREE.TextureLoader(loadingmanager);
 
 
 
+
 var crtMaterial;
+
 
 textureloader.load( document.getElementById("assets").href + "crt.png", function(texture){
 
@@ -255,16 +262,14 @@ textureloader.load( document.getElementById("assets").href + "crt.png", function
 	texture.minFilter = THREE.LinearFilter;
 
 
-
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
+
 
 
 	crtMaterial = new THREE.MeshBasicMaterial( { map: texture, transparent: true } );
 
 } );
-
-
 
 
 
@@ -626,29 +631,6 @@ function setMaterial(which){
 	MATERIAL = parseInt(which);
 
 
-	/*
-
-	switch(MATERIAL){
-
-		case 0: // "MeshNormalMaterial"
-
-			for( i = 0; i < countries.length; ++i )
-				countries[i].setMaterial(MATERIAL);
-
-			break;
-
-		case 1: // "flags"
-
-			for( i = 0; i < countries.length; ++i )
-				countries[i].setMaterial(MATERIAL);
-
-			break;
-
-	}
-
-	*/
-
-
 	renderer.setClearColor(THEME_BACKGROUND_COLORS[MATERIAL]);
 
 
@@ -675,6 +657,10 @@ function render(time){
 
 
 	MOUSE_MOVING = false;
+
+
+
+
 
 	//camera 조작
 
@@ -903,6 +889,7 @@ window.addEventListener("mousewheel", function(e){ //zooming
 
 
 var PREVIOUS_MOUSE = new THREE.Vector2();
+
 
 window.addEventListener("mousemove", function(e){
 
@@ -1228,6 +1215,8 @@ var LOCK_CAMERA = true;
 function togglecameralock(){
 
 	LOCK_CAMERA = !LOCK_CAMERA;
+
+
 
 	document.getElementById("cameralockcheckbox").checked = LOCK_CAMERA;
 
