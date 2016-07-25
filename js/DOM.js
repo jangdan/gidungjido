@@ -30,6 +30,7 @@ maximumheight.value = DEFAULT_MAXIMUM_COUNTRY_HEIGHT * SLIDER_RESOLUTION;
 
 
 
+
 var contrast = document.getElementById("contrast");
 
 
@@ -121,6 +122,7 @@ function maximumheightinput(){
 	updatecountryheights();
 
 }
+
 
 
 
