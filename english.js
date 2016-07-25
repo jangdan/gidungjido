@@ -101,5 +101,6 @@ var LOADABLE_DATASETS = [
 
 var MATERIAL_INDICIES = [
 	"MeshNormalMaterial",
-	"flags"
+	"flags",
+	"dark"
 ];

@@ -81,7 +81,8 @@ var MATERIAL = 1; //themes
 var THEME_BACKGROUND_COLORS = [
 	
 	0xDDDDDD, //"MeshNormalMaterial"
-	0x99CCFF  //"flags"
+	0x99CCFF, //"flags"
+	0x222222 //"dark"
 
 ];
 

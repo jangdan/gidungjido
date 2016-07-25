@@ -101,5 +101,6 @@ var LOADABLE_DATASETS = [
 
 var MATERIAL_INDICIES = [
 	"MeshNormalMaterial",
-	"국기"
+	"국기",
+	"어두움"
 ];

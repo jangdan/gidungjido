@@ -273,12 +273,16 @@ Country.prototype.setHeightData = function( data, applyContrast ){
 
 		//temporary fix
 		
+		/*
+
 		var matrix = new THREE.Matrix4();
 
 		matrix.makeTranslation(this.flagcenter.x, this.flagcenter.y, 0);
 		matrix.makeScale(1.0001, 1.0001, 1.0001);
 
 		countryhoverGeometry.applyMatrix( matrix );
+
+		*/
 
 
 
@@ -376,6 +380,10 @@ Country.prototype.setMaterial = function(which){
 			this.mesh.material = new THREE.MeshLambertMaterial( { map: this.flagtexture } );
 
 			break;
+
+		case 2: //"dark"
+
+			this.mesh.material = new THREE.MeshLambertMaterial( { color: 0xDDDDDD } );
 
 	}
 
