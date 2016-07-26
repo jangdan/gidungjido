@@ -106,7 +106,7 @@ var SHADOWS = false;
 
 
 
-var PRETTIER_COUNTRY_SIDES_ON_HOVER = false; //temporarily manual
+var PRETTIER_COUNTRY_SIDES_ON_HOVER = true; //temporarily manual
 
 
 
