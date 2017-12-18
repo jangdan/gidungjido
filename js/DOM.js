@@ -235,7 +235,7 @@ function sourcechange(){
 
 					loadJSON(
 
-						"http://39.119.163.77:8080/http://api.worldbank.org/countries/"+countries[i].iso1366+"/indicators/"+selectedDataset.indicatorid+"?format=json&date="+selectedDataset.date,
+						"http://39.119.168.21:8080/http://api.worldbank.org/countries/"+countries[i].iso1366+"/indicators/"+selectedDataset.indicatorid+"?format=json&date="+selectedDataset.date,
 
 						//later when we support time series data we should want to call the whole time series (ex. http://api.worldbank.org/countries/KR/indicators/NY.GDP.MKTP.CD?format=json; without the ?date parameter
 
